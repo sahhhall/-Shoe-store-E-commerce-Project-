@@ -1,0 +1,160 @@
+@import url('https://fonts.googleapis.com/css2?family=Anton&family=Arimo:wght@700&family=Bebas+Neue&family=Gabarito:wght@400;500&family=Libre+Caslon+Text&family=Montserrat:wght@100&family=Mulish:wght@300&family=Quicksand&family=Rubik&display=swap');
+
+.summer{
+    font-family: 'Quicksand', sans-serif;
+    letter-spacing: .2rem; font-size: .6rem; color: white;
+}
+
+.history{
+     font-family: 'Quicksand', sans-serif;
+     letter-spacing: .1rem;
+}
+/* navabar  */
+nav a{
+    font-family: 'Gabarito', sans-serif;
+}
+.dropdown-menu li {
+    border-bottom: 1px solid #ccc; /* Change the color as needed */
+    padding: .2rem 0; 
+}
+
+
+
+/*  */
+
+/* form  and login  */
+
+.login-p{
+    font-family: 'Quicksand', sans-serif;
+}
+.login-p2{
+    font-family: 'Quicksand', sans-serif;
+}
+form .label{
+    font-size: .8rem;
+    letter-spacing: .1rem;
+    font-family: 'Quicksand', sans-serif;
+}
+
+form ::placeholder{
+    font-size: .7rem;
+    letter-spacing: .1rem;
+    font-family: 'Quicksand', sans-serif;
+}
+form button{
+    
+    font-family: 'Gabarito', sans-serif;
+    letter-spacing: .2rem;
+    font-weight: bold;
+}
+/*  */
+
+/* forget password  */
+
+.forget p  {
+    font-size: .7rem;
+    letter-spacing: .1rem;
+    font-family: 'Quicksand', sans-serif;
+}
+.forget .form-label{
+    font-size: .8rem;
+    letter-spacing: .1rem;
+    font-family: 'Quicksand', sans-serif;
+}
+
+/* end */
+
+/* for signup page popup message */
+.forml{
+    font-size: .8rem;
+    letter-spacing: .1rem;
+    font-family: 'Quicksand', sans-serif;
+}
+
+/* end */
+
+/* hovering product card */
+
+/* product detailing  product */
+.categoryname{   font-size: .8rem;
+    letter-spacing: .1rem;
+    font-family: 'Quicksand', sans-serif;
+
+}.categoryname a{
+
+ text-decoration: none;
+
+}
+
+
+.social-labellll{
+    
+    font-size: .8rem;
+    letter-spacing: .1rem;
+    font-family: 'Quicksand', sans-serif;
+
+}
+.sociaico li{
+ display: flex;
+margin-left: 1rem;
+
+}
+
+
+
+/* aboutus */
+.aboutus{
+    font-family: 'Gabarito', sans-serif;
+    letter-spacing: .2rem;
+
+    font-size: 2rem;
+
+}
+.aboutusside{
+    font-family: 'Gabarito', sans-serif;
+    letter-spacing: .2rem;
+
+    font-size: 1rem;
+}.aboutcont{
+    font-size: .8rem;
+    letter-spacing: .1rem;
+    font-family: 'Quicksand', sans-serif;
+}
+
+/* homepage */
+.conversepartner{
+    position: absolute; top: 10rem; left: 7.5rem; 
+    font-size: .8rem;
+    letter-spacing: .1rem;
+    font-family: 'Quicksand', sans-serif;
+}
+.cardtitle{
+    font-family: 'Gabarito', sans-serif;
+    letter-spacing: .1rem;
+
+    font-size: 1rem;
+}
+.cardtitleshop{
+    font-family: 'Gabarito', sans-serif;
+
+
+    font-size: .9rem;
+}.smallcardtitle{
+    font-family: 'Quicksand', sans-serif;
+    letter-spacing: .1rem;
+
+    font-size: .7rem;
+}.passreq small{
+    font-family: 'Quicksand', sans-serif;
+  
+
+    font-size: .7rem;
+}.passreq p{
+    font-family: 'Gabarito', sans-serif;
+    font-size: .7rem;
+}
+
+
+
+
+/* shop page */

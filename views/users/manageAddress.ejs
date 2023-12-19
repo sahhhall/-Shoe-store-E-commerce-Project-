@@ -1,0 +1,408 @@
+
+<%- include('../layouts/user/header.ejs') -%>
+<style>
+ 
+
+    .containerrr {
+      display: flex;
+      flex-wrap: wrap;
+    }
+
+    .sidebarrr {
+      flex: 1;
+      min-width: 20%;
+      max-width: 25%;
+      padding: 20px;
+     
+      color: #fff;
+      min-height: 100vh;
+    }
+
+    .main-contenttt {
+      flex: 3;
+      padding: 20px;
+    }hr{
+        color:black;
+    }
+
+    .user-headerrr {
+      display: flex;
+      align-items: center;
+      margin-bottom: 20px;
+    }
+
+    .user-photooo {
+      border-radius: 50%;
+      width: 40px;
+      height: 40px;
+      margin-right: 10px;
+      /* Placeholder background color for the user photo */
+      background-color: #ddd;
+    }
+
+    .user-nameee {
+      font-size: .6rem;
+      font-weight: bold;
+    }
+
+    .menu-headinggg {
+      font-size: .7rem;
+      font-weight: bold;
+      margin-bottom: 10px;
+      color: rgba(127,127,127,1);
+    }
+
+    .menu-itemmm {
+      margin-bottom: 10px;
+
+    }
+
+    .menu-itemmm a {
+     color: black;
+      text-decoration: none;
+      font-size: .9rem;
+      font-family: 'Quicksand';
+    }
+    .menu-itemmm.selected {
+  background-color: #f0f0f0;
+  border-radius: 5px;
+}   
+/* its for dropdown in address  */
+.droppdown {
+            position: absolute;
+            display: inline-block;
+            left: 97%;
+        }
+
+        .droppdown-content {
+          left:-107px;
+            display: none;
+            position: absolute;
+            background-color: #f9f9f9;
+            min-width: 30rem;
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+            z-index: 1;
+            
+        }
+
+        .droppdown:hover .droppdown-content {
+            display: block;
+        }
+
+        .droppdown-content .btn {
+            color: black;
+            padding: 12px 16px;
+            text-decoration: none;
+            display: block;
+            
+        }
+
+        .droppdown-content .btn:hover {
+            background-color: #f1f1f1;
+            color: blue
+            ;
+        }
+/* end dropdown  */
+
+    @media screen and (max-width: 600px) {
+        .menu-itemmm a {
+     color: black;
+      text-decoration: none;
+      font-size: .5rem;
+    }    .droppdown-content {
+          left:-157px;
+            display: none;
+            position: absolute;
+            background-color: #f9f9f9;
+            min-width: 30rem;
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+            z-index: 1;
+            
+        }.main-contenttt .breadcrumb{
+          font-size: .6rem;
+        }
+
+}
+  </style>
+</head>
+<body>
+
+ 
+  <div class="containerrr">
+    <!-- Sidebar -->
+    <div class="sidebarrr" id="sidebar">
+ 
+      <div class="user-headerrr">
+        <div class="user-photooo"></div>
+        <div class="user-nameee">John Doe</div>
+      </div>
+
+      <!-- Sidebar Menu -->
+      <div class="menu-headinggg">General</div>
+  
+      <div class="menu-itemmm"><a href="/addresses"  aria-current="page"  class="bg-light active" >Manage Address</a></div><hr>
+     
+      <div class="menu-itemmm" ><a href="/orders" >Orders</a></div><hr>
+
+      <div class="menu-itemmm"><a href="#">Wishlist</a></div><hr>
+
+      <div class="menu-headinggg">Legal</div>
+      <div class="menu-itemmm" ><a href="#">Terms of Use</a></div><hr>
+      <div class="menu-itemmm"><a href="#">Privacy Policy</a></div><hr>
+
+      <div class="menu-headinggg">Personal</div>
+      <div class="menu-itemmm" ><a href="#">Report a Bug</a></div><hr>
+      <div class="menu-itemmm" ><a  href="/signout">Logout</a></div><hr>
+
+    </div>
+
+    <!-- Main Content -->
+
+    <!--  modal for new adrress -->
+<div class="modal fade" id="AdressModal" tabindex="-1" aria-labelledby="AdressModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="AdressModalLabel">Add New Address</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <form method="post">
+          <div class="form-group">
+            <label for="full-name" class="form-label">Full Name</label>
+            <input type="text" class="form-control" id="full-name" placeholder="Full Name" name="fullname" required>
+          </div>
+          <div class="form-group">
+            <label for="address-line1" class="form-label">Address Line 1</label>
+            <input type="text" class="form-control" id="address-line1" placeholder="Address Line 1" name="address_line1" required>
+          </div>
+          <div class="form-group">
+            <label for="city" class="form-label">City</label>
+            <input type="text" class="form-control" id="city" placeholder="City" name="city" required>
+          </div>
+          <div class="form-group">
+            <label for="state" class="form-label">State</label>
+            <select class="form-select" id="state" name="state" required>
+              <option value="" selected disabled>Select State</option>
+             
+              <option value="Kerala">Kerala</option>
+              <option value="Tamilnadu">Tamilnadu</option>
+              <option value="Karnataka">Karnataka</option>
+              
+              <option value="Maharashtra">Maharashtra</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label for="postcode" class="form-label">Postcode</label>
+            <input type="text" class="form-control" id="postcode" placeholder="Postcode" name="postcode" required>
+          </div>
+          <div class="form-group">
+            <label for="mobile-number" class="form-label">Mobile Number</label>
+            <input type="tel" class="form-control" id="mobile-number" placeholder="Mobile Number" name="mobile_number" required>
+          </div>
+
+          <button type="button" onclick="addAddress('<%= locals.user.email %>')" class="btn btn-primary d-block w-100 my-4">Add Address</button>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+ <!-- end modal for new adrress -->
+
+
+<div class="main-contenttt">
+  <nav aria-label="breadcrumb">
+    <ol class="breadcrumb">
+      <li class="breadcrumb-item"><a href="/">Home</a></li>
+      <li class="breadcrumb-item"><a href="/profile">Profile</a></li>
+      <li class="breadcrumb-item active" aria-current="page"><a href="/addresses">Manage addresses</a></li>
+    </ol>
+  </nav>
+
+  <div id="edit-profile-section"  style="display: block;">
+    
+     <h1>User Addresses</h1>
+     <div class="mt-2">
+      <a data-bs-toggle="modal" data-bs-target="#AdressModal" class="btn btn-primary"><i class="material-icons md-plus"></i> Add new Adress</a>
+  </div>
+
+     <!-- card start here address  -->
+     <div class="card border mt-3" style="position: relative;" id="reloadArea">
+      <% if(locals.addresses && locals.addresses.length>0 )  { %>
+
+        <%  addresses.forEach(function(address){ %>
+      <div class="card-body">
+        <div class="droppdown">
+     <img src="/assets/icons/three-dots-vertical.svg" alt="3dots">
+          <div class="droppdown-content">
+            <button class="btn btn-block dropdown-item" data-bs-toggle="modal" data-bs-target="#AdressEditModal"  type="button">Edit</button>
+            <button class="btn btn-block dropdown-item" type="button">Remove</button>
+          
+          </div>
+      </div>
+     
+       <p class="card-text"> <span > <%= address.name%></span> <span style="margin-left: 3%;"><%= address.phone %></span>  </p>
+        <p class="card-text"><span><%= address.addressline %></span><span ><%= address.city %>,</span> <span><%= address.state %>-</span> <span><%= address.pincode %></span> </p>
+    <hr>  </div>
+      <% }); %>
+      <%  } else  { %>
+        <tr>
+          <td colspan="5">No Addresses available</td>
+        </tr>
+
+      <% } %>
+    </div>
+   
+
+
+
+  </div>
+<!-- main sectin end (middle screen)  -->
+
+    </div>
+    <!-- main content screen end  -->
+  </div>
+
+
+
+
+
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+  <!-- Include jQuery before using it -->
+  <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+  
+
+  <script>
+    function trimValue(elementId) {
+        return document.getElementById(elementId).value.trim();
+    }
+
+    function setBorderColor(elementId, color) {
+        document.getElementById(elementId).style.border = `1px solid ${color}`;
+    }
+
+    function validateField(value, fieldName, elementId) {
+        if (value === "") {
+            setBorderColor(elementId, 'red');
+            return true; // Validation failed
+        }
+        setBorderColor(elementId, ''); 
+        return false; // Validation passed
+    }
+    function clearInputValues() {
+        const fields = [
+            'full-name',
+            'address-line1',
+            'city',
+            'state',
+            'postcode',
+            'mobile-number'
+        ];
+
+        for (const fieldId of fields) {
+            document.getElementById(fieldId).value = '';
+        }
+    }
+    function addAddress(userEmail) {
+        const fields = [
+            { id: 'full-name', name: 'Full Name' },
+            { id: 'address-line1', name: 'Address Line 1' },
+            { id: 'city', name: 'City' },
+            { id: 'state', name: 'State' },
+            { id: 'postcode', name: 'Postcode' },
+            { id: 'mobile-number', name: 'Mobile Number' }
+        ];
+
+        for (const field of fields) {
+            const value = trimValue(field.id);
+            if (validateField(value, field.name, field.id)) {
+                return;
+            }
+        }
+        const fullName = document.getElementById('full-name').value;
+        const addressLine = document.getElementById('address-line1').value;
+        const city = document.getElementById('city').value;
+        const state = document.getElementById('state').value;
+        const postcode = document.getElementById('postcode').value;
+        const  phone = document.getElementById('mobile-number').value;
+        const data = {
+          fullName:fullName,
+          addressLine:addressLine,
+          city:city,
+          state:state,
+          postcode:postcode,
+          phone:phone,userEmail:userEmail
+        }
+    Swal.fire({
+      title: 'Are you sure?',
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonColor: '#3085d6',
+      cancelButtonColor: '#d33',
+      confirmButtonText: 'Yes!',
+    }).then((res) => {
+      if (res.isConfirmed) {
+        $.ajax({
+          method: 'POST',
+          url: '/add-address',
+          data: JSON.stringify(data),
+          contentType: 'application/json',
+          success: function (response) {
+            if (response.added === true) {
+              Swal.fire({
+                icon:'success',
+                text:'Success'
+              }).then(()=>{
+                $('#reloadArea').load('/addresses #reloadArea');
+                clearInputValues();
+              })
+              
+        $('#AdressModal').modal('hide');
+             
+            } else {
+             
+              Swal.fire({
+                    icon: 'error',
+                  
+                    text: 'Failed to edit profile. something went  wrong',
+              }).then(()=>{
+                $('#reloadArea').load('/addresses #reloadArea');
+              })
+            }
+          },
+          error: function (error) {
+            console.error(error);
+          },
+        });
+      }
+    });
+      
+    }
+</script>
+
+<script>
+  function editAddress(id, name, phone, addressline, city, state, pincode) {
+    // Populate the modal with the information from the selected address
+    document.getElementById('edit-full-name').value = name;
+    document.getElementById('edit-address-line1').value = addressline;
+    // Populate other input fields as needed
+
+    // Show the modal
+    $('#editModal').modal('show');
+  }
+
+  function saveEditedAddress() {
+    // Retrieve the edited values from the modal
+    var editedName = document.getElementById('edit-full-name').value;
+    var editedAddressLine1 = document.getElementById('edit-address-line1').value;
+    // Retrieve other edited values as needed
+
+    // Do something with the edited values
+
+    // Close the modal
+    $('#editModal').modal('hide');
+  }
+</script>

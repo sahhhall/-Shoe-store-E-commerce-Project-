@@ -1,0 +1,415 @@
+
+<%- include('../layouts/user/header.ejs') -%>
+<style>
+ 
+
+    .containerrr {
+      display: flex;
+      flex-wrap: wrap;
+    }
+
+    .sidebarrr {
+      flex: 1;
+      min-width: 20%;
+      max-width: 25%;
+      padding: 20px;
+     
+      color: #fff;
+      min-height: 100vh;
+    }
+
+    .main-contenttt {
+      flex: 3;
+      padding: 20px;
+    }hr{
+        color:black;
+    }
+
+    .user-headerrr {
+      display: flex;
+      align-items: center;
+      margin-bottom: 20px;
+    }
+
+    .user-photooo {
+      border-radius: 50%;
+      width: 40px;
+      height: 40px;
+      margin-right: 10px;
+      /* Placeholder background color for the user photo */
+      background-color: #ddd;
+    }
+
+    .user-nameee {
+      font-size: .6rem;
+      font-weight: bold;
+    }
+
+    .menu-headinggg {
+      font-size: .7rem;
+      font-weight: bold;
+      margin-bottom: 10px;
+      color: rgba(127,127,127,1);
+    }
+
+    .menu-itemmm {
+      margin-bottom: 10px;
+
+    }
+
+    .menu-itemmm a {
+     color: black;
+      text-decoration: none;
+      font-size: .9rem;
+      font-family: 'Quicksand';
+    }
+    .menu-itemmm.selected {
+  background-color: #f0f0f0;
+  border-radius: 5px;
+}
+    .form-group {
+            margin-bottom: 15px;
+        }
+
+        .form-control[readonly] {
+            background-color: #f8f8f8; 
+            color: rgb(7, 7, 7);
+            font-family: monospace;
+            border: .2px solid white;
+        }.form-control{
+          color: crimson;
+        }
+.editbtn{
+  margin-left: 40%;
+  border: .1rem black solid;
+  border-radius: 15px;
+  padding: 0 1rem;
+  padding-top: .4rem;
+padding-bottom: .4rem;
+  background-color: black;
+  color: white;
+  font-size: .7rem;
+}.resettt{
+font-size: .7rem;
+
+}
+    @media screen and (max-width: 600px) {
+        .menu-itemmm a {
+     color: black;
+      text-decoration: none;
+      font-size: .5rem;
+    }   
+
+}
+  </style>
+</head>
+<body>
+
+ 
+  <div class="containerrr">
+    <!-- Sidebar -->
+    <div class="sidebarrr" id="sidebar">
+ 
+      <div class="user-headerrr">
+        <div class="user-photooo"></div>
+        <div class="user-nameee">John Doe</div>
+      </div>
+
+      <!-- Sidebar Menu -->
+      <div class="menu-headinggg">General</div>
+  
+      <div class="menu-itemmm" ><a href="/addresses">Manage Address</a></div><hr>
+     
+      <div class="menu-itemmm" ><a href="/orders">Orders</a></div><hr>
+
+      <div class="menu-itemmm"><a href="/wishlist">Wishlist</a></div><hr>
+
+      <div class="menu-headinggg">Legal</div>
+      <div class="menu-itemmm" ><a href="">Terms of Use</a></div><hr>
+      <div class="menu-itemmm"><a href="#">Privacy Policy</a></div><hr>
+
+      <div class="menu-headinggg">Personal</div>
+      <div class="menu-itemmm" ><a href="#">Report a Bug</a></div><hr>
+      <div class="menu-itemmm" ><a  href="/signout" >Logout</a></div><hr>
+      
+    </div>
+<!-- modal  -->
+<div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">Reset Password</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <form method="post"  >
+       
+          <div class="form-group">
+            <label for="new-password" class="form-label">old password</label>
+            <div id="passwordErrormain" class="form-label" style="color: red;"></div>
+            <input type="password" class="form-control" id="old-password" placeholder="old Password" name="oldpassword" required>
+          </div>
+          <div class="form-group">
+            <label for="new-password" class="form-label">New Password</label>
+            <div id="passwordError" class="form-label" style="color: red;"></div>
+            <input type="password" class="form-control" id="new-password" placeholder="New Password" name="password" required>
+          </div>
+
+          <div class="form-group">
+            <label for="confirm-password" class="form-label">Confirm Password</label>
+            <div id="passwordError2" class="form-label" style="color: red;"></div>
+            <input type="password" class="form-control" id="confirm-password" placeholder="Confirm Password" name="confirmpassword" required>
+          </div>
+
+         
+
+          <button type="button" onclick="resetPass('<%= locals.user.email  %>')" class="btn btn-dark d-block w-100 my-4">Reset Password</button>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+
+    <!-- Main Content -->
+<div class="main-contenttt ms-4" >
+  <nav aria-label="breadcrumb">
+    <ol class="breadcrumb">
+      <li class="breadcrumb-item"><a href="/">Home</a></li>
+      <li class="breadcrumb-item active" aria-current="page"><a href="/profile">Profile</a></li>
+    </ol>
+  </nav>
+
+  <div id="profile-container"  ><div id="reloadArea">
+    <form method="post" id="profile-form" onsubmit="return validate()" >
+      <div class="form-group col-6">
+          <label class="form-label label" for="profile-name">Name</label>
+          <input type="text" class="form-control editable" id="profile-name" name="name" value="<%= locals.user.name%>" readonly>
+          
+      </div>
+      <div class="form-group col-6">
+          <label class="form-label label" for="profile-email">Email</label>
+          <input type="text" class="form-control " id="profile-email" name="email" value="<%= locals.user.email%>" readonly>
+      </div>
+    
+      <div class="form-group col-6">
+          <label class="form-label label" for="profile-phone">Phone</label>
+          <input type="text"  class="form-control editable" id="profile-phone" name="mobile" value="<%= locals.user.mobile %>" readonly>
+         
+      </div>
+      
+      
+      <div class="form-group col-6">
+          <button type="button" class="editbtn" onclick="toggleEdit('<%= locals.user.email %>')">Edit</button>
+      </div>
+      
+    </div>
+  </form>
+  </div>
+  <span class="mobile-text text-muted resettt">wanna reset password<button type="button" class="btn text-danger" data-bs-toggle="modal" data-bs-target="#exampleModal">
+    reset
+   </button> </span>
+</div>
+
+  
+
+  </div>
+
+
+    </div>
+    <!-- main content screen end  -->
+  </div>
+
+
+
+
+
+ 
+
+  <%- include('../layouts/user/footer.ejs') -%>
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+  <script>
+  function toggleEdit(email) {
+    const mail = { mail: email };
+    console.log("hihi,", mail);
+
+    const input = document.querySelectorAll('.editable');
+    input.forEach(function (input) {
+        input.removeAttribute('readonly');
+    });
+
+    const editButton = document.querySelector('#profile-form button');
+    editButton.textContent = 'Submit';
+    editButton.setAttribute('onclick', `submitForm('${mail.mail}')`);
+}
+
+
+function submitForm(userEmail) {
+    const updatedName = document.getElementById('profile-name').value;
+    const updatedMobile = document.getElementById('profile-phone').value;
+      
+    // Perform validation
+    if (!updatedName || !updatedMobile) {
+     
+      Swal.fire({
+        icon: 'error',
+        title: 'Validation Error',
+        text: 'Name and Mobile cannot be empty',
+      });
+      return;
+    } else if( !/^\w+$/.test(updatedName) ){
+      Swal.fire({
+        icon: 'error',
+        title: 'Validation Error',
+        text: 'Name cannot be empty ',
+      });
+      return;
+   
+    }
+    else if (updatedMobile.trim().length !== 10 || !/^\d+$/.test(updatedMobile)) {
+        Swal.fire({
+            icon: 'error',
+            title: 'Validation Error',
+            text: 'Mobile number must be 10 digits',
+        });
+        return;
+    }
+
+    const data = {
+      userEmail: userEmail,
+      updatedName: updatedName,
+      updatedMobile: updatedMobile,
+    };
+
+    Swal.fire({
+      title: 'Are you sure?',
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonColor: '#3085d6',
+      cancelButtonColor: '#d33',
+      confirmButtonText: 'Yes!',
+    }).then((res) => {
+      if (res.isConfirmed) {
+        $.ajax({
+          method: 'POST',
+          url: '/edit-profile',
+          data: JSON.stringify(data),
+          contentType: 'application/json',
+          success: function (response) {
+            if (response.edited === true) {
+              Swal.fire({
+                icon:'success',
+                text:'Successfully updated'
+              }).then(()=>{
+                $('#reloadArea').load('/profile #reloadArea');
+              })
+             
+            } else {
+             
+              Swal.fire({
+                    icon: 'error',
+                  
+                    text: 'Failed to edit profile. usernamae already taken.',
+              }).then(()=>{
+                $('#reloadArea').load('/profile #reloadArea');
+              })
+            }
+          },
+          error: function (error) {
+            console.error(error);
+          },
+        });
+      }
+    });
+  }
+</script>
+<script>
+ function resetPass(useremail) {
+  const oldPass = document.getElementById('old-password').value;
+  const newPass = document.getElementById('new-password').value;
+  const confirmPass = document.getElementById('confirm-password').value;
+
+  if (!/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[a-zA-Z\d]{6,}$/.test(oldPass)) {
+    document.getElementById('old-password').style.border = 'solid 1px red';
+    document.getElementById('passwordErrormain').textContent = "Not a valid password";
+    setTimeout(function () {
+      document.getElementById('old-password').style.border = '';
+      document.getElementById('passwordErrormain').textContent = '';
+    }, 5000);
+    return false;
+  } else if (!/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[a-zA-Z\d]{6,}$/.test(newPass)) {
+    document.getElementById('new-password').style.border = 'solid 1px red';
+    document.getElementById('passwordError').textContent = "Password must be at least 6 characters long and contain at least one uppercase letter, one lowercase letter, and one number";
+    setTimeout(function () {
+      document.getElementById('new-password').style.border = '';
+      document.getElementById('passwordError').textContent = '';
+    }, 5000);
+    return false;
+  } else if (newPass !== confirmPass) {
+    document.getElementById('confirm-password').style.border = 'solid 1px red';
+    document.getElementById('passwordError2').textContent = "Passwords should match";
+    setTimeout(function () {
+      document.getElementById('confirm-password').style.border = '';
+      document.getElementById('passwordError2').textContent = '';
+    }, 3000);
+    return false;
+  }
+
+  const data = {
+    oldPass: oldPass,
+    newPass: newPass,
+    confirmPass: confirmPass,
+    useremail: useremail
+  };
+
+  $.ajax({
+    method: 'POST',
+    url: '/reset-pass',
+    data: JSON.stringify(data),
+    contentType: 'application/json',
+    success: function (response) {
+      if (response.reseted === true) {
+        Swal.fire({
+          icon: 'success',
+          text: 'Successfully updated'
+        }).then(() => {
+          $('#reloadArea').load('/profile #reloadArea');
+        });
+        document.getElementById('old-password').value = '';
+        document.getElementById('new-password').value = '';
+        document.getElementById('confirm-password').value = '';
+        $('#exampleModal').modal('hide');
+      } else {
+        if(response.res === false){
+          Swal.fire({
+          icon: 'error',
+          text: 'you have to enter correct old password.'
+        }).then(() => {
+          $('#reloadArea').load('/profile #reloadArea');
+        });
+        document.getElementById('old-password').value = '';
+        }else if(response.reseted ===false){
+          Swal.fire({
+          icon: 'error',
+          text: 'New password should be different from the old password'
+        }).then(() => {
+          $('#reloadArea').load('/profile #reloadArea');
+        });
+        document.getElementById('new-password').value = '';
+        document.getElementById('confirm-password').value = '';
+        }
+       
+      }
+    },
+    error: function (error) {
+      console.error(error);
+    }
+  });
+}
+
+</script>
+
+
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+<!-- Include jQuery before using it -->
+<script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>

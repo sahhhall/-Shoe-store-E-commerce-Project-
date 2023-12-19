@@ -1,0 +1,154 @@
+<%- include('../layouts/admin/header.ejs') -%>
+
+
+
+<section class="content-main" >
+   
+    <div class="content-header">
+        
+        <div><h1 class="fw-bold fs-3 mb-2">Products  (<%= products.length %>)</h1>
+            <nav aria-label="breadcrumb">
+                <ol class="breadcrumb">
+                  <li class="breadcrumb-item"><a href="/admin/home">Admin</a></li>
+                
+                  <li class="breadcrumb-item active" aria-current="page">categories</li>
+                </ol>
+            </nav>
+            <p class="m-0 text-muted small">Add,edit or list products</p>        
+            <p class="m-0 text-muted small">Showing 1 - 9 of 121</p>
+           
+        </div>
+        <div>
+            <a href="/admin/addProduct" class="btn btn-primary"><i class="material-icons md-plus"></i> Add product </a>
+        </div>
+    </div>
+    <div class="card mb-4">
+        <header class="card-header">
+            <div class="row gx-3">
+                <div class="col-lg-4 col-md-6 me-auto">
+                    <input type="text" placeholder="Search..." class="form-control" id="searchInput" />
+                </div>
+            </div>
+        </header>
+
+<div class="card-body">
+    <div class="table-responsive" id="reloadArea">
+        <table class="table table-hover" id="productTable" >
+            <thead>
+                <tr class="table-dark">
+                    <th>ID</th>
+                    <th>Image</th>
+                    <th>Product Name</th>
+                   
+                    <th>Category</th>
+                    <th>Stock</th>
+                    <th>sizes</th>
+                    <th>Price</th>
+                    <th class="text-center">Action</th>
+                </tr>
+            </thead>
+            <tbody>
+                <% if (locals.products && locals.products.length > 0) { %>
+                    <% locals.products.map(function (product, index) { %>
+                        <tr>
+                            <td><%= index + 1 %></td>
+                            <td>
+                            
+                                <img src="/assets/images/productImage/<%= product.images[0] %> " alt="Product Image" style="width: 50px; height: 50px;">
+                            </td>
+                            <td><%= product.name %></td>
+                           
+                            <td><%= product.category %></td>
+                            <td><%= product.stockQuantity %></td>
+                            
+                            <td><%= product.sizes %></td>
+                            <td><%= product.price %></td>
+                            <td class="text-center " >
+                                <a class="btn btn-sm btn-danger rounded font-sm mt-15 text-white"  data-user-id="<%= product._id  %>" data-initial-status="<%= product.is_Listed %>" onclick="block('<%= product._id %>')"  >
+                                    <%= product.is_Listed?"Unlist":"List"  %>
+                                    </a>
+                                <a class="btn btn-sm btn-brand rounded font-sm mt-15" href="/admin/edit-product?id=<%= product._id %>" >Edit</a>
+                            </td>
+                        </tr>
+                    <% }); %>
+                <% } else { %>
+                    <tr>
+                        <td colspan="7">No products available</td>
+                    </tr>
+                <% } %>
+            </tbody>
+        </table>
+        <!-- table-responsive.// -->
+    </div>
+</div>
+
+</div>
+<!-- card end// -->
+
+</section>
+
+<%- include('../layouts/admin/footer.ejs') -%>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+
+<script>
+      document.addEventListener('DOMContentLoaded',function(){
+
+// first we nee to take search input id 
+let searchInput = document.getElementById('searchInput');
+    searchInput.addEventListener('keyup',()=>{
+        let  searched = searchInput.value.toLowerCase();
+        let  tableRows = document.querySelectorAll("#productTable tbody tr");
+
+        tableRows.forEach((row)=>{
+            let searchColumn = row.querySelector('td:nth-child(3)');
+
+            if(searchColumn){
+                let nameText = searchColumn.textContent.toLowerCase();
+                row.style.display = nameText.includes(searched)?'' : 'none';
+            }
+        })
+    })
+
+
+})
+
+    function block(list) {
+        // Create the data object
+        const data = { list: list };
+
+        // Show a confirmation dialog using SweetAlert
+        Swal.fire({
+            title: 'Are you sure?',
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            confirmButtonText: 'Yes!',
+        }).then((result) => {
+   
+            if (result.isConfirmed) {
+             
+                $.ajax({
+                    method: 'POST',
+                    url: '/admin/list-unlist-product',
+                    data: JSON.stringify(data),
+                    contentType: 'application/JSON', 
+                    success: function (res) {
+                        
+                        if (res.list === true) {
+                         
+                            $('#reloadArea').load('/admin/products #reloadArea');
+                        } else {
+                           
+                        }
+                    },
+                    error: function (error) {
+                       
+                        console.log("An error occurred:", error);
+                    }
+                });
+            }
+        });
+    }
+</script>

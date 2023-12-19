@@ -1,0 +1,34 @@
+<%- include('../layouts/user/header.ejs') -%>
+<hr>
+<style>
+    
+</style>
+<div style="width: 65%;  " class="mx-auto">
+    <div class="shadow-xl p-4 p-lg-5  forget" > 
+        <h1 class="text-center fs-2 mb-5 fw-bold">Contact</h1>
+        <form method="post" action=""  on>
+            <div class="row mb-3">
+                <div class="col">
+                    <label for="name" class="form-label">Name</label>
+                    <input type="text" class="form-control" id="name" placeholder="Your Name" name="name" required>
+                </div>
+                <div class="col">
+                    <label for="email" class="form-label">Email </label>
+                    <input type="email" class="form-control" id="email" placeholder="name@email.com" name="email" required>
+                </div>
+            </div>
+            <div class="form-group mb-3">
+                <label for="message" class="form-label">Message</label>
+                <textarea class="form-control" id="message" rows="3" placeholder="Your message" name="message" required></textarea>
+            </div>
+            <button type="submit" class="btn btn-dark d-block w-100 my-4">Send Message</button>
+        </form>
+    </div>
+    
+    
+            
+</div>
+
+
+  
+<%- include('../layouts/user/footer.ejs') -%>

@@ -1,0 +1,70 @@
+<%- include('../layouts/admin/header.ejs') -%>
+
+
+ 
+  <link rel="stylesheet" href="/static/css/feaured.css">
+
+  <!-- Main CSS -->
+  <link rel="stylesheet" href="/static/css/theme.bundle.css" />
+
+
+
+  <!-- Main Section-->
+  <div class="container mt-5">
+    <section
+    class=" d-flex justify-content-center align-items-center p-4 ">
+    <!-- Login Form-->
+    <div class="col col-md-8 col-lg-6 col-xxl-5">
+        <!-- Logo-->
+        <a class="navbar-brand fw-bold fs-3 flex-shrink-0 order-0 align-self-center justify-content-center d-flex mx-0 px-0">
+            <div class="d-flex align-items-center">
+                <svg class="f-w-7" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 77.53 72.26"><path d="M10.43,54.2h0L0,36.13,10.43,18.06,20.86,0H41.72L10.43,54.2Zm67.1-7.83L73,54.2,68.49,62,45,48.47,31.29,72.26H20.86l-5.22-9L52.15,0H62.58l5.21,9L54.06,32.82,77.53,46.37Z" fill="currentColor" fill-rule="evenodd"/></svg>
+            </div>
+        </a>
+        <!-- / Logo-->
+        <div class="shadow-xl p-4 p-lg-5 bg-white">
+            <h1 class="text-center fw-bold mb-5 fs-2">Admin  Login</h1>
+           
+  
+            <form method="post" action="/admin/">
+              <% if (messages.error) { %>
+                <div class="alert alert-danger d-flex align-items-center  " role="alert" id="error-alert">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" class="bi bi-exclamation-triangle-fill flex-shrink-0 me-2 " viewBox="0 0 16 16" role="img" aria-label="Warning:">
+                      <path d="M8.982 1.566a1.13 1.13 0 0 0-1.96 0L.165 13.233c-.457.778.091 1.767.98 1.767h13.713c.889 0 1.438-.99.98-1.767L8.982 1.566zM8 5c.535 0 .954.462.9.995l-.35 3.507a.552.552 0 0 1-1.1 0L7.1 5.995A.905.905 0 0 1 8 5zm.002 6a1 1 0 1 1 0 2 1 1 0 0 1 0-2z"/>
+                    </svg>
+                    <div >
+                        <strong>Hey !</strong>
+                      <%= messages.error %>
+                    </div>
+                  </div>
+                  
+                
+            <% } %> 
+                <div class="form-group">
+                  <label class="form-label label" for="login-email">Email address</label>
+                  <input type="email" class="form-control" id="login-email" name="email" placeholder="name@email.com" required>
+                </div>
+                <div class="form-group">
+                  <label for="login-password" class="form-label label d-flex justify-content-between align-items-center">
+                    Password
+                  
+                  </label>
+                  <input type="password" class="form-control" id="login-password" placeholder="Enter your password" name="password" required>
+                </div>
+                <button type="submit" class="btn btn-dark d-block w-100 my-4">Login</button>
+            </form>
+       
+        </div>
+      
+    
+  
+    </div>
+    <!-- / Login Form-->
+  </section>
+  <!-- / Main Section-->
+  
+  </div>
+ 
+
+
+<%- include('../layouts/admin/footer.ejs') -%>

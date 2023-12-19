@@ -1,0 +1,172 @@
+<%- include('../layouts/admin/header.ejs') -%>
+
+    <section class="d-flex justify-content-center align-items-center p-4">
+      <div class="col col-md-8 col-lg-6 col-xxl-5">
+    
+          <h1 class="text-center fw-bold mb-5 fs-2">Add New Product</h1>
+  
+          <!-- Your complete product addition form here -->
+          <form action="/admin/addproduct" method="post" enctype="multipart/form-data"  onsubmit="return validateForm()">
+            <div class="form-group">
+              <label for="product_title">Product Name</label>
+              <input type="text" class="form-control" id="product_title" name="name" placeholder="Type here">
+            </div>
+  
+            <div class="form-group">
+              <label for="quantity">Quantity</label>
+              <input type="number" class="form-control" id="quantity" name="quantity" placeholder="Type here">
+            </div>
+  
+          
+            <div class="form-group">
+                <label>Category</label>
+                <select class="form-control" id="product-category" name="category">
+                    <% for (let i = 0; i < categories.length; i++) { %>
+                        <option value="<%= categories[i].name %>"><%= categories[i].name %></option>
+                    <% } %>
+                </select>
+            </div>
+            <div class="form-group">
+              <label>Sizes</label>
+              <% for (let i = 5; i <= 9; i++) { %>
+                  <div class="form-check">
+                      <input class="form-check-input" type="checkbox" name="sizes" id="size<%= i %>" value="<%= i %>">
+                      <label class="form-check-label" for="size<%= i %>">
+                          <%= i %>
+                      </label>
+                  </div>
+              <% } %>
+          </div>
+          
+            
+            
+            <div class="form-group">
+              <label>Price</label>
+              <input type="text" class="form-control" name="price" placeholder="Type here" id="price">
+            </div>
+            
+            <div class="form-group">
+              <label>previous price</label>
+              <input type="text" class="form-control" name="previous_price" placeholder="Type here" id="store_id">
+            </div>
+          
+  
+            
+  
+            <div class="form-group">
+              <label>Description</label>
+              <textarea class="form-control" rows="4" name="description" placeholder="Type here" id="description"></textarea>
+            </div>
+  
+            
+            <div class="form-group">
+                <label>Product Images</label>
+                <div class="row" >
+                  <% for (let i = 1; i <= 4; i++) { %>
+                    <div class="col-lg-6 col-md-6 mb-3 rounded-image-preview">
+                      <label for="imageInput<%= i %>" class="image-label">Image <%= i %>
+                        <div class="rounded-image-preview">
+                          <img id="imagePreview<%= i %>" alt="Preview">
+                        </div>
+                        <input name="images" type="file" accept="image/*" id="imageInput<%= i %>" class="imageInput" onchange="previewImage(this, 'imagePreview<%= i %>')">
+                      </label>
+                    </div>
+                  <% } %>
+                </div>
+              </div>
+              
+  
+            <div class="form-group mt-3">
+              <button type="submit" class="btn btn-primary">Submit</button>
+              <a href="/admin/products" class="btn btn-primary">
+                <span class="text" >Back</span>
+              </a>
+            </div>
+          </form>
+        </div>
+      
+    </section>
+  </div>
+  
+
+<%- include('../layouts/admin/footer.ejs') -%>
+<script>
+    function validateForm() {
+       
+        let productName = document.getElementById('product_title').value;
+        let quantity = document.getElementById('quantity').value;
+        let category = document.getElementById('product-category').value;
+        let price = document.getElementById('price').value;
+        let storeId = document.getElementById('store_id').value;
+        let description = document.getElementById('description').value;
+        let images = document.querySelectorAll('[name="images"]');
+        let validImages = Array.from(images).some(img => img.value.trim() !== '');
+        let sizes = document.querySelectorAll('[name="sizes"]:checked');
+        let lettersAndNumbersRegex = /^[A-Za-z0-9 ]+$/;
+        if (!productName || !quantity || !category || !price || !storeId || !description  ) {
+            alert('Please fill out all fields');
+            return false;
+        }
+      else if( productName.trim()==="" || quantity.trim()==="" || storeId.trim() ==="" || description.trim()===""){
+        alert("please fillproperly remove blank names");
+        return false
+      }
+      else if (!lettersAndNumbersRegex.test(productName)) {
+        alert('Product name should contain only letters');
+        return false;
+    }
+      else if(  description.length <= 20  ){
+        alert("please fill desc more than 20 letters");
+        return false
+      }
+      
+      
+       else if (!Number.isInteger(Number(quantity))) {
+            alert('Quantity must be an integer');
+            return false; 
+        }
+
+      else  if (!Number.isInteger(Number(storeId))) {
+            alert('Store ID must be an integer');
+            return false; 
+        }
+
+      
+       else if (!Number.isInteger(Number(price))) {
+            alert('Price must be an integer');
+            return false;
+        }
+       
+      else  if (sizes.length === 0) {
+            alert('Please select at least one size');
+            return false; 
+        }
+
+    
+      else  if (!validImages) {
+            alert('Please select at least one image');
+            return false; 
+        }
+
+        return true; 
+    }
+
+
+
+    function previewImage(input, imageId) {
+        const preview = document.getElementById(imageId);
+        const file = input.files[0];
+
+        if (file) {
+            const reader = new FileReader();
+
+            reader.onload = function (e) {
+                preview.src = e.target.result;
+            };
+
+            reader.readAsDataURL(file);
+        } else {
+            preview.src = "/assets/images/add Image.jpg";
+        }
+    }
+</script>
