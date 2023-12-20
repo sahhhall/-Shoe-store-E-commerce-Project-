@@ -491,7 +491,7 @@ const loadProfile = async (req,res)=>{
     try{
         const userid = req.session.user._id;
         const user = await User.findById(userid)
-        console.log("user",user)
+        // console.log("user",user)
         res.render('profilePage',{user:user})
 
     }catch(err){
@@ -504,7 +504,7 @@ const loadAddressManage = async(req,res)=>{
 
         const user = await User.findById(userid);
         const addresses = user.addresses;
-       console.log("here i getted your  address",addresses)
+    //    console.log("here i getted your  address",addresses)
         res.render('manageAddress',{addresses:addresses});
     }catch(err){
         console.log(err.message)
@@ -521,7 +521,7 @@ const editProfile = async (req, res) => {
       if (findUsernameExist.length > 0) {
         res.json({ edited: false });
       } else {
-        console.log("Here I find a username that exists:", findUsernameExist);
+        // console.log("Here I find a username that exists:", findUsernameExist);
   
         const user = await User.findOneAndUpdate(
           { email: email },
@@ -529,7 +529,7 @@ const editProfile = async (req, res) => {
           { new: true }
         );
   
-        console.log("Updated User:", user);
+        // console.log("Updated User:", user);
         res.json({ edited: true, user: user });
       }
     } catch (err) {
@@ -565,7 +565,7 @@ const resetPasswithOld = async(req,res)=>{
                 await User.findOneAndUpdate({email:useremail},{$set:{
                     password:securePass
                 }})
-                console.log("amhere");
+                // console.log("amhere");
                 res.json({ reseted: true});
     
             }
@@ -598,9 +598,9 @@ const addAddress = async(req,res)=>{
             }
         );
 
-        console.log("hihi am hte you usr ",user);
-            console.log("am here how can i help you")
-            console.log("here your all data",fullName,addressLine,city,state);
+        // console.log("hihi am hte you usr ",user);
+        //     console.log("am here how can i help you")
+        //     console.log("here your all data",fullName,addressLine,city,state);
             res.json({added :true})
     }catch(err){
         console.log(err.message)
@@ -611,6 +611,7 @@ const addAddress = async(req,res)=>{
 
 const editAddress = async(req,res)=>{
     try{
+        const userid = req.session.user._id;
         const {id,
             fullName,
             address,
@@ -618,6 +619,25 @@ const editAddress = async(req,res)=>{
             state,
             post,
             phone }=req.body;
+
+            const updatedUser = await User.findOneAndUpdate(
+                { _id: userid, "addresses._id": id },
+                {
+                    $set: {
+                        "addresses.$.name": fullName,
+                        "addresses.$.addressline": address,
+                        "addresses.$.city": city,
+                        "addresses.$.state": state,
+                        "addresses.$.pincode": post,
+                        "addresses.$.phone": phone,
+                    },
+                },
+                { new: true } // Return the updated document
+            );
+            
+            console.log(updatedUser, "here is your updated user");
+            res.json({edited:true})
+            
     }catch(err){
         console.log(err.message)
     }
@@ -652,7 +672,8 @@ module.exports = {
     loadOrder,
     editProfile,
     resetPasswithOld,
-    addAddress
+    addAddress,
+    editAddress
 
 
 }

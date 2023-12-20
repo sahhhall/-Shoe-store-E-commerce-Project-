@@ -103,7 +103,14 @@
             ;
         }
 /* end dropdown  */
-
+.addaddresbtn{
+  font-weight: bolder;
+  letter-spacing: .1rem;
+}
+.cardaddress{
+  color: rgb(7, 7, 7);
+            font-family: monospace;
+}
     @media screen and (max-width: 600px) {
         .menu-itemmm a {
      color: black;
@@ -225,8 +232,9 @@
     
      <h1>User Addresses</h1>
      <div class="mt-2">
-      <a data-bs-toggle="modal" data-bs-target="#AdressModal" class="btn btn-primary"><i class="material-icons md-plus"></i> Add new Adress</a>
+      <a data-bs-toggle="modal" data-bs-target="#AdressModal" class="btn btn-dark ms-3 mt-3 addaddresbtn"><i class="material-icons md-plus"></i> Add new Adress</a>
   </div>
+
 <!-- modal for edut address -->
 <div id="customModal" class="custom-modal" style="display: none; ">
   <div class="custom-modal-content">
@@ -236,19 +244,19 @@
       <form method="post" >
         <div class="form-group">
           <label for="full-name" class="form-label">Full Name</label>
-          <input  class="form-control" id="fullnamedit" placeholder="Full Name" name="fullname" required>
+          <input  class="form-control" id="fullnamedit" placeholder="Full Name" name="fullnameedit" required>
         </div>
         <div class="form-group">
           <label for="address-line1" class="form-label">Address Line 1</label>
-          <input type="text" class="form-control" id="addressedit" placeholder="Address Line 1" name="address_line1" required>
+          <input type="text" class="form-control" id="addressedit" placeholder="Address Line 1" name="addressedit" required>
         </div>
         <div class="form-group">
           <label for="city" class="form-label">City</label>
-          <input type="text" class="form-control" id="cityedit" placeholder="City" name="city" required>
+          <input type="text" class="form-control" id="cityedit" placeholder="City" name="cityedit" required>
         </div>
         <div class="form-group">
           <label for="state" class="form-label">State</label>
-          <select class="form-select" id="stateedit" name="state" required>
+          <select class="form-select" id="stateedit" name="stateedi" required>
             <option value="" selected disabled>Select State</option>
            
             <option value="Kerala">Kerala</option>
@@ -260,7 +268,7 @@
         </div>
         <div class="form-group">
           <label for="postcode" class="form-label">Postcode</label>
-          <input type="text" class="form-control" id="postcodeedit" placeholder="Postcode" name="postcode" required>
+          <input type="text" class="form-control" id="postcodeedit" placeholder="Postcode" name="postcodeedit" required>
         </div>
         <div class="form-group">
           
@@ -268,11 +276,11 @@
         </div>
         <div class="form-group">
           <label for="mobile-number" class="form-label">Mobile Number</label>
-          <input  class="form-control" id="phoneedit" placeholder="Mobile Number" name="mobile_number" required>
+          <input  class="form-control" id="phoneedit" placeholder="Mobile Number" name="mobile_numberedit" required>
         </div>
         <!-- this how i passed the input huidden fiels value for ajax/fetch pos  -->
         <button type="button" class="btn btn-secondary " onclick="editAddress(document.getElementById('forid').value)">Update</button>
-        <button class="btn btn-secondary close-button">Close</button>
+        <button type="button" class=" btn-secondary close-button">Close</button>
        
       </form>
     </div>
@@ -281,9 +289,10 @@
     </div>
   </div>
 </div>
+<!-- modal ended for edited address -->
 
      <!-- card start here address  -->
-     <div class="card border mt-3" style="position: relative;" id="reloadArea">
+     <div class="card cardaddress mt-3" style="position: relative;" id="reloadArea">
       <% if(locals.addresses && locals.addresses.length>0 )  { %>
 
         <%  addresses.forEach(function(address){ %>
@@ -332,6 +341,9 @@
   
 
   <script>
+
+
+// this functions for validating each add and edit ////////////////////////////
     function trimValue(elementId) {
         return document.getElementById(elementId).value.trim();
     }
@@ -362,6 +374,8 @@
             document.getElementById(fieldId).value = '';
         }
     }
+
+    ///////////////
     function addAddress(userEmail) {
         const fields = [
             { id: 'full-name', name: 'Full Name' },
@@ -452,22 +466,42 @@
     document.getElementById('phoneedit').value = mobileNumber;
     const modal = document.getElementById("customModal");
     modal.style.display = "block";
-    var closeButton = modal.querySelector(".close-button");
+    const closeButton = modal.querySelector(".close-button");
     if (closeButton) {
       closeButton.addEventListener("click", function () {
         modal.style.display = "none";
       });
     }
   }
+
+
+
 </script>
 <script>
 
 
 
-  // here we trying to eedit addreass with validation first we need to perfotm 
+
+
+
+  // here we trying to eedit addreass with validation first we need to perfotm //////////////////////////////////
 
   function editAddress(addressid){
-    
+    const fields = [
+            { id: 'fullnamedit', name: 'fullnameedit' },
+            { id: 'addressedit', name: 'addressedit' },
+            { id: 'cityedit', name: 'cityedit' },
+            { id: 'stateedit', name: 'stateedi' },
+            { id: 'postcodeedit', name: 'postcodeedit' },
+            { id: 'phoneedit', name: 'mobile_numberedit' }
+        ];
+
+        for (const field of fields) {
+            const value = trimValue(field.id);
+            if (validateField(value, field.name, field.id)) {
+                return;
+            }
+        }
      const id =  document.getElementById('forid').value
      const fullName =   document.getElementById('fullnamedit').value 
     const address = document.getElementById('addressedit').value
@@ -475,7 +509,7 @@
     const state =  document.getElementById('stateedit').value
     const post =   document.getElementById('postcodeedit').value
       const phone =  document.getElementById('phoneedit').value 
-
+      const modal = document.getElementById("customModal");
 const data ={
     id:id,
     fullName:fullName,
@@ -499,6 +533,7 @@ $.ajax({
                 $('#reloadArea').load('/addresses #reloadArea');
               })
              
+              modal.style.display = "none";
             } else {
             //  noting hereee because i only pass true 
            
