@@ -227,6 +227,60 @@
      <div class="mt-2">
       <a data-bs-toggle="modal" data-bs-target="#AdressModal" class="btn btn-primary"><i class="material-icons md-plus"></i> Add new Adress</a>
   </div>
+<!-- modal for edut address -->
+<div id="customModal" class="custom-modal" style="display: none; ">
+  <div class="custom-modal-content">
+ 
+    <h5>Edit Address</h5>
+    <div class="modal-body">
+      <form method="post" >
+        <div class="form-group">
+          <label for="full-name" class="form-label">Full Name</label>
+          <input  class="form-control" id="fullnamedit" placeholder="Full Name" name="fullname" required>
+        </div>
+        <div class="form-group">
+          <label for="address-line1" class="form-label">Address Line 1</label>
+          <input type="text" class="form-control" id="addressedit" placeholder="Address Line 1" name="address_line1" required>
+        </div>
+        <div class="form-group">
+          <label for="city" class="form-label">City</label>
+          <input type="text" class="form-control" id="cityedit" placeholder="City" name="city" required>
+        </div>
+        <div class="form-group">
+          <label for="state" class="form-label">State</label>
+          <select class="form-select" id="stateedit" name="state" required>
+            <option value="" selected disabled>Select State</option>
+           
+            <option value="Kerala">Kerala</option>
+            <option value="Tamilnadu">Tamilnadu</option>
+            <option value="Karnataka">Karnataka</option>
+            
+            <option value="Maharashtra">Maharashtra</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label for="postcode" class="form-label">Postcode</label>
+          <input type="text" class="form-control" id="postcodeedit" placeholder="Postcode" name="postcode" required>
+        </div>
+        <div class="form-group">
+          
+          <input type="hidden" class="form-control" id="forid"  name="forid" required>
+        </div>
+        <div class="form-group">
+          <label for="mobile-number" class="form-label">Mobile Number</label>
+          <input  class="form-control" id="phoneedit" placeholder="Mobile Number" name="mobile_number" required>
+        </div>
+        <!-- this how i passed the input huidden fiels value for ajax/fetch pos  -->
+        <button type="button" class="btn btn-secondary " onclick="editAddress(document.getElementById('forid').value)">Update</button>
+        <button class="btn btn-secondary close-button">Close</button>
+       
+      </form>
+    </div>
+    <div class="modal-footer">
+    
+    </div>
+  </div>
+</div>
 
      <!-- card start here address  -->
      <div class="card border mt-3" style="position: relative;" id="reloadArea">
@@ -237,7 +291,9 @@
         <div class="droppdown">
      <img src="/assets/icons/three-dots-vertical.svg" alt="3dots">
           <div class="droppdown-content">
-            <button class="btn btn-block dropdown-item" data-bs-toggle="modal" data-bs-target="#AdressEditModal"  type="button">Edit</button>
+            <button class="btn btn-block dropdown-item" onclick="openCustomModal('<%= address._id %>','<%= address.name %>','<%= address.addressline %>','<%= address.city %>','<%= address.state %>','<%= address.pincode %>','<%= address.phone %>')" type="button">Edit</button>
+
+
             <button class="btn btn-block dropdown-item" type="button">Remove</button>
           
           </div>
@@ -383,26 +439,76 @@
     }
 </script>
 
+
 <script>
-  function editAddress(id, name, phone, addressline, city, state, pincode) {
-    // Populate the modal with the information from the selected address
-    document.getElementById('edit-full-name').value = name;
-    document.getElementById('edit-address-line1').value = addressline;
-    // Populate other input fields as needed
-
-    // Show the modal
-    $('#editModal').modal('show');
+   function openCustomModal(id, name, addressLine1, city, state, postcode, mobileNumber) {
+ 
+    document.getElementById('forid').value=id;
+    document.getElementById('fullnamedit').value = name;
+    document.getElementById('addressedit').value = addressLine1;
+    document.getElementById('cityedit').value = city;
+    document.getElementById('stateedit').value = state;
+    document.getElementById('postcodeedit').value = postcode;
+    document.getElementById('phoneedit').value = mobileNumber;
+    const modal = document.getElementById("customModal");
+    modal.style.display = "block";
+    var closeButton = modal.querySelector(".close-button");
+    if (closeButton) {
+      closeButton.addEventListener("click", function () {
+        modal.style.display = "none";
+      });
+    }
   }
+</script>
+<script>
 
-  function saveEditedAddress() {
-    // Retrieve the edited values from the modal
-    var editedName = document.getElementById('edit-full-name').value;
-    var editedAddressLine1 = document.getElementById('edit-address-line1').value;
-    // Retrieve other edited values as needed
 
-    // Do something with the edited values
 
-    // Close the modal
-    $('#editModal').modal('hide');
+  // here we trying to eedit addreass with validation first we need to perfotm 
+
+  function editAddress(addressid){
+    
+     const id =  document.getElementById('forid').value
+     const fullName =   document.getElementById('fullnamedit').value 
+    const address = document.getElementById('addressedit').value
+    const city =  document.getElementById('cityedit').value
+    const state =  document.getElementById('stateedit').value
+    const post =   document.getElementById('postcodeedit').value
+      const phone =  document.getElementById('phoneedit').value 
+
+const data ={
+    id:id,
+    fullName:fullName,
+    address:address,
+    city:city,
+    state:state,
+    post:post,
+    phone :phone
+}
+$.ajax({
+          method: 'POST',
+          url: '/edit-addresses',
+          data: JSON.stringify(data),
+          contentType: 'application/json',
+          success: function (response) {
+            if (response.edited === true) {
+              Swal.fire({
+                icon:'success',
+                text:'Successfully updated'
+              }).then(()=>{
+                $('#reloadArea').load('/addresses #reloadArea');
+              })
+             
+            } else {
+            //  noting hereee because i only pass true 
+           
+            }
+          },
+          error: function (error) {
+            console.error(error);
+          },
+        });
+
+
   }
 </script>

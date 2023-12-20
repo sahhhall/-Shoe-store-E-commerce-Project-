@@ -79,6 +79,8 @@ userRouter.get('/orders',userController.loadOrder);
 userRouter.post('/edit-profile',userController.editProfile);
 userRouter.post('/reset-pass',userController.resetPasswithOld)
 userRouter.post('/add-address',userController.addAddress)
+userRouter.post('/edit-addresses',userController.editAddress)
+
 
 userRouter.get('/cart',cartController.loadCart);
 

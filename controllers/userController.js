@@ -588,7 +588,7 @@ const addAddress = async(req,res)=>{
                 $push: {
                     addresses: {
                         name: fullName,
-                        addressLine: addressLine,
+                        addressline : addressLine,
                         city: city,
                         state: state,
                         pincode: postcode,
@@ -602,6 +602,22 @@ const addAddress = async(req,res)=>{
             console.log("am here how can i help you")
             console.log("here your all data",fullName,addressLine,city,state);
             res.json({added :true})
+    }catch(err){
+        console.log(err.message)
+    }
+}
+
+// editig entire address  with post method 
+
+const editAddress = async(req,res)=>{
+    try{
+        const {id,
+            fullName,
+            address,
+            city,
+            state,
+            post,
+            phone }=req.body;
     }catch(err){
         console.log(err.message)
     }
