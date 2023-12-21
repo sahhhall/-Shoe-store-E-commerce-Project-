@@ -5,30 +5,49 @@ const Product = require('../models/productSchema')
 const Cart = require('../models/cartSchema')
 
 
-//=============================================LOAD CART PAGE=========================================================//
+// =============================================LOAD CART PAGE=========================================================//
 const loadCart = async (req, res) => {
     try {
-        res.render('cartPage');
+        
+
+        if (!req.session.user || !req.session.user._id) {
+            req.flash("success","pleasee login to get our sevice")
+           res.redirect('/signin')
+        }else{
+            const userId = req.session.user._id
+          
+                const cartDetails = await Cart.findOne({ userid: userId }).populate({path:'products.productId'});
+                let  initialAmount =0;
+                if(cartDetails){
+                    cartDetails.products.forEach((item)=>{
+                        let itemPrice = item.productPrice;
+                        initialAmount += itemPrice *item.quantity
+                    })
+                }
+                // const products = cartDetails.products;
+
+
+            res.render('cartPage', { cartDetails, subTotal: initialAmount
+             });
+        }
+      
     } catch (err) {
         console.log(err.message);
     }
 }
 
-//=============================================PRODUCT ADDING TO CART==================================================//
+// =============================================PRODUCT ADDING TO CART==================================================//
 const addtoCart = async (req, res) => {
     try { // console.log(productData+"quantuty is"+productquantity);
         if (!req.session.user || !req.session.user._id) {
             return res.json({login: true, message: "Please login and continue shopping!"});
         } else {
             const userId = req.session.user._id;
-            const userData = await User.findOne({_id: userId});
+            // const userData = await User.findOne({_id: userId});
             const {productId, productquantity} = req.body;
             const productData = await Product.findOne({_id: productId});
             const cart = await Cart.findOne({userid: userId});
-            const productprice = productData.price;
-            // console.log(productprice)
-            if (cart) {
-                    // we need to check the product exist or not because if exist we need onlu updation 
+            if (cart) { // we need to check the product exist or not because if exist we need onlu updation
 
                 const existProduct = cart.products.find((pro) => pro.productId.toString() == productId);
                 if (existProduct) {
@@ -41,26 +60,21 @@ const addtoCart = async (req, res) => {
                             "products.$.totalPrice": productquantity * existProduct.productPrice
                         }
                     })
-                } else {
-                //    add new product to cart 
-                await Cart.findOneAndUpdate({userid:userId   },
-                    {
-                        $push:{
-                            products:{
+                } else { //    add new product to cart
+                    await Cart.findOneAndUpdate({
+                        userid: userId
+                    }, {
+                        $push: {
+                            products: {
                                 productId: productId,
                                 quantity: productquantity,
                                 productPrice: productData.price,
                                 totalPrice: productquantity *productData.price
                             }
                         }
-                    }
-                    
-                    )
+                    })
                 }
-            } 
-            
-            
-            else { // create bew cart  here am adding new product to cart
+            } else { // create bew cart  here am adding new product to cart
                 const newCart = new Cart({
                     userid: userId,
                     products: [

@@ -19,47 +19,42 @@
                             <li><a class="nav-link-checkout nav-link-last "
                                     href="./checkout-payment.html">Payment</a></li>
                         </ul>
-                    </nav>                        <div class="mt-5">
+                    </nav>                        
+                    
+                    <div class="mt-5">
                         <h3 class="fs-5 fw-bolder mb-0 border-bottom pb-4">Your Cart</h3>
                         <div class="table-responsive">
                             <table class="table align-middle">
                                 <tbody class="border-0">
                                     <!-- Cart Item-->
+                                    <%if (cartDetails && cartDetails.products) { %>
+                                        <% cartDetails.products.forEach((value, index) => { %>
                                     <div class="row mx-0 py-4 g-0 border-bottom">
                                         <div class="col-2 position-relative">
                                             <picture class="d-block border">
-                                                <img class="img-fluid" src="./assets/images/products/product-cart-1.jpg" alt="HTML Bootstrap Template by Pixel Rocket">
+                                                <img class="img-fluid" src=" /assets/images/productImage/sharped/<%= value.productId.images[2] %>" alt="HTML Bootstrap Template by Pixel Rocket">
+                                                
                                             </picture>
                                         </div>
                                         <div class="col-9 offset-1">
                                             <div>
                                                 <h6 class="justify-content-between d-flex align-items-start mb-2">
-                                                    Nike Air VaporMax 2021
+                                                    <%= value.productId.name %>
                                                     <i class="ri-close-line ms-3"></i>
                                                 </h6>
-                                                <span class="d-block text-muted fw-bolder text-uppercase fs-9">Size: 9 / Qty: 1</span>
+                                                <span class="d-block text-muted fw-bolder text-uppercase fs-9">Size: 9 / Qty:  <%= value.quantity %></span>
                                             </div>
-                                            <p class="fw-bolder text-end text-muted m-0">$85.00</p>
+                                            <p class="fw-bolder text-end text-muted m-0"> <%= value.totalPrice %></p>
                                         </div>
-                                    </div>                                        <!-- / Cart Item-->
+                                    </div>
+                                    <% }) %>
+                                    <% } else { %>
+                                      <tr>
+                                        <td colspan="5">No products available</td>
+                                      </tr>
+                                    <% } %>                                  <!-- / Cart Item-->
                                     <!-- Cart Item-->
-                                    <div class="row mx-0 py-4 g-0 border-bottom">
-                                        <div class="col-2 position-relative">
-                                            <picture class="d-block border">
-                                                <img class="img-fluid" src="./assets/images/products/product-cart-2.jpg" alt="HTML Bootstrap Template by Pixel Rocket">
-                                            </picture>
-                                        </div>
-                                        <div class="col-9 offset-1">
-                                            <div>
-                                                <h6 class="justify-content-between d-flex align-items-start mb-2">
-                                                    Nike ZoomX Vaporfly
-                                                    <i class="ri-close-line ms-3"></i>
-                                                </h6>
-                                                <span class="d-block text-muted fw-bolder text-uppercase fs-9">Size: 11 / Qty: 1</span>
-                                            </div>
-                                            <p class="fw-bolder text-end text-muted m-0">$125.00</p>
-                                        </div>
-                                    </div>                                        <!-- / Cart Item-->
+                                    <!-- / Cart Item-->
                                 </tbody>
                             </table>
                         </div>
