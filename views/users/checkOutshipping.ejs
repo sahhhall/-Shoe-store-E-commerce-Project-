@@ -1,0 +1,307 @@
+<%- include('../layouts/user/header.ejs') -%>
+
+
+<section class="mt-0  vh-lg-100">
+    <!-- Page Content Goes Here -->
+    <div class="container">
+        <div class="row g-0 vh-lg-100">
+            <div class="col-lg-7 pt-5 pt-lg-10">
+                <div class="pe-lg-5">
+                    <!-- Logo-->
+                    <a class="navbar-brand fw-bold fs-3 flex-shrink-0 mx-0 px-0" href="./index.html">
+                            
+                        </a>
+                    <!-- / Logo-->
+                    <nav class="d-none d-md-block">
+                        <ul class="list-unstyled d-flex justify-content-start mt-4 align-items-center fw-bolder small">
+                            <li class="me-4"><a class="nav-link-checkout "
+                                    href="/cart">Cart</a></li>
+                            <li class="me-4"><a class="nav-link-checkout active aria-current"
+                                    href="">Shipping address</a></li>
+                           
+                        </ul>
+                    </nav>                        <div class="mt-5">
+                        <!-- Checkout Panel Information-->
+                        <div class="d-flex justify-content-between align-items-center mb-4 border-bottom pb-4">
+                            
+                        
+                        </div>
+                        
+    <!--  modal for new adrress -->
+<div class="modal fade" id="AdressModal" tabindex="-1" aria-labelledby="AdressModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="AdressModalLabel">Add New Address</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          <form method="post">
+            <div class="form-group">
+              <label for="full-name" class="form-label">Full Name</label>
+              <input type="text" class="form-control" id="full-name" placeholder="Full Name" name="fullname" required>
+            </div>
+            <div class="form-group">
+              <label for="address-line1" class="form-label">Address Line 1</label>
+              <input type="text" class="form-control" id="address-line1" placeholder="Address Line 1" name="address_line1" required>
+            </div>
+            <div class="form-group">
+              <label for="city" class="form-label">City</label>
+              <input type="text" class="form-control" id="city" placeholder="City" name="city" required>
+            </div>
+            <div class="form-group">
+              <label for="state" class="form-label">State</label>
+              <select class="form-select" id="state" name="state" required>
+                <option value="" selected disabled>Select State</option>
+               
+                <option value="Kerala">Kerala</option>
+                <option value="Tamilnadu">Tamilnadu</option>
+                <option value="Karnataka">Karnataka</option>
+                
+                <option value="Maharashtra">Maharashtra</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label for="postcode" class="form-label">Postcode</label>
+              <input type="text" class="form-control" id="postcode" placeholder="Postcode" name="postcode" required>
+            </div>
+            <div class="form-group">
+              <label for="mobile-number" class="form-label">Mobile Number</label>
+              <input type="tel" class="form-control" id="mobile-number" placeholder="Mobile Number" name="mobile_number" required>
+            </div>
+  
+            <button type="button" onclick="addAddress('<%= locals.user.email %>')" class="btn btn-primary d-block w-100 my-4">Add Address</button>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+  
+  
+   <!-- end modal for new adrress -->
+  
+                        <div class="container bg-light" id="reloadArea">
+                          
+                            <% if (locals.addresses && locals.addresses.length > 0) { %>
+                                <% addresses.forEach(function (address) { %>
+                                  <div class="card-body">
+                                    <div class="droppdown">
+                                       
+                                      
+                                      <div class="droppdown-content">
+                                      </div>
+                                    </div>
+                                    <input type="radio" name="selectedAddress" id="<%= address._id %>" value="<%= address._id %>">
+                                    <p class="card-text"> <span><%= address.name %></span> <span style="margin-left: 3%;"><%= address.phone %></span> </p>
+                                    <p class="card-text"><span><%= address.addressline %></span><span><%= address.city %>,</span> <span><%= address.state %>-</span> <span><%= address.pincode %></span></p>
+                                    
+                                    
+                                  </div>
+                                <% }); %>
+                              <% } else { %>
+                                <tr>
+                                  <td colspan="5">No Addresses available</td>
+                                </tr>
+                              <% } %>  <div class="d-flex justify-content-center bg-white">
+                                <a data-bs-toggle="modal" data-bs-target="#AdressModal" class="btn btn-dark ms-3 mt-3 addaddressbtn">
+                                    <i class="material-icons md-plus"></i> Add new Address
+                                  </a>
+                              </div>
+                        </div>
+                   
+                      
+                       
+                        
+                        <div class="pt-5 mt-5 pb-5 border-top d-flex justify-content-md-end align-items-center">
+                          <a href="./checkout-shipping.html" class="btn btn-dark w-100 w-md-auto" role="button">Proceed to shipping</a>
+                        
+                        </div>    
+                        <button type="button" class="btn btn-secondary d-block w-100" >Close</button>         
+                     </div>
+         
+                </div>
+                
+            </div>
+
+
+
+<!-- here where the aside page  -->
+
+
+
+            <div class="col-12 col-lg-5 bg-light pt-lg-10 aside-checkout pb-5 pb-lg-0 my-5 my-lg-0">
+                <div class="p-4 py-lg-0 pe-lg-0 ps-lg-5">
+                    <div class="pb-3">
+                        <!-- Cart Item-->
+                        <% if (cartDetails && cartDetails.products) { %>
+                            <% cartDetails.products.forEach(function (value, index) { %>
+                                <div class="row mx-0 py-4 g-0 border-bottom">
+                                    <div class="col-2 position-relative">
+                                        <span class="checkout-item-qty"><%= value.quantity %></span>
+                                        <picture class="d-block border">
+                                            <img class="img-fluid" src=" /assets/images/productImage/sharped/<%= value.productId.images[2] %>" alt="<%= value.productId.name %>">
+                                        </picture>
+                                    </div>
+                                    <div class="col-9 offset-1">
+                                        <div>
+                                            <h6 class="justify-content-between d-flex align-items-start mb-2">
+                                                <%= value.productId.name %>
+                                                <i class="ri-close-line ms-3"></i>
+                                            </h6>
+                                            <span class="d-block text-muted fw-bolder text-uppercase fs-9">Size: <%= value.size %> / Qty: <%= value.quantity %></span>
+                                        </div>
+                                        <p class="fw-bolder text-end text-muted m-0">₹<%= value.totalPrice %></p>
+                                    </div>
+                                </div>
+                            <% }) %>
+                        <% } %>
+                        <!-- / Cart Item-->
+                    </div>
+                    <div class="py-4 border-bottom">
+                        <div class="d-flex justify-content-between align-items-center mb-2">
+                            <p class="m-0 fw-bolder fs-6">Subtotal</p>
+                            <p class="m-0 fs-6 fw-bolder">₹<%= subTotal %></p>
+                        </div>
+                        <div class="d-flex justify-content-between align-items-center ">
+                            <p class="m-0 fw-bolder fs-6">Shipping</p>
+                            <p class="m-0 fs-6 fw-bolder">₹8.95</p>
+                        </div>
+                    </div>
+                    <div class="py-4 border-bottom">
+                        <div class="d-flex justify-content-between">
+                            <div>
+                                <p class="m-0 fw-bold fs-5">Grand Total</p>
+                                <span class="text-muted small">Inc ₹45.89 sales tax</span>
+                            </div>
+                            <p class="m-0 fs-5 fw-bold">₹<%= subTotal %></p>
+                        </div>
+                    </div>
+                    <div class="py-4">
+                        <div class="input-group mb-0">
+                            <input type="text" class="form-control" placeholder="Enter your coupon code">
+                            <button class="btn btn-dark btn-sm px-4">Apply</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+           
+        </div>
+    </div>
+    <!-- /Page Content -->
+</section>
+<!-- / Main Section-->
+
+<script>
+    
+// this functions for validating each add and edit ////////////////////////////
+function trimValue(elementId) {
+        return document.getElementById(elementId).value.trim();
+    }
+
+    function setBorderColor(elementId, color) {
+        document.getElementById(elementId).style.border = `1px solid ${color}`;
+    }
+
+    function validateField(value, fieldName, elementId) {
+        if (value === "") {
+            setBorderColor(elementId, 'red');
+            return true; // Validation failed
+        }
+        setBorderColor(elementId, ''); 
+        return false; // Validation passed
+    }
+    function clearInputValues() {
+        const fields = [
+            'full-name',
+            'address-line1',
+            'city',
+            'state',
+            'postcode',
+            'mobile-number'
+        ];
+
+        for (const fieldId of fields) {
+            document.getElementById(fieldId).value = '';
+        }
+    }
+
+    ///////////////
+    function addAddress(userEmail) {
+        const fields = [
+            { id: 'full-name', name: 'Full Name' },
+            { id: 'address-line1', name: 'Address Line 1' },
+            { id: 'city', name: 'City' },
+            { id: 'state', name: 'State' },
+            { id: 'postcode', name: 'Postcode' },
+            { id: 'mobile-number', name: 'Mobile Number' }
+        ];
+
+        for (const field of fields) {
+            const value = trimValue(field.id);
+            if (validateField(value, field.name, field.id)) {
+                return;
+            }
+        }
+        const fullName = document.getElementById('full-name').value;
+        const addressLine = document.getElementById('address-line1').value;
+        const city = document.getElementById('city').value;
+        const state = document.getElementById('state').value;
+        const postcode = document.getElementById('postcode').value;
+        const  phone = document.getElementById('mobile-number').value;
+        const data = {
+          fullName:fullName,
+          addressLine:addressLine,
+          city:city,
+          state:state,
+          postcode:postcode,
+          phone:phone,userEmail:userEmail
+        }
+    Swal.fire({
+      title: 'Are you sure?',
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonColor: '#3085d6',
+      cancelButtonColor: '#d33',
+      confirmButtonText: 'Yes!',
+    }).then((res) => {
+      if (res.isConfirmed) {
+        $.ajax({
+          method: 'POST',
+          url: '/add-address',
+          data: JSON.stringify(data),
+          contentType: 'application/json',
+          success: function (response) {
+            if (response.added === true) {
+              Swal.fire({
+                icon:'success',
+                text:'Success'
+              }).then(()=>{
+                $('#reloadArea').load('/check-out #reloadArea');
+                clearInputValues();
+              })
+              
+              $('#AdressModal').modal('hide');
+             
+            } else {
+             
+              Swal.fire({
+                    icon: 'error',
+                  
+                    text: 'Failed to edit profile. something went  wrong',
+              }).then(()=>{
+                $('#reloadArea').load('/check-out #reloadArea');
+              })
+            }
+          },
+          error: function (error) {
+            console.error(error);
+          },
+        });
+      }
+    });
+      
+    }
+</script>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script> 
+ <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>

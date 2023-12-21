@@ -97,7 +97,35 @@ const addtoCart = async (req, res) => {
 }
 
 
+
+
+
+
+
+
+const loadCheckOut = async(req,res)=>{
+    try{
+      
+        const userId = req.session.user._id
+        const user = await User.findById(userId);
+        const addresses = user.addresses;
+        const cartDetails = await Cart.findOne({ userid: userId }).populate({path:'products.productId'});
+        let  initialAmount =0;
+        if(cartDetails){
+            cartDetails.products.forEach((item)=>{
+                let itemPrice = item.productPrice;
+                initialAmount += itemPrice *item.quantity
+            })
+        }
+        // const products = cartDetails.products;
+
+        res.render('checkOutshipping',{cartDetails, subTotal: initialAmount,addresses:addresses});
+    }catch(err){
+        console.log(err.message)
+    }
+}
 module.exports = {
     loadCart,
-    addtoCart
+    addtoCart,
+    loadCheckOut
 }

@@ -81,10 +81,16 @@ userRouter.post('/reset-pass',userController.resetPasswithOld)
 userRouter.post('/add-address',userController.addAddress)
 userRouter.post('/edit-addresses',userController.editAddress)
 
+//===============================CART HANDLING=================================//
+
 
 userRouter.get('/cart',cartController.loadCart);
 userRouter.post('/add-to-cart',cartController.addtoCart)
 
+
+
+//================================CHECKOUT HANDLING============================//
+userRouter.get('/check-out',cartController.loadCheckOut);
 
 
 
