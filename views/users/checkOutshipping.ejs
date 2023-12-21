@@ -79,8 +79,108 @@
   
   
    <!-- end modal for new adrress -->
+   
+   
+
+   <!-- here started accordion  -->
   
-                        <div class="container bg-light" id="reloadArea">
+  
+   <div class="accordion" id="accordionExample">
+  <!-- First Accordion Item -->
+  <div class="accordion-item">
+    <h2 class="accordion-header">
+      <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
+        Accordion Item #1
+      </button>
+    </h2>
+    <div id="collapseOne" class="accordion-collapse collapse show" data-bs-parent="#accordionExample">
+      <div class="accordion-body">
+        <!-- Your First Accordion Content -->
+        <div class="container " id="reloadArea">
+          <!-- Your Addresses Section -->
+          <% if (locals.addresses && locals.addresses.length > 0) { %>
+              <% addresses.forEach(function (address) { %>
+                  <div class="form-check form-group form-check-custom form-radio-custom form-radio-highlight mb-3">
+                      <input class="form-check-input" type="radio" name="selectedAddress" id="<%= address._id %>" value="<%= address._id %>">
+                      <label class="form-check-label" for="<%= address._id %>">
+                          <span class="d-flex justify-content-between align-items-start">
+                              <span>
+                                  <span class="mb-0 fw-bolder d-block"><%= address.name %></span>
+                                  <small class="fw-bolder"><%= address.addressline %>, <%= address.city %>, <%= address.state %> - <%= address.pincode %></small>
+                              </span>
+                              <span class="small fw-bolder text-uppercase"><%= address.phone %></span>
+                          </span>
+                      </label>
+                  </div>
+              <% }); %>
+          <% } else { %>
+              <div class="d-flex justify-content-center bg-white">
+                  <a data-bs-toggle="modal" data-bs-target="#AdressModal" class="btn btn-dark ms-3 mt-3 addaddressbtn">
+                      <i class="material-icons md-plus"></i> Add new Address
+                  </a>
+              </div>
+          <% } %>
+          <a data-bs-toggle="modal" data-bs-target="#AdressModal" class="btn btn-white border border-dark d-flex justify-content-center me-3 d-block ms-3 mt-3 addaddressbtn">
+              <i class="material-icons md-plus"></i> Add new Address
+          </a>
+      </div>
+      
+      </div>
+    </div>
+  </div>
+
+  <!-- Second Accordion Item -->
+  <div class="accordion-item">
+    <h2 class="accordion-header">
+      <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo">
+        Accordion Item #2
+      </button>
+    </h2>
+    <div id="collapseTwo" class="accordion-collapse collapse" data-bs-parent="#accordionExample">
+      <div class="accordion-body">
+        <!-- Your Second Accordion Content -->
+        <!-- Shipping Options Section -->
+        <div class="form-check form-group form-check-custom form-radio-custom form-radio-highlight mb-3">
+          <div class="form-check form-group form-check-custom form-radio-custom form-radio-highlight mb-3">
+            <input class="form-check-input" type="radio" name="checkoutShippingMethod" id="checkoutShippingMethodTwo">
+            <label class="form-check-label" for="checkoutShippingMethodTwo">
+              <span class="d-flex justify-content-between align-items-start">
+                <span>
+                  <span class="mb-0 fw-bolder d-block">UPS Next Day</span>
+                  <small class="fw-bolder">For all orders placed before 1pm Monday to Thursday</small>
+                </span>
+                <span class="small fw-bolder text-uppercase">330</span>
+              </span>
+            </label>
+          </div>
+        </div>
+        <div class="form-check form-group form-check-custom form-radio-custom form-radio-highlight mb-3">
+          <!-- ... (your second shipping option content) ... -->
+          <div class="form-check form-group form-check-custom form-radio-custom form-radio-highlight mb-3">
+            <input class="form-check-input" type="radio" name="checkoutShippingMethod" id="checkoutShippingMethodCashOnDelivery">
+            <label class="form-check-label" for="checkoutShippingMethodCashOnDelivery">
+              <span class="d-flex justify-content-between align-items-start">
+                <span>
+                  <span class="mb-0 fw-bolder d-block">Cash on Delivery</span>
+                  <small class="fw-bolder">Pay when your order is delivered</small>
+                </span>
+                <span class="small fw-bolder text-uppercase">Free</span>
+              </span>
+            </label>
+          </div>
+        </div>
+      
+        <!-- <div class="pt-5 mt-5 pb-5 border-top d-flex flex-column flex-md-row justify-content-between align-items-center">
+          <a href="./checkout.html" class="btn ps-md-0 btn-link fw-bolder w-100 w-md-auto mb-2 mb-md-0" role="button">Back to information</a>
+          <a href="./checkout-payment.html" class="btn btn-dark w-100 w-md-auto" role="button">Proceed to payment</a>
+        </div> -->
+      </div>
+    </div>
+  </div>
+</div>
+
+  
+                        <!-- <div class="container bg-light" id="reloadArea">
                           
                             <% if (locals.addresses && locals.addresses.length > 0) { %>
                                 <% addresses.forEach(function (address) { %>
@@ -110,13 +210,14 @@
                         </div>
                    
                       
-                       
+                        -->
                         
-                        <div class="pt-5 mt-5 pb-5 border-top d-flex justify-content-md-end align-items-center">
+                        <!-- <div class="pt-5 mt-5 pb-5 border-top d-flex justify-content-md-end align-items-center">
                           <a href="./checkout-shipping.html" class="btn btn-dark w-100 w-md-auto" role="button">Proceed to shipping</a>
                         
-                        </div>    
-                        <button type="button" class="btn btn-secondary d-block w-100" >Close</button>         
+                        </div>     -->
+                        <button type="button" class="btn btn-dark d-block w-100">Close</button>
+       
                      </div>
          
                 </div>

@@ -23,36 +23,35 @@
                             <table class="table align-middle">
                                 <tbody class="border-0">
                                     <!-- Cart Item-->
-                                    <%if (cartDetails && cartDetails.products) { %>
+                                    <% if (cartDetails && cartDetails.products && cartDetails.products.length > 0) { %>
                                         <% cartDetails.products.forEach((value, index) => { %>
-                                    <div class="row mx-0 py-4 g-0 border-bottom">
-                                        <div class="col-2 position-relative">
-                                            <picture class="d-block border">
-                                                <img class="img-fluid" src=" /assets/images/productImage/sharped/<%= value.productId.images[2] %>" alt="HTML Bootstrap Template by Pixel Rocket">
-                                                
-                                            </picture>
-                                        </div>
-                                        <div class="col-9 offset-1">
-                                            <div>
-                                                <h6 class="justify-content-between d-flex align-items-start mb-2">
-                                                    <%= value.productId.name %>
-                                                    <i class="ri-close-line ms-3"></i>
-                                                </h6>
-                                                <span class="d-block text-muted fw-bolder text-uppercase fs-9">Size: 9 / Qty:  <%= value.quantity %></span>
-                                            </div>
-                                            <p class="fw-bolder text-end text-muted m-0"> ₹<%= value.totalPrice %></p>
-                                        </div>
-                                    </div>
-                                    <% }) %>
+                                            <tr class="mx-0 py-4 g-0 border-bottom">
+                                                <td class="col-2 position-relative">
+                                                    <picture class="d-block border">
+                                                        <img class="img-fluid" src="/assets/images/productImage/sharped/<%= value.productId.images[0] %>" alt="hihi">
+                                                    </picture>
+                                                </td>
+                                                <td class="col-9 offset-1">
+                                                    <div>
+                                                        <h6 class="justify-content-between d-flex align-items-start mb-2">
+                                                            <%= value.productId.name %>
+                                                            <i class="ri-close-line ms-3" onclick="deleteCartItem('<%= value.productId._id %>')"></i>
+                                                        </h6>
+                                                        <span class="d-block text-muted fw-bolder text-uppercase fs-9">Size: 9 / Qty: <%= value.quantity %></span>
+                                                    </div>
+                                                    <p class="fw-bolder text-end text-muted m-0"> ₹<%= value.totalPrice %></p>
+                                                </td>
+                                            </tr>
+                                        <% }) %>
                                     <% } else { %>
-                                      <tr>
-                                        <td colspan="5">No products available</td>
-                                      </tr>
-                                    <% } %>                                  <!-- / Cart Item-->
-                                    <!-- Cart Item-->
+                                        <tr>
+                                            <td colspan="2">No products available</td>
+                                        </tr>
+                                    <% } %>
                                     <!-- / Cart Item-->
                                 </tbody>
                             </table>
+                            
                         </div>
                     </div>
                 </div>
@@ -83,3 +82,44 @@
 <!-- / Main Section-->
   
 <%- include('../layouts/user/footer.ejs') -%>
+
+<script>
+    function deleteCartItem(proId){
+        swal.fire({
+            title: "Are You Sure?",
+            Text: " You wont be able to revert this!",
+            icon: "warning",
+            showCancelButton: true,
+            confirmButtonColor: "#3085d6",
+            cancelButtonColor: "#d33",
+            confirmButtonText: "Yes, delete it!",
+            cancelButtonText: "cancel",
+        }).then((result)=>{
+            if(result.isConfirmed){
+                $.ajax({
+                    url:"/removeCartitem",
+                    data:{
+                        product:proId
+                    },
+                    method:"post",
+                    success:(response)=>{
+                        if((response.success = true )){
+                            location.reload();
+                            swal.fire({
+                            title: "Deleted!",
+                            text: "Your item has been deleted.",
+                            icon: "Suscces",
+                            timer:2000,
+                            showConfirmButton: false,
+                });
+                        }
+                    }
+                })
+            }
+        })
+    }
+</script>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+  
+<script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>

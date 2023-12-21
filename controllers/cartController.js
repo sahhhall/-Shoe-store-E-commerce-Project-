@@ -100,7 +100,33 @@ const addtoCart = async (req, res) => {
 
 
 
-
+const removeCartItem = async (req, res) => {
+    try {
+      const userId = req.session.user._id;
+      const proId = req.body.product;
+      console.log(userId);
+  
+      const cartData = await Cart.findOne({ userid: userId });
+  
+      console.log("am here");
+  
+      if (cartData) {
+        await Cart.findOneAndUpdate(
+          { userid: userId },
+          {
+            $pull: { products: { productId: proId } },
+          }
+        );
+  
+        console.log("am here too");
+        res.json({ success: true });
+      }
+    } catch (error) {
+      console.log(error.message);
+      res.status(500).json({ error: 'Internal server error' });
+    }
+  };
+  
 
 
 const loadCheckOut = async(req,res)=>{
@@ -110,16 +136,21 @@ const loadCheckOut = async(req,res)=>{
         const user = await User.findById(userId);
         const addresses = user.addresses;
         const cartDetails = await Cart.findOne({ userid: userId }).populate({path:'products.productId'});
+        if (!cartDetails) {
+            console.log("ddddd")
+          return  res.redirect('/cart');
+        }
         let  initialAmount =0;
         if(cartDetails){
             cartDetails.products.forEach((item)=>{
                 let itemPrice = item.productPrice;
                 initialAmount += itemPrice *item.quantity
             })
+            
+        res.render('checkOutshipping',{cartDetails, subTotal: initialAmount,addresses:addresses});
         }
         // const products = cartDetails.products;
 
-        res.render('checkOutshipping',{cartDetails, subTotal: initialAmount,addresses:addresses});
     }catch(err){
         console.log(err.message)
     }
@@ -127,5 +158,6 @@ const loadCheckOut = async(req,res)=>{
 module.exports = {
     loadCart,
     addtoCart,
-    loadCheckOut
+    loadCheckOut,
+    removeCartItem
 }

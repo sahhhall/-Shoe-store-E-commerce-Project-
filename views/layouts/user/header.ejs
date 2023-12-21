@@ -110,7 +110,8 @@
                               <a class="nav-link" href="/shop" role="button">
                                Shop 
                               </a>
-                            </li>   <% if (locals.loggedIn) { %>
+                            </li> 
+                              <% if (locals.loggedIn) { %>
                               <li class="nav-item dropdown">
                                 <a class="nav-link dropdown-toggle"  role="button" data-bs-toggle="dropdown" aria-expanded="false">
                              
@@ -152,61 +153,72 @@
                   <div class="order-lg-3 ms-auto">
                 
                       <!-- Navbar Cart Icon-->
-  <li class="ms-1 d-inline-block position-relative dropdown-cart">
-    <button class="nav-link me-0 disable-child-pointer border-0 p-0 bg-transparent text-body"
-        type="button">
-        Bag (2)
-    </button>
-    <div class="cart-dropdown dropdown-menu">
-    
-        <!-- Cart Header-->
-        <div class="d-flex justify-content-between align-items-center border-bottom pt-3 pb-4">
-            <h6 class="fw-bolder m-0">Cart Summary (2 items)</h6>
-            <i class="ri-close-circle-line text-muted ri-lg cursor-pointer btn-close-cart"></i>
-        </div>
-        <!-- / Cart Header-->
-    
-        <!-- Cart Items-->
-        <div>
-    
-            <!-- Cart Product-->
-            <div class="row mx-0 py-4 g-0 border-bottom">
-                <div class="col-2 position-relative">
-                    <picture class="d-block ">
-                        <img class="img-fluid" src="/assets/1.jpg" alt="HTML Bootstrap Template by Pixel Rocket">
-                    </picture>
-                </div>
-                <div class="col-9 offset-1">
-                    <div>
-                        <h6 class="justify-content-between d-flex align-items-start mb-2">
-                            Nike Air VaporMax 2021
-                            <i class="ri-close-line ms-3"></i>
-                        </h6>
-                        <span class="d-block text-muted fw-bolder text-uppercase fs-9">Size: 9 / Qty: 1</span>
-                    </div>
-                    <p class="fw-bolder text-end text-muted m-0">$85.00</p>
-                </div>
-            </div>
-        </div>
-        <!-- /Cart Items-->
-    
-        <!-- Cart Summary-->
-        <div>
-            <div class="pt-3">
-                <div class="d-flex flex-column flex-md-row justify-content-md-between align-items-md-start mb-4 mb-md-2">
-                    <div>
-                        <p class="m-0 fw-bold fs-5">Grand Total</p>
-                        <span class="text-muted small">Inc $45.89 sales tax</span>
-                    </div>
-                    <p class="m-0 fs-5 fw-bold">$422.99</p>
-                </div>
-            </div>
-            <a href="/cart" class="btn btn-outline-dark w-100 text-center mt-4" role="button">View Cart</a>
-            <a href="/checkout" class="btn btn-dark w-100 text-center mt-2" role="button">Proceed To Checkout</a>
-        </div>
-        <!-- / Cart Summary-->
-      </div>
-</li>
+                      <% if (locals.loggedIn) { %>
+                        <li class="ms-1 d-inline-block position-relative dropdown-cart" id="reloadArea">
+                            <button class="nav-link me-0 disable-child-pointer border-0 p-0 bg-transparent text-body" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                Bag (<%= cartDetails.products.length || 0 %>)
+                            </button>
+                            <div class="cart-dropdown dropdown-menu">
+                                <% if (cartDetails && cartDetails.products && cartDetails.products.length > 0) { %>
+                                    <!-- Cart Header -->
+                                    <div class="d-flex justify-content-between align-items-center border-bottom pt-3 pb-4">
+                                        <h6 class="fw-bolder m-0">Cart Summary (<%= cartDetails.products.length %> items)</h6>
+                                        <i class="ri-close-circle-line text-muted ri-lg cursor-pointer btn-close-cart"></i>
+                                    </div>
+                                    <!-- / Cart Header -->
+                    
+                                    <!-- Cart Items -->
+                                    <div>
+                                        <% cartDetails.products.forEach((value, index) => { %>
+                                            <!-- Cart Product -->
+                                            <div class="row mx-0 py-4 g-0 border-bottom">
+                                                <div class="col-2 position-relative">
+                                                    <picture class="d-block ">
+                                                        <img class="img-fluid" src="/assets/images/productImage/sharped/<%= value.productId.images[0] %>" alt="HTML Bootstrap Template by Pixel Rocket">
+                                                    </picture>
+                                                </div>
+                                                <div class="col-9 offset-1">
+                                                    <div>
+                                                        <h6 class="justify-content-between d-flex align-items-start mb-2">
+                                                            <%= value.productId.name %>
+                                                            <i class="ri-close-line ms-3" onclick="deleteCartItem('<%= value.productId._id %>')"></i>
+                                                        </h6>
+                                                        <span class="d-block text-muted fw-bolder text-uppercase fs-9">Size: <%= value.size %> / Qty: <%= value.quantity %></span>
+                                                    </div>
+                                                    <p class="fw-bolder text-end text-muted m-0">₹<%= value.totalPrice %></p>
+                                                </div>
+                                            </div>
+                                            <!-- /Cart Product -->
+                                        <% }) %>
+                                    </div>
+                                    <!-- /Cart Items -->
+                    
+                                    <!-- Cart Summary -->
+                                    <div>
+                                        <div class="pt-3">
+                                            <div class="d-flex flex-column flex-md-row justify-content-md-between align-items-md-start mb-4 mb-md-2">
+                                                <div>
+                                                    <p class="m-0 fw-bold fs-5">Grand Total</p>
+                                                    <span class="text-muted small">Inc $45.89 sales tax</span>
+                                                </div>
+                                                <p class="m-0 fs-5 fw-bold">₹<%= subTotal %></p>
+                                            </div>
+                                        </div>
+                                        <a href="/cart" class="btn btn-outline-dark w-100 text-center mt-4" role="button">View Cart</a>
+                                        <a href="/checkout" class="btn btn-dark w-100 text-center mt-2" role="button">Proceed To Checkout</a>
+                                    </div>
+                                    <!-- /Cart Summary -->
+                                <% } else { %>
+                                    <tr>
+                                        <td colspan="2">No products available</td>
+                                    </tr>
+                                <% } %>
+                            </div>
+                        </li>
+                    <% } else { %>
+                        
+                    <% } %>
+                    
 <!-- /Navbar Cart Icon-->
                 </div>           
           </div>
@@ -226,3 +238,29 @@
 
 
 
+
+
+
+
+<script>
+  function deleteCartItem(proId){
+     
+              $.ajax({
+                  url:"/removeCartitem",
+                  data:{
+                      product:proId
+                  },
+                  method:"post",
+                  success:(response)=>{
+                      if((response.success = true )){
+                        // $('#reloadArea').load(' #reloadArea'); 
+                        location.reload();
+                         
+                      }
+                  }
+              })
+       
+  }
+</script>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
