@@ -12,10 +12,26 @@ const loadCart = async (req,res)=>{
         console.log(err.message);
     }
 }
+const addtoCart = async(req,res)=>{
+    try{
+
+            const userId = req.session.user._id;
+          
+            if (userId === undefined) {
+                res.json({ login: true, message: "Please login and continue shopping!" });
+                res.redirect('/signin');
+              }
+           
+
+    }catch(err){
+        console.log(err.message)
+    }
+}
 
 
 
 
 module.exports ={
-    loadCart
+    loadCart,
+    addtoCart
 }

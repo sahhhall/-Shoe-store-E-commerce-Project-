@@ -83,7 +83,7 @@ userRouter.post('/edit-addresses',userController.editAddress)
 
 
 userRouter.get('/cart',cartController.loadCart);
-
+userRouter.post('/add-to-cart',cartController.addtoCart)
 
 
 
