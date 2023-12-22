@@ -158,3 +158,17 @@ margin-left: 1rem;
 
 
 /* shop page */
+.btnedtx{
+    font-family: 'Gabarito', sans-serif;
+    padding: 5px 3px;
+    letter-spacing: 1px;
+
+}
+.orderrr{
+    font-family: 'Quicksand', sans-serif;
+    letter-spacing: 1px;
+}
+.statusord{
+    font-family: 'Gabarito', sans-serif;
+    letter-spacing: 1px;
+}

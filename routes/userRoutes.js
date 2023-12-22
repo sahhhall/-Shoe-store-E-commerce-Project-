@@ -84,20 +84,20 @@ userRouter.post('/remove-addresses',userController.deleteAddress);
 //===============================CART HANDLING=================================//
 
 
-userRouter.get('/cart',cartController.loadCart);
+userRouter.get('/cart',auth.authlogg,cartController.loadCart);
 userRouter.post('/add-to-cart',cartController.addtoCart)
-userRouter.post('/removeCartitem',cartController.removeCartItem)
+userRouter.post('/removeCartitem',auth.authlogg,cartController.removeCartItem)
 
 //================================CHECKOUT HANDLING============================//
-userRouter.get('/check-out',cartController.loadCheckOut);
+userRouter.get('/check-out',auth.authlogg,cartController.loadCheckOut);
 
 //================================ORDER HANDLING============================//
 
-userRouter.post('/place-order',orderController.placeOrder)
-userRouter.get('/order-success/:orderId',orderController.loadSuccess);
-userRouter.get('/viewOrderDetails',orderController.userOderDetails);
+userRouter.post('/place-order',auth.authlogg,orderController.placeOrder)
+userRouter.get('/order-success/:orderId',auth.authlogg,orderController.loadSuccess);
+userRouter.get('/viewOrderDetails',auth.authlogg,orderController.userOderDetails);
 
-
+userRouter.post('/cancel-order',auth.authlogg,orderController.cancelOrder);
 
 userRouter.get('/about-us',userController.aboutUs);
 userRouter.get('/contact',userController.contactPage);

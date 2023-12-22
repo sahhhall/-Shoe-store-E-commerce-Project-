@@ -1,3 +1,108 @@
 <%- include('../layouts/admin/header.ejs') -%>
 
+<section class="content-main">
+    <div class="content-header">
+        <div>
+            <h1 class="fw-bold fs-3 mb-2">Order Management</h1>
+            <nav aria-label="breadcrumb">
+                <ol class="breadcrumb">
+                    <li class="breadcrumb-item"><a href="/admin/home">Admin</a></li>
+                    <li class="breadcrumb-item active" aria-current="page">Order Management</li>
+                </ol>
+            </nav>
+            <p class="m-0 text-muted small">All FurniCube Orders</p>
+        </div>
+        <div>
+            <!-- Add your action buttons here, if needed -->
+        </div>
+    </div>
+
+    <div class="card mb-4">
+        <header class="card-header">
+            <div class="row gx-3">
+                <div class="col-lg-4 col-md-6 me-auto">
+                    <input type="text" placeholder="Search..." class="form-control" id="searchInput" />
+                </div>
+            </div>
+        </header>
+        <div class="card-body">
+            <div class="table-responsive">
+                <table class="table" id="productTable">
+                    <thead>
+                        <tr>
+                            <th>No.</th>
+                            <th>Order Date</th>
+                            <th>Payment</th>
+                            <th>Status</th>
+                            <th>View</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <% if (orders.length > 0) { orders.forEach((order, index) => { %>
+                        <tr>
+                            <td><%= index + 1 %></td>
+                            <td><%= order.date %></td>
+                            <td><%= order.total_amount %></td>
+                            <td><%= order.status %></td>
+                            <td>
+                            
+                                    <a href="/admin/orderFullDetails?id=<%= order._id %>">
+                                        <button type="button" class="btn btn-success btn-md">Details</button>
+                                    </a>
+                               
+                            </td>
+                            <% if (order.status == "shipped" || order.status == "placed") { %>
+                            <td>
+                                <div class="dropdown">
+                                    <button class="btn btn-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown"
+                                        aria-expanded="false">
+                                        Actions
+                                    </button>
+                                    <ul class="dropdown-menu">
+                                        <li><a class="dropdown-item" href="/admin/status-update?id=<%= order._id %>&status=0">Cancel</a></li>
+                                        <li><a class="dropdown-item" href="/admin/status-update?id=<%= order._id %>&status=2">Shipped</a></li>
+                                        <li><a class="dropdown-item" href="/admin/status-update?id=<%= order._id %>&status=3">Delivery</a></li>
+                                    </ul>
+                                </div>
+                            </td>
+                            <% } %>
+                        </tr>
+                        <% }) %> <% } else { %>
+                        <tr>
+                            <td colspan="6">Orders Not Found</td>
+                        </tr>
+                        <% } %>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</section>
+
 <%- include('../layouts/admin/footer.ejs') -%>
+
+<script>
+    document.addEventListener('DOMContentLoaded',function(){
+
+// first we nee to take search input id 
+let searchInput = document.getElementById('searchInput');
+  searchInput.addEventListener('keyup',()=>{
+      let  searched = searchInput.value.toLowerCase();
+      let  tableRows = document.querySelectorAll("#productTable tbody tr");
+
+      tableRows.forEach((row)=>{
+          let searchColumn = row.querySelector('td:nth-child(3)');
+
+          if(searchColumn){
+              let nameText = searchColumn.textContent.toLowerCase();
+              row.style.display = nameText.includes(searched)?'' : 'none';
+          }
+      })
+  })
+
+
+})
+</script>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>

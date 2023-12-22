@@ -74,7 +74,7 @@ adminRoute.post('/addproduct', multer.array('images'), productController.addProd
 
 
 adminRoute.get('/orders',auth.isLogin,orderController.loadOrderlist);
-
+adminRoute.get('/status-update',auth.isLogin,orderController.statusUpdate);
 
 
 

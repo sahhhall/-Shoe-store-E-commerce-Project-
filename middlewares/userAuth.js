@@ -8,6 +8,7 @@ const isLogin=async(req,res,next)=>{
                 res.redirect('/');
                 return;
             }
+            
            
             next();
            
@@ -40,10 +41,21 @@ const isLogOut = async (req,res,next)=>{
         console.log(error.message);
     }
 }
-
+const authlogg = async(req,res,next)=>{
+    try{
+            if(req.session.user){
+                next();
+            }else{
+                res.redirect('/signin')
+            }
+    }catch(err){
+        console.log(err.message)
+    }
+}
 module.exports={
     isLogin,
-    isLogOut
+    isLogOut,
+    authlogg
 }
 
 

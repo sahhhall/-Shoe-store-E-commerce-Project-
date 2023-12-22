@@ -30,20 +30,16 @@ const orderSchema=new Schema({
         required:true
 
     },
-    status:{
-      type:String,
-      required:true
-    },
+    status: {
+        type: String,
+      },
+      statusLevel: {
+        type: Number,
+        default: 0
+      },
     payment:{
         type:String,
         required:true
-    },
-    paymentId:{
-        type:String
-    },
-    total:{
-      type:Number,
-
     },
     products: [
         {
