@@ -1,0 +1,209 @@
+
+<%- include('../layouts/user/header.ejs') -%>
+<style>
+ 
+
+    .containerrr {
+      display: flex;
+      flex-wrap: wrap;
+    }
+
+    .sidebarrr {
+      flex: 1;
+      min-width: 20%;
+      max-width: 25%;
+      padding: 20px;
+     
+      color: #fff;
+      min-height: 100vh;
+    }
+
+    .main-contenttt {
+      flex: 3;
+      padding: 20px;
+    }hr{
+        color:black;
+    }
+
+    .user-headerrr {
+      display: flex;
+      align-items: center;
+      margin-bottom: 20px;
+    }
+
+    .user-photooo {
+      border-radius: 50%;
+      width: 40px;
+      height: 40px;
+      margin-right: 10px;
+      /* Placeholder background color for the user photo */
+      background-color: #ddd;
+    }
+
+    .user-nameee {
+      font-size: .6rem;
+      font-weight: bold;
+    }
+
+    .menu-headinggg {
+      font-size: .7rem;
+      font-weight: bold;
+      margin-bottom: 10px;
+      color: rgba(127,127,127,1);
+    }
+
+    .menu-itemmm {
+      margin-bottom: 10px;
+
+    }
+
+    .menu-itemmm a {
+     color: black;
+      text-decoration: none;
+      font-size: .9rem;
+      font-family: 'Quicksand';
+    }
+    .menu-itemmm.selected {
+  background-color: #f0f0f0;
+  border-radius: 5px;
+}
+
+    @media screen and (max-width: 600px) {
+        .menu-itemmm a {
+     color: black;
+      text-decoration: none;
+      font-size: .5rem;
+    }   
+
+}
+  </style>
+</head>
+<body>
+
+ 
+  <div class="containerrr">
+    <!-- Sidebar -->
+    <div class="sidebarrr" id="sidebar">
+ 
+      <div class="user-headerrr">
+        <div class="user-photooo"></div>
+        <div class="user-nameee">John Doe</div>
+      </div>
+
+      <!-- Sidebar Menu -->
+      <div class="menu-headinggg">General</div>
+  
+      <div class="menu-itemmm"><a href="/addresses"  >Manage Address</a></div><hr>
+     
+      <div class="menu-itemmm" ><a href="/orders" aria-current="page"  class="bg-light active">Orders</a></div><hr>
+
+      <div class="menu-itemmm"><a href="#">Wishlist</a></div><hr>
+
+      <div class="menu-headinggg">Legal</div>
+      <div class="menu-itemmm" ><a href="#">Terms of Use</a></div><hr>
+      <div class="menu-itemmm"><a href="#">Privacy Policy</a></div><hr>
+
+      <div class="menu-headinggg">Personal</div>
+      <div class="menu-itemmm" ><a href="#">Report a Bug</a></div><hr>
+      <div class="menu-itemmm" ><a href="/signout">Logout</a></div><hr>
+
+    </div>
+
+    <!-- Main Content -->
+<div class="main-contenttt">
+  <nav class="d-none d-md-block">
+    <ul class="list-unstyled d-flex justify-content-start mt-4 align-items-center fw-bolder small">
+        <li class="me-4"><a class="nav-link-checkout" href="/">Home</a></li>
+        <li class="me-4"><a class="nav-link-checkout" href="/profile">Profile</a></li>
+        <li class="me-4"><a class="nav-link-checkout active aria-current" href="/orders">Orders</a></li>
+    </ul>
+</nav>
+
+  <div id="edit-profile-section"  style="display: block;">
+     <h1>User DashBoard</h1>
+     <div class="mt-5">
+      <h3 class="fs-5 fw-bolder mb-0 border-bottom pb-4">Your Cart</h3>
+      <div class="table-responsive">
+          
+          <table class="table align-middle">
+              <tbody class="border-0"  >
+                  <!-- Cart Item--><% if (orderData && orderData.length > 0) { %>
+                    <% orderData.forEach((order, orderIndex) => { %>
+                      <% if (order.products && order.products.length > 0) { %>
+                        <% order.products.forEach((product, index) => { %>
+                          <tr class="mx-0 py-4 g-0 border-bottom">
+                            <td class="col-2 position-relative">
+                              <picture class="d-block border">
+                                <!-- Use the product image from product.productId.images -->
+                                <img class="img-fluid" src="/assets/images/productImage/sharped/<%= product.productId.images[0] %>" alt="hihi">
+                              </picture>
+                            </td>
+                            <td class="col-9 offset-1">
+                              <div col="6">
+                                
+                                <h6 class="justify-content-between d-flex align-items-start mb-2">
+                                
+                                  <%= product.productId.name %>
+                          
+                                </h6>
+                                <span class="d-block text-muted fw-bolder text-uppercase fs-9">
+                                  Order ID: <%= order._id %>  <br> Date: <%= order.date %>
+                                </span>
+                                <span class="d-block fw-bolder text-uppercase fs-9">
+                                  <%= product.proquantity %>
+                                 </span>
+                                <span class="d-block fw-bolder fs-9">
+                                  <span class="fw-bold" >Payment method : </span><%= order.payment %>
+                                 </span>
+                                 
+                                <span class="d-block fw-bolder text-uppercase fs-9">
+                                  <%= order.status %>
+                                 </span>
+                             
+                                  <span class="text-center fw-bold">
+
+                                    Delivery with in : <%= order.expected_delivery %>
+                                  </span>
+                              
+                                 <!-- <p class="fw-bolder  text-muted m-0"> Total: ₹<%= order.total_amount %></p> -->
+                              </div>
+                              
+                        <div>
+
+                        </div>
+                        
+                            </td>
+                            <td>
+                              <a href="/viewOrderDetails?id=<%=order._id%>" class=" btn-outline-dark btn-round">View Details</a>
+                          </td>
+                          </tr>
+                        <% }) %>
+                      <% } else { %>
+                        <tr>
+                          <td colspan="2">No orders available</td>
+                        </tr>
+                      <% } %>
+                    <% }) %>
+                  <% } %>
+
+                
+                  
+                  <!-- / Cart Item-->
+              </tbody>
+          </table>
+          
+      </div>
+  </div>
+
+  </div>
+
+
+    </div>
+    <!-- main content screen end  -->
+  </div>
+
+
+
+
+
+

@@ -6,6 +6,7 @@ const adminController = require('../controllers/adminController')
 const config = require('../config/config')
 const categoryController = require('../controllers/categoryController')
 const productController = require('../controllers/productController')
+const orderController = require('../controllers/orderController')
 const auth = require('../middlewares/adminAuth')
 const multer = require('../middlewares/multerConfig');
 const {isLogin} = require('../middlewares/userAuth');
@@ -69,7 +70,12 @@ adminRoute.get('/addProduct', auth.isLogin, productController.loadAddproduct);
 adminRoute.post('/addproduct', multer.array('images'), productController.addProduct)
 
 
-// ==========================================================================================
+// =========================================< orders >================================================= //
+
+
+adminRoute.get('/orders',auth.isLogin,orderController.loadOrderlist);
+
+
 
 
 module.exports = adminRoute;

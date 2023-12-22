@@ -106,14 +106,18 @@
                     method:"post",
                     success:(response)=>{
                         if((response.success = true )){
-                            location.reload();
+                          
                             swal.fire({
                             title: "Deleted!",
                             text: "Your item has been deleted.",
                             icon: "Suscces",
                             timer:2000,
                             showConfirmButton: false,
-                });
+                }).then(()=>{
+                    location.reload();
+                })
+                      
+               
                         }
                     }
                 })

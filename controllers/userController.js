@@ -7,6 +7,7 @@ const bcrypt = require('bcrypt')
 const nodemailer = require('nodemailer');
 const dotenv = require('dotenv');
 const Product = require('../models/productSchema');
+const Order = require('../models/orderSchema');
 const { profile, log } = require('console');
 dotenv.config();
 
@@ -660,13 +661,7 @@ const userId = req.session.user._id;
         console.log(err.message)
     }
 }
-const loadOrder = async(req,res)=>{
-    try{
-        res.render('ordersPage')
-    }catch(err){
-        console.log(err.message)
-    }
-}
+
 
 
 module.exports = {
@@ -687,7 +682,7 @@ module.exports = {
     contactPage,
     loadProfile,
     loadAddressManage,
-    loadOrder,
+    // loadOrder,
     editProfile,
     resetPasswithOld,
     addAddress,

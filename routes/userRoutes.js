@@ -73,7 +73,7 @@ userRouter.get('/productView',productController.productView);
 
 userRouter.get('/profile',userController.loadProfile);
 userRouter.get('/addresses',userController.loadAddressManage)
-userRouter.get('/orders',userController.loadOrder);
+userRouter.get('/orders',orderController.loadOrder);
 
 userRouter.post('/edit-profile',userController.editProfile);
 userRouter.post('/reset-pass',userController.resetPasswithOld)
@@ -95,7 +95,7 @@ userRouter.get('/check-out',cartController.loadCheckOut);
 
 userRouter.post('/place-order',orderController.placeOrder)
 userRouter.get('/order-success/:orderId',orderController.loadSuccess);
-
+userRouter.get('/viewOrderDetails',orderController.userOderDetails);
 
 
 

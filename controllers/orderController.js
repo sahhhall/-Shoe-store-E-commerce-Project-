@@ -11,7 +11,7 @@ const Order = require('../models/orderSchema');
 const Cart = require('../models/cartSchema')
 dotenv.config();
 
-
+//===============================ORDER PLACING ================================//
 const placeOrder = async (req, res) => {
 
     try {
@@ -68,7 +68,7 @@ const placeOrder = async (req, res) => {
         console.log(err.message)
     }
 }
-
+//=============================== SUCCESS PAGE ================================//
 const loadSuccess = async(req,res)=>{
     try{
         res.render('successOrder');
@@ -77,7 +77,87 @@ const loadSuccess = async(req,res)=>{
     }
 }
 
+
+const loadOrderlist = async(req,res)=>{
+  try{
+      res.render('orderPage')
+  }catch(err){
+    console.log(err.message)
+  }
+}
+
+//===============================Order page loading for user side=================================//
+
+const loadOrder = async (req, res) => {
+  try {
+    
+
+    const userId = req.session.user._id;
+
+    const orders = await Order.find({ userId })
+      .populate('products.productId')
+      .sort({ date: -1 });
+    
+    // Extract product details from orders
+    const orderData = orders.map(order => ({
+      _id: order._id,
+      user_name: order.user_name,
+      date: new Date(order.date).toLocaleDateString('en-US', {
+        year: 'numeric',
+        month: 'long',
+        day: 'numeric',
+        hour: 'numeric',
+        minute: 'numeric',
+       
+        hour12: true,
+      }),
+      total_amount: order.total_amount,
+      payment: order.payment,
+      status:order.status,
+      expected_delivery:order.expected_delivery,
+      products: order.products.map(product => ({
+        productId: product.productId,
+        proquantity: product.quantity,
+      })),
+    }));
+    
+    res.render('ordersUserPage', { orderData });
+    
+  } catch (err) {
+    console.error(err.message);
+    // Handle the error appropriately, for example, sending an error response.
+    res.status(500).send('Internal Server Error');
+  }
+};
+
+const userOderDetails = async (req, res) => {
+  try {
+    const userId = req.session.user._id;
+    const id = req.query.id;
+    const orderedProduct = await Order.findOne({ _id: id }).populate(
+      "products.productId"
+    );
+
+    // Extract the delivery address ObjectId
+    const addressId = orderedProduct.delivery_address;
+
+    // Find the user and retrieve the address
+    const user = await User.findOne({ "addresses._id": addressId });
+    const selectedAddress = user.addresses.find(address => address._id.equals(addressId));
+    console.log("I want this", selectedAddress);
+
+    console.log(orderedProduct);
+    res.render("orderFullDetails", { orders: orderedProduct,selectedAddress:selectedAddress });
+  } catch (err) {
+    console.log(err.message);
+  }
+};
+
+
 module.exports = {
     placeOrder,
-    loadSuccess
+    loadSuccess,
+    loadOrderlist,
+    loadOrder,
+    userOderDetails
 }

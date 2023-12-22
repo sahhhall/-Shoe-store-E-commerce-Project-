@@ -726,10 +726,16 @@ const data = {productId : productId,productquantity:productquantity };
                         position: "center",
                         icon: "success",
                         title: "Product added to cart",
-                        showConfirmButton: false,
-                        timer: 1500,
-                    });
-                     location.reload();
+                       
+                        confirmButtonColor: "#3085d6",
+                        confirmButtonText: '<a href="/cart">Go to cart</a>',
+                        showCancelButton: true,
+                        cancelButtonColor: "#d33",
+                        cancelButtonText:'ok',
+                        
+                        
+                    })
+                   
 
                 }   else{
 

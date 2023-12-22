@@ -140,24 +140,7 @@
     </h2>
     <div id="collapseTwo" class="accordion-collapse collapse" data-bs-parent="#accordionExample">
       <div class="accordion-body">
-        <!-- Your Second Accordion Content -->
-        <!-- Shipping Options Section -->
         <div class="form-check form-group form-check-custom form-radio-custom form-radio-highlight mb-3">
-          <div class="form-check form-group form-check-custom form-radio-custom form-radio-highlight mb-3">
-            <input class="form-check-input" type="radio" name="checkoutShippingMethod" id="checkoutShippingMethodTwo">
-            <label class="form-check-label" for="checkoutShippingMethodTwo">
-              <span class="d-flex justify-content-between align-items-start">
-                <span>
-                  <span class="mb-0 fw-bolder d-block">UPS Next Day</span>
-                  <small class="fw-bolder">For all orders placed before 1pm Monday to Thursday</small>
-                </span>
-                <span class="small fw-bolder text-uppercase">330</span>
-              </span>
-            </label>
-          </div>
-        </div>
-        <div class="form-check form-group form-check-custom form-radio-custom form-radio-highlight mb-3">
-          <!-- ... (your second shipping option content) ... -->
           <div class="form-check form-group form-check-custom form-radio-custom form-radio-highlight mb-3">
             <input class="form-check-input" type="radio" name="checkoutShippingMethod" id="checkoutShippingMethodCashOnDelivery">
             <label class="form-check-label" for="checkoutShippingMethodCashOnDelivery">
@@ -369,48 +352,38 @@ function trimValue(elementId) {
   $(document).ready(function() {
     // Place order button click event
     $('.btn-dark').on('click', function() {
-      // Get the selected address
       var selectedAddress = $('input[name="selectedAddress"]:checked').val();
-      // Get the total element
       var totalElement = document.getElementById('total');
-
-      // Extract and parse the subTotalValue
       var subTotalValue = parseFloat(totalElement.textContent.replace('₹', '').trim());
 
   
       var selectedShippingMethod;
       if ($('#checkoutShippingMethodCashOnDelivery').is(':checked')) {
-        selectedShippingMethod = 'COD'; // Set to 'COD' instead of getting the value
+        selectedShippingMethod = 'COD';
       } else {
-        // If not, get the value of the selected shipping method
-        selectedShippingMethod = $('input[name="checkoutShippingMethod"]:checked').val();
+
       }
      
       if (selectedAddress && selectedShippingMethod) {
-        // Both are selected, proceed with placing the order
-
-        // Create an object to send in the POST request
         const data = {
           selectedAddress: selectedAddress,
           selectedShippingMethod: selectedShippingMethod,
           subTotalValue:subTotalValue
         };
 
-        // Perform the AJAX POST request
+        
         $.ajax({
           type: 'POST',
-          url: '/place-order', // Replace with the actual URL endpoint for your server
+          url: '/place-order',
           data: data,
           success: function(response) {
             if (response.success == true) {
-                 // Handle the success response from the server
                  location.href = `/order-success/${response.params}`;
                  console.log('Order placed successfully:', response);
             }
            
           },
           error: function(error) {
-            // Handle the error response from the server
             console.error('Error placing the order:', error);
           }
         });
