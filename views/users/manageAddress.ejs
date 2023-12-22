@@ -135,7 +135,7 @@
 <body>
 
  
-  <div class="containerrr">
+  <div class="containerrr" >
     <!-- Sidebar -->
     <div class="sidebarrr" id="sidebar">
  
@@ -220,13 +220,13 @@
 
 
 <div class="main-contenttt">
-  <nav aria-label="breadcrumb">
-    <ol class="breadcrumb">
-      <li class="breadcrumb-item"><a href="/">Home</a></li>
-      <li class="breadcrumb-item"><a href="/profile">Profile</a></li>
-      <li class="breadcrumb-item active" aria-current="page"><a href="/addresses">Manage addresses</a></li>
-    </ol>
-  </nav>
+  <nav class="d-none d-md-block">
+    <ul class="list-unstyled d-flex justify-content-start mt-4 align-items-center fw-bolder small">
+        <li class="me-4"><a class="nav-link-checkout" href="/">Home</a></li>
+        <li class="me-4"><a class="nav-link-checkout" href="/profile">Profile</a></li>
+        <li class="me-4"><a class="nav-link-checkout active aria-current" href="/addresses">Manage addresses</a></li>
+    </ul>
+</nav>
 
   <div id="edit-profile-section"  style="display: block;">
     
@@ -292,7 +292,7 @@
 <!-- modal ended for edited address -->
 
      <!-- card start here address  -->
-     <div class="card cardaddress mt-3" style="position: relative;" id="reloadArea">
+     <div class="card cardaddress mt-3" style="position: relative;" >
       <% if(locals.addresses && locals.addresses.length>0 )  { %>
 
         <%  addresses.forEach(function(address){ %>
@@ -303,7 +303,7 @@
             <button class="btn btn-block dropdown-item" onclick="openCustomModal('<%= address._id %>','<%= address.name %>','<%= address.addressline %>','<%= address.city %>','<%= address.state %>','<%= address.pincode %>','<%= address.phone %>')" type="button">Edit</button>
 
 
-            <button class="btn btn-block dropdown-item" type="button">Remove</button>
+            <button class="btn btn-block dropdown-item" onclick="removeAddress('<%= address._id %>')" >Remove</button>
           
           </div>
       </div>
@@ -426,7 +426,8 @@
                 icon:'success',
                 text:'Success'
               }).then(()=>{
-                $('#reloadArea').load('/addresses #reloadArea');
+                // $('#reloadArea').load('/addresses #reloadArea');
+                location.reload()
                 clearInputValues();
               })
               
@@ -439,7 +440,8 @@
                   
                     text: 'Failed to edit profile. something went  wrong',
               }).then(()=>{
-                $('#reloadArea').load('/addresses #reloadArea');
+                // $('#reloadArea').load('/addresses #reloadArea');
+                location.reload()
               })
             }
           },
@@ -479,7 +481,38 @@
 </script>
 <script>
 
+function removeAddress(Addid){
+  const data ={
+  Addid:Addid
+}
 
+$.ajax({
+      method: 'POST',
+          url: '/remove-addresses',
+          data: JSON.stringify(data),
+          contentType: 'application/json',
+          success: function (response) {
+            if (response.deleted === true) {
+              Swal.fire({
+                icon:'success',
+                text:'address deleted'
+              }).then(()=>{
+              location.reload()
+              })
+             
+           
+            } else {
+           
+           
+            }
+          },
+          error: function (error) {
+            console.error(error);
+          },
+        });
+
+
+  }
 
 
 
@@ -546,4 +579,8 @@ $.ajax({
 
 
   }
+</script>
+<script>
+
+    
 </script>

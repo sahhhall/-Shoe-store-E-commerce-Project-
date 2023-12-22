@@ -172,12 +172,12 @@ font-size: .7rem;
 
     <!-- Main Content -->
 <div class="main-contenttt ms-4" >
-  <nav aria-label="breadcrumb">
-    <ol class="breadcrumb">
-      <li class="breadcrumb-item"><a href="/">Home</a></li>
-      <li class="breadcrumb-item active" aria-current="page"><a href="/profile">Profile</a></li>
-    </ol>
-  </nav>
+  <nav class="d-none d-md-block">
+    <ul class="list-unstyled d-flex justify-content-start mt-4 align-items-center fw-bolder small">
+        <li class="me-4"><a class="nav-link-checkout" href="/">Home</a></li>
+        <li class="me-4"><a class="nav-link-checkout active aria-current" href="">Profile</a></li>
+    </ul>
+</nav>
 
   <div id="profile-container"  ><div id="reloadArea">
     <form method="post" id="profile-form" onsubmit="return validate()" >
@@ -300,7 +300,8 @@ function submitForm(userEmail) {
                 icon:'success',
                 text:'Successfully updated'
               }).then(()=>{
-                $('#reloadArea').load('/profile #reloadArea');
+                // $('#reloadArea').load('/profile #reloadArea');
+                location.reload();
               })
              
             } else {
@@ -310,7 +311,7 @@ function submitForm(userEmail) {
                   
                     text: 'Failed to edit profile. usernamae already taken.',
               }).then(()=>{
-                $('#reloadArea').load('/profile #reloadArea');
+                location.reload();
               })
             }
           },
@@ -372,7 +373,8 @@ function submitForm(userEmail) {
           icon: 'success',
           text: 'Successfully updated'
         }).then(() => {
-          $('#reloadArea').load('/profile #reloadArea');
+          // $('#reloadArea').load('/profile #reloadArea');
+          location.reload();
         });
         document.getElementById('old-password').value = '';
         document.getElementById('new-password').value = '';
@@ -384,7 +386,7 @@ function submitForm(userEmail) {
           icon: 'error',
           text: 'you have to enter correct old password.'
         }).then(() => {
-          $('#reloadArea').load('/profile #reloadArea');
+          location.reload();
         });
         document.getElementById('old-password').value = '';
         }else if(response.reseted ===false){
@@ -392,7 +394,8 @@ function submitForm(userEmail) {
           icon: 'error',
           text: 'New password should be different from the old password'
         }).then(() => {
-          $('#reloadArea').load('/profile #reloadArea');
+          // $('#reloadArea').load('/profile #reloadArea');
+          location.reload();
         });
         document.getElementById('new-password').value = '';
         document.getElementById('confirm-password').value = '';

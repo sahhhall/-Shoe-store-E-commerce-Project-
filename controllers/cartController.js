@@ -136,10 +136,11 @@ const loadCheckOut = async(req,res)=>{
         const user = await User.findById(userId);
         const addresses = user.addresses;
         const cartDetails = await Cart.findOne({ userid: userId }).populate({path:'products.productId'});
-        if (!cartDetails) {
+        if (cartDetails.products.length<=0) {
             console.log("ddddd")
-          return  res.redirect('/cart');
+          res.redirect('/cart');
         }
+      else{
         let  initialAmount =0;
         if(cartDetails){
             cartDetails.products.forEach((item)=>{
@@ -147,8 +148,9 @@ const loadCheckOut = async(req,res)=>{
                 initialAmount += itemPrice *item.quantity
             })
             
-        res.render('checkOutshipping',{cartDetails, subTotal: initialAmount,addresses:addresses});
-        }
+       
+        } res.render('checkOutshipping',{cartDetails, subTotal: initialAmount,addresses:addresses});
+      } 
         // const products = cartDetails.products;
 
     }catch(err){

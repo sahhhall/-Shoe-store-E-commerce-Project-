@@ -642,6 +642,24 @@ const editAddress = async(req,res)=>{
         console.log(err.message)
     }
 }
+
+const deleteAddress = async(req,res)=>{
+    try{
+console.log("hihi")
+const userId = req.session.user._id;
+        const { Addid} = req.body;
+        console.log(Addid,"here we aere")
+
+        await User.updateOne(
+            { _id: userId },
+            { $pull: { addresses: { _id: Addid } } }
+        );
+
+            res.json({deleted:true});
+    }catch(err){
+        console.log(err.message)
+    }
+}
 const loadOrder = async(req,res)=>{
     try{
         res.render('ordersPage')
@@ -673,7 +691,8 @@ module.exports = {
     editProfile,
     resetPasswithOld,
     addAddress,
-    editAddress
+    editAddress,
+    deleteAddress
 
 
 }

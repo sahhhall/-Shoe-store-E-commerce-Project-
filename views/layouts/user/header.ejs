@@ -155,8 +155,23 @@
                       <!-- Navbar Cart Icon-->
                       <% if (locals.loggedIn) { %>
                         <li class="ms-1 d-inline-block position-relative dropdown-cart" id="reloadArea">
-                            <button class="nav-link me-0 disable-child-pointer border-0 p-0 bg-transparent text-body" type="button" data-bs-toggle="dropdown" aria-expanded="false">
-                                Bag (<%= cartDetails.products.length || 0 %>)
+                            <button class="nav-link me-0 disable-child-pointer position-relative border-0 p-0 bg-transparent text-body" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                              <picture>
+                                <img src="/assets/icons/shopp.png" style="height: 20px; width: 20px;" alt="">
+                                <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
+                                  <% if (cartDetails && cartDetails.products) { %>
+                                    <%= cartDetails.products.length %>
+                                  <% } else { %>
+                                    0
+                                  <% } %>
+                                  <span class="visually-hidden">unread messages</span>
+                                </span>
+                                </span>
+                              </picture>
+                            
+                             
+                              
+
                             </button>
                             <div class="cart-dropdown dropdown-menu">
                                 <% if (cartDetails && cartDetails.products && cartDetails.products.length > 0) { %>
@@ -199,13 +214,13 @@
                                             <div class="d-flex flex-column flex-md-row justify-content-md-between align-items-md-start mb-4 mb-md-2">
                                                 <div>
                                                     <p class="m-0 fw-bold fs-5">Grand Total</p>
-                                                    <span class="text-muted small">Inc $45.89 sales tax</span>
+                                                    <span class="text-muted small">Inc ₹45.89 sales tax</span>
                                                 </div>
                                                 <p class="m-0 fs-5 fw-bold">₹<%= subTotal %></p>
                                             </div>
                                         </div>
                                         <a href="/cart" class="btn btn-outline-dark w-100 text-center mt-4" role="button">View Cart</a>
-                                        <a href="/checkout" class="btn btn-dark w-100 text-center mt-2" role="button">Proceed To Checkout</a>
+                                        <a href="/check-out" class="btn btn-dark w-100 text-center mt-2" role="button">Proceed To Checkout</a>
                                     </div>
                                     <!-- /Cart Summary -->
                                 <% } else { %>

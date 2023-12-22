@@ -1,7 +1,7 @@
 <%- include('../layouts/user/header.ejs') -%>
 
 
-<section class="mt-0  vh-lg-100">
+<section class="mt-0   vh-lg-100">
     <!-- Page Content Goes Here -->
     <div class="container">
         <div class="row g-0 vh-lg-100">
@@ -14,7 +14,9 @@
                     <!-- / Logo-->
                     <nav class="d-none d-md-block">
                         <ul class="list-unstyled d-flex justify-content-start mt-4 align-items-center fw-bolder small">
-                            <li class="me-4"><a class="nav-link-checkout "
+                          <li class="me-4"><a class="nav-link-checkout "
+                            href="/">Home</a></li>
+                          <li class="me-4"><a class="nav-link-checkout "
                                     href="/cart">Cart</a></li>
                             <li class="me-4"><a class="nav-link-checkout active aria-current"
                                     href="">Shipping address</a></li>
@@ -169,55 +171,11 @@
             </label>
           </div>
         </div>
-      
-        <!-- <div class="pt-5 mt-5 pb-5 border-top d-flex flex-column flex-md-row justify-content-between align-items-center">
-          <a href="./checkout.html" class="btn ps-md-0 btn-link fw-bolder w-100 w-md-auto mb-2 mb-md-0" role="button">Back to information</a>
-          <a href="./checkout-payment.html" class="btn btn-dark w-100 w-md-auto" role="button">Proceed to payment</a>
-        </div> -->
       </div>
     </div>
   </div>
+  <button type="button" class="btn btn-dark d-block w-100 mb-5">Place order</button>
 </div>
-
-  
-                        <!-- <div class="container bg-light" id="reloadArea">
-                          
-                            <% if (locals.addresses && locals.addresses.length > 0) { %>
-                                <% addresses.forEach(function (address) { %>
-                                  <div class="card-body">
-                                    <div class="droppdown">
-                                       
-                                      
-                                      <div class="droppdown-content">
-                                      </div>
-                                    </div>
-                                    <input type="radio" name="selectedAddress" id="<%= address._id %>" value="<%= address._id %>">
-                                    <p class="card-text"> <span><%= address.name %></span> <span style="margin-left: 3%;"><%= address.phone %></span> </p>
-                                    <p class="card-text"><span><%= address.addressline %></span><span><%= address.city %>,</span> <span><%= address.state %>-</span> <span><%= address.pincode %></span></p>
-                                    
-                                    
-                                  </div>
-                                <% }); %>
-                              <% } else { %>
-                                <tr>
-                                  <td colspan="5">No Addresses available</td>
-                                </tr>
-                              <% } %>  <div class="d-flex justify-content-center bg-white">
-                                <a data-bs-toggle="modal" data-bs-target="#AdressModal" class="btn btn-dark ms-3 mt-3 addaddressbtn">
-                                    <i class="material-icons md-plus"></i> Add new Address
-                                  </a>
-                              </div>
-                        </div>
-                   
-                      
-                        -->
-                        
-                        <!-- <div class="pt-5 mt-5 pb-5 border-top d-flex justify-content-md-end align-items-center">
-                          <a href="./checkout-shipping.html" class="btn btn-dark w-100 w-md-auto" role="button">Proceed to shipping</a>
-                        
-                        </div>     -->
-                        <button type="button" class="btn btn-dark d-block w-100">Close</button>
-       
                      </div>
          
                 </div>
@@ -247,11 +205,11 @@
                                         <div>
                                             <h6 class="justify-content-between d-flex align-items-start mb-2">
                                                 <%= value.productId.name %>
-                                                <i class="ri-close-line ms-3"></i>
+                                                <p class="fw-bolder text-end text-muted m-0">₹<%= value.totalPrice %></p>
                                             </h6>
                                             <span class="d-block text-muted fw-bolder text-uppercase fs-9">Size: <%= value.size %> / Qty: <%= value.quantity %></span>
                                         </div>
-                                        <p class="fw-bolder text-end text-muted m-0">₹<%= value.totalPrice %></p>
+                                        
                                     </div>
                                 </div>
                             <% }) %>
@@ -274,7 +232,7 @@
                                 <p class="m-0 fw-bold fs-5">Grand Total</p>
                                 <span class="text-muted small">Inc ₹45.89 sales tax</span>
                             </div>
-                            <p class="m-0 fs-5 fw-bold">₹<%= subTotal %></p>
+                            <p id="total" class="m-0 fs-5 fw-bold">₹<%= subTotal %></p>
                         </div>
                     </div>
                     <div class="py-4">
@@ -406,3 +364,60 @@ function trimValue(elementId) {
 </script>
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script> 
  <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+
+<script>
+  $(document).ready(function() {
+    // Place order button click event
+    $('.btn-dark').on('click', function() {
+      // Get the selected address
+      var selectedAddress = $('input[name="selectedAddress"]:checked').val();
+      // Get the total element
+      var totalElement = document.getElementById('total');
+
+      // Extract and parse the subTotalValue
+      var subTotalValue = parseFloat(totalElement.textContent.replace('₹', '').trim());
+
+  
+      var selectedShippingMethod;
+      if ($('#checkoutShippingMethodCashOnDelivery').is(':checked')) {
+        selectedShippingMethod = 'COD'; // Set to 'COD' instead of getting the value
+      } else {
+        // If not, get the value of the selected shipping method
+        selectedShippingMethod = $('input[name="checkoutShippingMethod"]:checked').val();
+      }
+     
+      if (selectedAddress && selectedShippingMethod) {
+        // Both are selected, proceed with placing the order
+
+        // Create an object to send in the POST request
+        const data = {
+          selectedAddress: selectedAddress,
+          selectedShippingMethod: selectedShippingMethod,
+          subTotalValue:subTotalValue
+        };
+
+        // Perform the AJAX POST request
+        $.ajax({
+          type: 'POST',
+          url: '/place-order', // Replace with the actual URL endpoint for your server
+          data: data,
+          success: function(response) {
+            if (response.success == true) {
+                 // Handle the success response from the server
+                 location.href = `/order-success/${response.params}`;
+                 console.log('Order placed successfully:', response);
+            }
+           
+          },
+          error: function(error) {
+            // Handle the error response from the server
+            console.error('Error placing the order:', error);
+          }
+        });
+      } else {
+   
+        alert('Please select both an address and a shipping method before placing the order.');
+      }
+    });
+  });
+</script>
