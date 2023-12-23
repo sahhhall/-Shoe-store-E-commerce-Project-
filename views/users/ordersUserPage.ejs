@@ -169,12 +169,25 @@
                                     <%= order.status %>
                                   </span>
                                 <% } %>
-                                
-                             
+
+
+                                <% if (order.statusLevel === 0) { %>
+                                  <span class="text-center fw-bold">
+
+                                   
+                                  </span>
+                                <% } else if (order.statusLevel === 3) { %>
+                                  <span class="text-center fw-bold">
+                                      
+                                  </span>
+                                <% } else { %>
                                   <span class="text-center fw-bold">
 
                                     Delivery with in : <%= order.expected_delivery %>
                                   </span>
+                                <% } %>
+                             
+                                
                               
                                  <!-- <p class="fw-bolder  text-muted m-0"> Total: ₹<%= order.total_amount %></p> -->
                               </div>

@@ -183,6 +183,7 @@ const userOderDetails = async (req, res) => {
 const loadOrderlist = async (req, res) => {
     try {
         const ordersData = await Order.find().populate("products.productId").sort({date: -1});
+       
         res.render('orderPage', {orders: ordersData})
     } catch (err) {
         console.log(err.message)

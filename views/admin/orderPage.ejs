@@ -10,7 +10,7 @@
                     <li class="breadcrumb-item active" aria-current="page">Order Management</li>
                 </ol>
             </nav>
-            <p class="m-0 text-muted small">All FurniCube Orders</p>
+            <p class="m-0 text-muted small">All Sacollective Orders</p>
         </div>
         <div>
             <!-- Add your action buttons here, if needed -->
@@ -31,10 +31,13 @@
                     <thead>
                         <tr>
                             <th>No.</th>
+                            <th>customer name</th>
+                            <th>Product Namw</th>
+                            <th>photo</th>
                             <th>Order Date</th>
                             <th>Payment</th>
                             <th>Status</th>
-                            <th>View</th>
+                            <!-- <th>View</th> -->
                             <th>Action</th>
                         </tr>
                     </thead>
@@ -42,16 +45,25 @@
                         <% if (orders.length > 0) { orders.forEach((order, index) => { %>
                         <tr>
                             <td><%= index + 1 %></td>
+                            <td><%= order.user_name %></td>
+                          
+                            <% order.products.forEach((value, index) => { %>
+                                <td><%=  value.productId.name %></td>
+                                <td>
+                                   
+                                    <img src="/assets/images/productImage/sharped/<%= value.productId.images[0] %>" alt="Product Image" style="width: 50px; height: 50px;">
+                                </td>
+                            <% }); %>
                             <td><%= order.date %></td>
-                            <td><%= order.total_amount %></td>
+                            <td><%= order.payment %></td>
                             <td><%= order.status %></td>
-                            <td>
+                            <!-- <td>
                             
                                     <a href="/admin/orderFullDetails?id=<%= order._id %>">
                                         <button type="button" class="btn btn-success btn-md">Details</button>
                                     </a>
                                
-                            </td>
+                            </td> -->
                             <% if (order.status == "shipped" || order.status == "placed") { %>
                             <td>
                                 <div class="dropdown">
