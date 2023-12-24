@@ -41,6 +41,10 @@ const orderSchema=new Schema({
         type:String,
         required:true
     },
+    cancellationReason: {
+        type: String,
+        default: "none"
+    },
     products: [
         {
             productId: {
@@ -65,10 +69,7 @@ const orderSchema=new Schema({
                 type: String,
                 default: "placed"
             },
-            cancellationReason: {
-                type: String,
-                default: "none"
-            }
+          
 
         },
     ]

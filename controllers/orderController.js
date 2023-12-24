@@ -134,7 +134,7 @@ const userOderDetails = async (req, res) => {
         const addressId = orderedProduct.delivery_address;
         const user = await User.findOne({"addresses._id": addressId});
         const selectedAddress = user.addresses.find(address => address._id.equals(addressId));
-        console.log("I want this", selectedAddress);
+    
 
 
         // Define arrays for day and month names
@@ -252,7 +252,7 @@ const cancelOrder = async(req,res)=>{
     const orderData = await Order.findOne({_id: orderId});
     const products = orderData.products;
 
-    console.log("am hereee guys")
+    // console.log("am hereee guys")
             await Order.updateOne({
               _id: orderId
           }, {
@@ -278,6 +278,27 @@ const cancelOrder = async(req,res)=>{
   }
 }
 
+
+const returnReason = async(req,res)=>{
+    try {
+            const { reason,
+                orderid} = req.body;
+                await Order.findByIdAndUpdate(
+                    { _id: orderid },
+                    {
+                        $set: {
+                            cancellationReason: returnReason,
+                            status: "Returned",
+                            statusLevel: 0
+                        }
+                    }
+                );
+                res.json({reason: true});
+    }catch(err){
+        console.log(err)
+    }
+}
+
 module.exports = {
     placeOrder,
     loadSuccess,
@@ -285,5 +306,6 @@ module.exports = {
     loadOrder,
     userOderDetails,
     statusUpdate,
-    cancelOrder
+    cancelOrder,
+    returnReason
 }
