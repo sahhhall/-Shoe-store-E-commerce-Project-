@@ -72,10 +72,9 @@ adminRoute.post('/addproduct', multer.array('images'), productController.addProd
 
 // =========================================< orders >================================================= //
 
-
+adminRoute.post('/return',auth.isLogin,orderController.returnConf);
 adminRoute.get('/orders',auth.isLogin,orderController.loadOrderlist);
 adminRoute.get('/status-update',auth.isLogin,orderController.statusUpdate);
-
-
+adminRoute.get('/product-detail',auth.isLogin,orderController.orderDetailedview);
 
 module.exports = adminRoute;

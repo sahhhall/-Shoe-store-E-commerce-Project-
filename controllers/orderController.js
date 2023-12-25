@@ -287,15 +287,73 @@ const returnReason = async(req,res)=>{
                     { _id: orderid },
                     {
                         $set: {
-                            cancellationReason: returnReason,
-                            status: "Returned",
-                            statusLevel: 0
+                            cancellationReason: reason,
+                            status: "Return Requested",
+                            statusLevel: 4
                         }
                     }
                 );
                 res.json({reason: true});
     }catch(err){
         console.log(err)
+    }
+}
+
+// return reason check rej and acc
+
+const returnConf = async (req, res) => {
+    try {
+        console.log("I am here for confirmation");
+        const { orderId ,btndata} = req.body;
+        const orderDet = await Order.findOne({ _id: orderId });
+        const products = orderDet.products;
+       
+        if(btndata == "accept"){
+            await Order.updateOne({_id:orderId},{
+                $set: {
+                    status: "returned",
+                    statusLevel: 5
+                }
+            })
+            for (let i = 0; i < products.length; i++) {
+                let pro = products[i].productId;
+                let count = products[i].count;
+                await Product.findOneAndUpdate({
+                    _id: pro
+                }, {
+                    $inc: {
+                        quantity: count
+                    }
+                });
+            }
+        }else if(btndata  == "reject"  ){
+        
+            await Order.updateOne({_id:orderId},{
+                $set:{
+                    status: "delivered",
+                    
+                    statusLevel: 3
+                }
+            })
+        }
+        
+        res.json({isOK: true });
+    } catch (err) {
+        console.log(err.message);
+    }
+};
+
+const orderDetailedview = async(req,res)=>{
+    try{
+        const orderId = req.query.id;
+        const ordersData = await Order.find({_id:orderId}).populate("products.productId").sort({date: -1});
+        const userId = ordersData.userId;
+        console.log("here all data ",ordersData)
+      
+    
+        res.render('orderDetail',{orders: ordersData,userId:userId});
+    }catch(err){
+        console.log(err.message)
     }
 }
 
@@ -307,5 +365,7 @@ module.exports = {
     userOderDetails,
     statusUpdate,
     cancelOrder,
-    returnReason
+    returnReason,
+    returnConf,
+    orderDetailedview
 }

@@ -1,6 +1,9 @@
 <%- include('../layouts/admin/header.ejs') -%>
 
 <section class="content-main">
+
+    
+
     <div class="content-header">
         <div>
             <h1 class="fw-bold fs-3 mb-2">Order Management</h1>
@@ -17,6 +20,7 @@
         </div>
     </div>
 
+  
     <div class="card mb-4">
         <header class="card-header">
             <div class="row gx-3">
@@ -25,6 +29,9 @@
                 </div>
             </div>
         </header>
+
+
+
         <div class="card-body">
             <div class="table-responsive">
                 <table class="table" id="productTable">
@@ -39,6 +46,8 @@
                             <th>Status</th>
                             <!-- <th>View</th> -->
                             <th>Action</th>
+                            <th>Return reuests</th>
+                           <th>Details</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -54,18 +63,18 @@
                                     <img src="/assets/images/productImage/sharped/<%= value.productId.images[0] %>" alt="Product Image" style="width: 50px; height: 50px;">
                                 </td>
                             <% }); %>
-                            <td><%= order.date %></td>
+                            <td><%= new Date(order.date).toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' }) %></td>
+
                             <td><%= order.payment %></td>
                             <td><%= order.status %></td>
                             <!-- <td>
                             
-                                    <a href="/admin/orderFullDetails?id=<%= order._id %>">
-                                        <button type="button" class="btn btn-success btn-md">Details</button>
-                                    </a>
+                                  
                                
                             </td> -->
-                            <% if (order.status == "shipped" || order.status == "placed") { %>
+                           
                             <td>
+                                <% if (order.status == "shipped" || order.status == "placed") { %>
                                 <div class="dropdown">
                                     <button class="btn btn-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown"
                                         aria-expanded="false">
@@ -77,8 +86,24 @@
                                         <li><a class="dropdown-item" href="/admin/status-update?id=<%= order._id %>&status=3">Delivery</a></li>
                                     </ul>
                                 </div>
+                                <% } %>
                             </td>
-                            <% } %>
+                          
+                            <td>
+                                <% if(order.status == "Return Requested" ){ %>
+                                    <button class="btn btn-dark" onclick="returnModal('<%= order.cancellationReason%>','<%= order._id %>')">return req</button>
+
+                                <% } %>
+                                </td>
+                              
+                            <td>
+                                <a href="/admin/product-detail?id=<%= order._id %>">
+                                    <button type="button" class="btn btn-success btn-md">Details</button>
+                                </a>
+                            </td>
+                            
+                              
+                            
                         </tr>
                         <% }) %> <% } else { %>
                         <tr>
@@ -86,15 +111,41 @@
                         </tr>
                         <% } %>
                     </tbody>
+                   
                 </table>
             </div>
         </div>
     </div>
 </section>
 
-<%- include('../layouts/admin/footer.ejs') -%>
 
+<!-- modal for return reason  -->
+<div id="returnModall" class="modal" style="display: none;">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h1 class="modal-title fs-5">Modal title</h1>
+                <button type="button" class="btn-close close-button" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <p id="returnReasonn"></p>
+            </div>
+            <input type="hidden" id="hiddenOrder" name="hiddenOrder" required >
+            <div class="modal-footer">
+                <button type="button" id="rej" class="btn btn-secondary" data-value="reject" onclick="returnReq(document.getElementById('hiddenOrder').value, this.getAttribute('data-value'))">Reject</button>
+                <button type="button" id="acc" class="btn btn-primary" data-value="accept" onclick="returnReq(document.getElementById('hiddenOrder').value, this.getAttribute('data-value'))">Accept</button>
+            </div>
+            
+        </div>
+    </div>
+</div>
+<!-- modal end  -->
+
+<%- include('../layouts/admin/footer.ejs') -%>
+<script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <script>
+
     document.addEventListener('DOMContentLoaded',function(){
 
 // first we nee to take search input id 
@@ -115,6 +166,67 @@ let searchInput = document.getElementById('searchInput');
 
 
 })
+
+
+// this for return modal only  we can accpet rejcect through this modal
+function returnModal(cancellationReason,orderId) {
+    document.getElementById('hiddenOrder').value = orderId ;
+    document.getElementById('returnReasonn').innerText = cancellationReason;
+    const modal = document.getElementById('returnModall');
+
+    modal.style.display = "block";
+    const  closeButton = modal.querySelector(".close-button");
+    if(closeButton){
+        closeButton.addEventListener("click", function () {
+        modal.style.display = "none";
+      });
+    }
+
+  
+}
+
+// here we passsing the value to server reject/accept
+function returnReq(orderId,btndata) {
+
+    const data = {
+        btndata:btndata,
+        orderId: orderId
+    };
+
+    Swal.fire({
+        title: 'Are you sure?',
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#3085d6',
+        cancelButtonColor: '#d33',
+        confirmButtonText: 'Yes!',
+    }).then((res) => {
+        
+        if (res.isConfirmed) {
+            
+            $.ajax({
+                method: 'POST',
+                url: '/admin/return',
+                data: JSON.stringify(data),
+                contentType: 'application/json',
+                success: function (response) {
+                    console.log(response);
+                  
+                    if (response.isOK === true) {
+                        Swal.fire({
+                            icon: 'success',
+                            text: 'Success',
+                        }).then(()=>{
+                            location.reload();
+                        })
+                    }
+                },
+                error: function (error) {
+                    console.error(error);
+                },
+            })
+        }
+    })
+}
+
 </script>
-<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-<script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
