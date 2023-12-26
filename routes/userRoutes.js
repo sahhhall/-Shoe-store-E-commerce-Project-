@@ -26,6 +26,8 @@ userRouter.use(express.urlencoded({extended:true}));
 userRouter.set('view engine','ejs');
 userRouter.set('views','./views/users')
 
+
+
 userRouter.get('/',userController.loadHome);
 
 userRouter.get('/signin',auth.isLogin,userController.loadLogin);
@@ -33,9 +35,6 @@ userRouter.get('/signin',auth.isLogin,userController.loadLogin);
 userRouter.get('/signup',auth.isLogOut,userController.loadSignup);
 
 userRouter.post('/signup',userController.insertUser);
-
-
-
 
 userRouter.get('/otp',auth.isLogOut,userController.loadOtp);
 
@@ -45,24 +44,19 @@ userRouter.post('/signin',userController.verifyLogin)
 
 userRouter.post('/resend',userController.resendOtp)
 // logout 
-
-
-
 userRouter.get('/signout',userController.userLogout)
-
 // forget pass ///////
 userRouter.get('/forgetpass',auth.isLogOut,userController.loadForgetpass);
 
 userRouter.post('/forgetpass',userController.sentResetpass);
 // userRouter.get('/resetpassword',userController.resetPage);
-
 userRouter.get('/resetpassword/:userId/:token',auth.isLogOut,userController.resetPage);
 
 userRouter.post('/resetpassword',userController.resetPassword);
 
 
 
-//////////////////////////////////////////shop view product detailed view/////////////////
+// =======================================< SHOP & PRODUCT DETAILD >============================================= //
 
 userRouter.get('/shop',productController.loadShop);
 
@@ -71,36 +65,50 @@ userRouter.get('/productView',productController.productView);
 // userRouter.get('/product-details',productController.productDetails)
 
 
+// ==========================================< USER PROFILE >==================================================== //
+
 userRouter.get('/profile',userController.loadProfile);
+
 userRouter.get('/addresses',userController.loadAddressManage)
+
 userRouter.get('/orders',orderController.loadOrder);
 
 userRouter.post('/edit-profile',userController.editProfile);
+
 userRouter.post('/reset-pass',userController.resetPasswithOld)
+
 userRouter.post('/add-address',userController.addAddress)
+
 userRouter.post('/edit-addresses',userController.editAddress)
+
 userRouter.post('/remove-addresses',userController.deleteAddress);
 
-//===============================CART HANDLING=================================//
 
+// ==========================================< CART HANDLING >==================================================== //
 
 userRouter.get('/cart',auth.authlogg,cartController.loadCart);
+
 userRouter.post('/add-to-cart',cartController.addtoCart)
+
 userRouter.post('/removeCartitem',auth.authlogg,cartController.removeCartItem)
 
-//================================CHECKOUT HANDLING============================//
+// =========================================< CHECKOUT HANDLING >================================================= //
+
 userRouter.get('/check-out',auth.authlogg,cartController.loadCheckOut);
 
-//================================ORDER HANDLING============================//
+// ===========================================< ORDER HANDLING >================================================== //
 
 userRouter.post('/place-order',auth.authlogg,orderController.placeOrder)
+
 userRouter.get('/order-success/:orderId',auth.authlogg,orderController.loadSuccess);
+
 userRouter.get('/viewOrderDetails',auth.authlogg,orderController.userOderDetails);
 
 userRouter.post('/cancel-order',auth.authlogg,orderController.cancelOrder);
+
 userRouter.post('/returnreason',auth.authlogg,orderController.returnReason);
 
-
+// ==========================================<  >===================================================== //
 
 userRouter.get('/about-us',userController.aboutUs);
 userRouter.get('/contact',userController.contactPage);

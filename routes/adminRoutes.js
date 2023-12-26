@@ -7,6 +7,7 @@ const config = require('../config/config')
 const categoryController = require('../controllers/categoryController')
 const productController = require('../controllers/productController')
 const orderController = require('../controllers/orderController')
+const couponController = require('../controllers/couponController')
 const auth = require('../middlewares/adminAuth')
 const multer = require('../middlewares/multerConfig');
 const {isLogin} = require('../middlewares/userAuth');
@@ -73,8 +74,15 @@ adminRoute.post('/addproduct', multer.array('images'), productController.addProd
 // =========================================< orders >================================================= //
 
 adminRoute.post('/return',auth.isLogin,orderController.returnConf);
+
 adminRoute.get('/orders',auth.isLogin,orderController.loadOrderlist);
+
 adminRoute.get('/status-update',auth.isLogin,orderController.statusUpdate);
+
 adminRoute.get('/product-detail',auth.isLogin,orderController.orderDetailedview);
+
+// =========================================< coupon >================================================= //
+
+adminRoute.get('/coupons',auth.isLogin,couponController.loadCouponPage);
 
 module.exports = adminRoute;

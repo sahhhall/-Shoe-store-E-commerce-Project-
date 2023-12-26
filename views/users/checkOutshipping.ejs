@@ -86,10 +86,11 @@
 
    <!-- here started accordion  -->
   
-   <div id="selectedAddressDisplay" style="display: none;">
-    <p>Selected Address:</p>
+   <div id="selectedAddressDisplay" style="display: none; border: .7px solid black; " class="p-3 ">
+    <p class="fw-bold">Selected Address:</p>
     <p id="displayedAddress"></p>
   </div>
+  
   
    <div class="accordion" id="accordionExample">
   <!-- First Accordion Item -->
@@ -396,18 +397,30 @@ function trimValue(elementId) {
   });
 </script>
 <script>
-  function displaySelectedAddress(addressJSON) {
-    var selectedAddress = JSON.parse(addressJSON);
+ function displaySelectedAddress(addressJSON) {
+  const selectedAddress = JSON.parse(addressJSON);
 
-    // Update the displayed address
-    var displayedAddress = selectedAddress.name + ", " +
-      selectedAddress.addressline + ", " +
-      selectedAddress.city + ", " +
-      selectedAddress.state + " - " +
-      selectedAddress.pincode;
-
-    // Display the selected address dynamically
-    $("#displayedAddress").text(displayedAddress);
-    $("#selectedAddressDisplay").show();
+  const displayedAddress =
+    selectedAddress.name +
+    ", " +
+    selectedAddress.addressline +
+    ", " +
+    selectedAddress.city +
+    ", " +
+    selectedAddress.state +
+    " - " +
+    selectedAddress.pincode;
+  const displayedAddressElement = document.getElementById("displayedAddress");
+  if (displayedAddressElement) {
+    displayedAddressElement.textContent = displayedAddress;
   }
+
+  const selectedAddressDisplayElement = document.getElementById(
+    "selectedAddressDisplay"
+  );
+  if (selectedAddressDisplayElement) {
+    selectedAddressDisplayElement.style.display = "block";
+  }
+}
+
 </script>
