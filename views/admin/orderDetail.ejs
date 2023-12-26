@@ -122,48 +122,49 @@ button.btn:hover{
 
 }
 </style>
-<% orders.forEach(order => { %>
+
 <div class="d-flex flex-column justify-content-center align-items-center" id="order-heading">
     <div class="text-uppercase">
         <p>Order Detail</p>
     </div>
   
-    <div class="h4"><%= new Date(order.date).toLocaleString('en-US', { year: 'numeric', month: 'short', day: 'numeric', hour: 'numeric', minute: 'numeric', second: 'numeric', hour12: true }) %>
+    <div class="h4"><%= new Date(orders.date).toLocaleString('en-US', { year: 'numeric', month: 'short', day: 'numeric', hour: 'numeric', minute: 'numeric', second: 'numeric', hour12: true }) %>
     </div>
     <div class="pt-1">
-        <p>Order #<%= order._id %> is currently<b class="text-dark"> <%= order.status %></b></p>
+        <p>Order #<%= orders._id %> is currently<b class="text-dark"> <%= orders.status %></b></p>
     </div>
  
 </div>
-<% }) %>
-<% orders.forEach(order => { %>
+
+
 <div class="wrapper bg-white">
     <!-- user order details  -->
     <div class="row border rounded p-1 my-3">
         <div class="col-md-6 py-3">
             <div class="d-flex flex-column align-items start">
-                <b>Muhammed sahal</b>
-                <p class="text-justify pt-2">sahalvavoor313@gmail.com</p>
-                <p class="text-justify">8606346587</p>
+                <b><%= user.name  %></b>
+                <p class="text-justify pt-2"><%= user.email %></p>
+                <p class="text-justify"><%= user.mobile %></p>
             </div>
         </div>
      
     </div>
     <!-- end user order details  -->
+    <% orders.products.forEach((pro)=>{ %>
     <div class="d-flex justify-content-start align-items-center list py-1">
-        <div><b>1px</b></div>
+        <div><b><%= pro.quantity %></b></div>
         <div class="mx-3">
-            <img src="https://images.pexels.com/photos/206959/pexels-photo-206959.jpeg?auto=compress&cs=tinysrgb&dpr=1&w=500"
+            <img src="/assets/images/productImage/sharped/<%= pro.productId.images[0] %>"
                 alt="apple" class="rounded-circle" width="30" height="30">
         </div>
-        <div class="order-item">Apple</div>
+        <div class="order-item"><%= pro.productId.name %></div>
     </div>
-  
+  <% }) %>
     <div class="pt-2 border-bottom mb-3"></div>
     <div class="d-flex justify-content-start align-items-center pl-3">
         <div class="text-muted">Payment Method</div>
         <p class="ms-1">
-            : cod 
+            : <%= orders.payment %> 
         </p>
     </div>
 
@@ -173,35 +174,41 @@ button.btn:hover{
             Grand Total
         </div>
         <div class="ml-auto h5 ms-2 mt-1">
-            $34.94
+            ₹<%= orders.total_amount%>
         </div>
     </div>
     <div class="row border rounded p-1 my-3">
         <div class="col-md-6 py-3">
             <div class="d-flex flex-column align-items start">
                 <b> Address</b>
-                <p class="text-justify pt-2">James Thompson, 356 Jonathon Apt.220,</p>
-                <p class="text-justify">New York</p>
+                <p class="text-justify pt-2"><%= userFirstadd.name %></p>
+                <p class="text-justify"> <%= userFirstadd.addressline %> , <%= userFirstadd.pincode %></p>
+                <p class="text-justify"><%= userFirstadd.city %> , <%= userFirstadd.state %></p>
             </div>
         </div>
         <div class="col-md-6 py-3">
             <div class="d-flex flex-column align-items start">
                 <b>Shipping Address</b>
-                <p class="text-justify pt-2">James Thompson, 356 Jonathon Apt.220,</p>
-                <p class="text-justify">New York</p>
+                <% if (selectedAddress) { %>
+                    <p class="text-justify pt-2"><%= selectedAddress.name %></p>
+                    <p class="text-justify"> <%= selectedAddress.addressline %> , <%= selectedAddress.pincode %></p>
+                    <p class="text-justify"><%= selectedAddress.city %> , <%= selectedAddress.state %></p>
+                <% } else { %>
+                    <p class="text-justify">No address available.</p>
+                <% } %>
             </div>
         </div>
+        
     </div>
     <div class="pl-3 font-weight-bold">Order details</div>
     <div class="d-sm-flex justify-content-between rounded my-3 subscriptions">
         <div>
-            <b>#9632</b>
+            <b>#<%= orders._id %></b>
         </div>
-        <div>May 22, 2017</div>
-        <div>Status: Processing</div>
+        <div><%=  new Date(orders.date).toLocaleString('en-US', { year: 'numeric', month: 'short', day: 'numeric', })   %></div>
+        <div>Status: <%= orders.status %></div>
         <div>
-            Total: <b> $68.8 for 10 items</b>
+            Total: <b> ₹<%= orders.total_amount %> for <%= orders.products.length %> items</b>
         </div>
     </div>
 </div>
-<% }) %>

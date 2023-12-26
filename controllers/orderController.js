@@ -210,12 +210,12 @@ const statusUpdate = async (req, res) => {
             });
             for (let i = 0; i < products.length; i++) {
                 let pro = products[i].productId;
-                let count = products[i].count;
+                let count = products[i].quantity;
                 await Product.findOneAndUpdate({
                     _id: pro
                 }, {
                     $inc: {
-                        quantity: count
+                        stockQuantity: count
                     }
                 });
             }
@@ -263,12 +263,12 @@ const cancelOrder = async(req,res)=>{
           });
           for (let i = 0; i < products.length; i++) {
               let pro = products[i].productId;
-              let count = products[i].count;
+              let count = products[i].quantity;
               await Product.findOneAndUpdate({
                   _id: pro
               }, {
                   $inc: {
-                      quantity: count
+                    stockQuantity: count
                   }
               });
           }
@@ -317,12 +317,12 @@ const returnConf = async (req, res) => {
             })
             for (let i = 0; i < products.length; i++) {
                 let pro = products[i].productId;
-                let count = products[i].count;
+                let count = products[i].quantity;
                 await Product.findOneAndUpdate({
                     _id: pro
                 }, {
                     $inc: {
-                        quantity: count
+                        stockQuantity: count
                     }
                 });
             }
@@ -346,12 +346,27 @@ const returnConf = async (req, res) => {
 const orderDetailedview = async(req,res)=>{
     try{
         const orderId = req.query.id;
-        const ordersData = await Order.find({_id:orderId}).populate("products.productId").sort({date: -1});
+        
+
+
+        const ordersData = await Order.findOne({_id:orderId}).populate("products.productId");
         const userId = ordersData.userId;
         console.log("here all data ",ordersData)
-      
-    
-        res.render('orderDetail',{orders: ordersData,userId:userId});
+      // Extract the delivery address ObjectId
+      const addressId = ordersData.delivery_address;
+ 
+    //   here am doing get first documetn in array of address
+      const userAddresses = await User.findOne({ "addresses": { $exists: true, $ne: {} } }, { "addresses": 1 });
+      const userFirstadd = userAddresses.addresses[0];
+     
+      const userad = await User.findOne({ "addresses._id": addressId });
+     
+      const selectedAddress = userad.addresses.find(address => address._id.equals(addressId));
+
+
+        const userData = await User.findById(userId);
+
+        res.render('orderDetail',{orders: ordersData,user: userData,selectedAddress:selectedAddress,userFirstadd:userFirstadd});
     }catch(err){
         console.log(err.message)
     }
