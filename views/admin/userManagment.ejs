@@ -1,5 +1,5 @@
 <%- include('../layouts/admin/header.ejs') -%>
-<section class="content-main " >
+<section class="content-main " id="rel" >
     <div class="content-header">
  
         <div><h1 class="fw-bold fs-3 mb-2">User Managment (<%= users.length %>)</h1>
@@ -20,7 +20,11 @@
         <header class="card-header">
             <div class="row gx-3">
                 <div class="col-lg-4 col-md-6 me-auto">
-                    <input type="text" placeholder="Search..." class="form-control" id="searchInput" />
+                    <form action="">
+                        <input type="text" placeholder="Search..." class="form-control" id="searchInput" name="search" />
+                        
+                    </form>
+                  
                 </div>
             </div>
         </header>
@@ -39,7 +43,7 @@
                             <th class="text-center">Action</th>
                         </tr>
                     </thead>
-                    <tbody>
+                    <tbody >
                         
                       
                             <% if(locals.users) { %>
@@ -84,32 +88,49 @@
         <!-- card-body end// -->
     </div>
     <!-- card end// -->
- 
+    <nav aria-label="Page navigation example">
+        <ul class="pagination">
+          <li class="page-item">
+            <a class="page-link" onclick="loadPage('<%= previous %>')">Previous</a>
+          </li>
+          <% for(let j=1; j <= totalPages; j++) { %>
+            <li class="page-item">
+              <a class="page-link"  onclick="loadPage('<%= j %>')"><%= j %></a>
+            </li>
+          <% } %>
+          <li class="page-item">
+            <a class="page-link"  onclick="loadPage('<%= next %>')">Next</a>
+          </li>
+        </ul>
+      </nav>
+      
+    
+
 </section>
 
 <%- include('../layouts/admin/footer.ejs') -%>
 
 <script>
-    document.addEventListener('DOMContentLoaded',function(){
+    // document.addEventListener('DOMContentLoaded',function(){
 
-        // first we nee to take search input id 
-        let searchInput = document.getElementById('searchInput');
-            searchInput.addEventListener('keyup',()=>{
-                let  searched = searchInput.value.toLowerCase();
-                let  tableRows = document.querySelectorAll("#userTable tbody tr");
+    //     // first we nee to take search input id 
+    //     let searchInput = document.getElementById('searchInput');
+    //         searchInput.addEventListener('keyup',()=>{
+    //             let  searched = searchInput.value.toLowerCase();
+    //             let  tableRows = document.querySelectorAll("#userTable tbody tr");
 
-                tableRows.forEach((row)=>{
-                    let searchColumn = row.querySelector('td:nth-child(2)');
+    //             tableRows.forEach((row)=>{
+    //                 let searchColumn = row.querySelector('td:nth-child(2)');
 
-                    if(searchColumn){
-                        let nameText = searchColumn.textContent.toLowerCase();
-                        row.style.display = nameText.includes(searched)?'' : 'none';
-                    }
-                })
-            })
+    //                 if(searchColumn){
+    //                     let nameText = searchColumn.textContent.toLowerCase();
+    //                     row.style.display = nameText.includes(searched)?'' : 'none';
+    //                 }
+    //             })
+    //         })
 
 
-    })
+    // })
 
     function block(userId) {
         const data = {userId:userId}
@@ -149,3 +170,20 @@
 </script>
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
+<script>
+    // Function to handle pagination clicks
+    function loadPage(page) {
+      $.ajax({
+        url: `/admin/ums?page=${page}`,
+        type: 'GET',
+        success: function (data) {
+          // Update the content with the new data
+          $('#rel').html(data);
+        },
+        error: function (error) {
+          console.error('Error:', error);
+        },
+      });
+    }
+  </script>
+  

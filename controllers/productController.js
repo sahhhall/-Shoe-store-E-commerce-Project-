@@ -192,32 +192,55 @@ const editProduct = async (req, res) => {
 
 
 // //////////////////////////////////shop ui//////////////////
-
-
 const loadShop = async (req, res) => {
     try {
         const categId = req.query.categid;
-
-
-        const categories = await Category.find({is_listed: true});
-        const listedCategoryNames = categories.map((category) => category.name);
-        console.log('Listed Categories:', listedCategoryNames);
-        // const products = await Product.find({ is_Listed: true });
-        if (categId) {
-            var products = await Product.find({is_Listed: true, category: categId})
-        } else {
-            var products = await Product.find({is_Listed: true})
+       
+        let page = 1;
+        if (req.query.page) {
+            page = req.query.page;
         }
-        console.log('Listed Products:', products);
+        let limit = 8;
+        let previous = (page > 1) ? page - 1 : 1;
+        let next = page + 1;
+
+        const categories = await Category.find({ is_listed: true });
+        const listedCategoryNames = categories.map((category) => category.name);
+
+        let query = { is_Listed: true };
+       
+        // here i setting query to categroy wise products 
+        if (categId) {
+            query.category = categId;
+        }
+        // if category in quweery that would count else all products 
+        // if categId is truthy (not undefined, null, false, 0, NaN, or an empty string). 
+        // If it is, it adds a condition to the query object to filter products by the specified category.
+        //  If categId is falsy, it means no specific category is provided, so it retrieves all products
+        const count = await Product.countDocuments(query);
+        const products = await Product.find(query)
+            .limit(limit)
+            .skip((page - 1) * limit)
+            .exec();
+
         const listedProducts = products.filter((product) => {
-            console.log('Product Category:', product.category);
             return product.is_Listed === true && listedCategoryNames.includes(product.category);
         });
-        console.log('Filtered Products:', listedProducts);
+
+        const totalPages = Math.ceil(count / limit);
+
+        if (next > totalPages) {
+            next = totalPages;
+        }
 
         res.render('shop', {
             category: categories,
-            products: listedProducts
+            products: listedProducts,
+            totalPages: totalPages,
+            currentPage: page,
+            previous: previous,
+            next: next,
+            categId: categId  // Include categId here
         });
     } catch (err) {
         console.log(err.message);

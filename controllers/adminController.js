@@ -74,13 +74,51 @@ const loadDashboard = async (req, res) => {
 // to load user
 const loadUserMangment = async (req, res) => {
     try {
-        const userData = await User.find({is_admin: 0});
-        console.log(userData);
-        res.render('userManagment', {users: userData});
+        let search = '';
+        if (req.query.search) {
+            search = req.query.search;
+        }
+
+        // pagination 
+        let page =  1;
+        if(req.query.page){
+            page = req.query.page
+        }
+        let limit = 6;
+        let previous = (page > 1) ? page - 1 : 1;
+        let next = page + 1;
+
+        const userData = await User.find({
+                is_admin: 0,
+                $or: [{
+                    name: {
+                        $regex: '.*' + search + '.*'
+                    }
+                }]
+            })
+            .limit(limit)
+            .skip((page - 1) * limit)
+            .exec();
+
+        const count = await User.find({
+            is_admin: 0
+        }).countDocuments();
+
+        totalPages = Math.ceil(count / limit);
+        if (next > totalPages) {
+            next = totalPages;
+        }
+        res.render('userManagment', {
+            users: userData,
+            totalPages:totalPages,
+            currentPage: page,
+            previous: previous,
+            next: next
+        });
     } catch (err) {
-        console.log(err.message)
+        console.log(err.message);
     }
-}
+};
 
 // to block user
 
