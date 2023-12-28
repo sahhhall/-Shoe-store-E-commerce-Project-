@@ -59,9 +59,9 @@ userRouter.post('/resetpassword',userController.resetPassword);
 // =======================================< SHOP & PRODUCT DETAILD >============================================= //
 
 userRouter.get('/shop',productController.loadShop);
-
+// userRouter.get('/search',productController.searchProduct);
 userRouter.get('/productView',productController.productView);
-
+userRouter.post('/getProduct',productController.searchProduct);
 // userRouter.get('/product-details',productController.productDetails)
 
 

@@ -190,12 +190,47 @@ const editProduct = async (req, res) => {
     }
 };
 
+const searchProduct = async(req,res)=>{
+    try{
+          let payload = req.body.payload.trim();
+          console.log(payload)
+          let search = await Product.find({name:{$regex: new RegExp('^'+payload+'.*','i')}}).exec();
+          // limit search res to 8
+          search = search.slice(0,8);
+          res.send({payload:search})
+    }catch(err){
+        console.log(err.message)
+    }
+}
 
+// const searchProduct = async (req, res) => {
+//     try {
+//         const name = req.query.q;
+//         const regex = new RegExp(`^${name}`, 'i');
+
+//         const categories = await Category.find({ is_listed: true });
+//         const listedCategoryNames = categories.map((category) => category.name);
+
+//         const products = await Product.find({ name: { $regex: regex }, is_Listed: true });
+
+//         res.render("shop", {
+//             category: categories,
+//             name: req.session.name,
+//             products: products,
+//             totalPages: 0,
+//         });
+//     } catch (error) {
+//         console.log(error.message);
+//         res.status(500).json({ error: 'Internal server error' });
+//     }
+// };
+  
 // //////////////////////////////////shop ui//////////////////
 const loadShop = async (req, res) => {
     try {
         const categId = req.query.categid;
-       
+        // here cominng sort option selected 
+        const sortOption = req.query.sort;
         let page = 1;
         if (req.query.page) {
             page = req.query.page;
@@ -209,6 +244,18 @@ const loadShop = async (req, res) => {
 
         let query = { is_Listed: true };
        
+        let sort = {};
+        if( sortOption === 'default' ){
+            sort = {date:-1}
+        }
+       else if(sortOption === 'priceLowTohigh' ){
+            sort = {price : 1}
+        } else if (sortOption === '2') {
+            sort = { price: -1 }; 
+        } else if (sortOption === '3') {
+            sort = { name: 1 }; 
+        }
+
         // here i setting query to categroy wise products 
         if (categId) {
             query.category = categId;
@@ -219,6 +266,7 @@ const loadShop = async (req, res) => {
         //  If categId is falsy, it means no specific category is provided, so it retrieves all products
         const count = await Product.countDocuments(query);
         const products = await Product.find(query)
+            .sort(sort)  //if sort is there it works  if null noting
             .limit(limit)
             .skip((page - 1) * limit)
             .exec();
@@ -303,6 +351,7 @@ module.exports = {
     editProductpageLoad,
     editProduct,
     loadShop,
+    searchProduct,
     //    productDetails,
     productView
 
