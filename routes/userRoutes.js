@@ -102,6 +102,8 @@ userRouter.post('/place-order',auth.authlogg,orderController.placeOrder)
 
 userRouter.get('/order-success/:orderId',auth.authlogg,orderController.loadSuccess);
 
+userRouter.post('/verify-payment', auth.authlogg,orderController.paymentVerfication);
+
 userRouter.get('/viewOrderDetails',auth.authlogg,orderController.userOderDetails);
 
 userRouter.post('/cancel-order',auth.authlogg,orderController.cancelOrder);

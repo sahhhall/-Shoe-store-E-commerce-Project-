@@ -15,7 +15,9 @@
                           <li class="breadcrumb-item"><a href="/">Home</a></li>
                           <li class="breadcrumb-item active" aria-current="page"><a href="/shop">All</a></li>
                         </ol>
-                    </nav>        <h1 class="fw-bold fs-3 mb-2">All Products (<%= products.length %>)</h1>
+                    </nav>       
+                    
+                    <h1 class="fw-bold fs-3 mb-2">All Products (<%= products.length %>)</h1>
                    
                 </div>
                 <div class="d-flex justify-content-end align-items-center mt-4 mt-lg-0 flex-column flex-md-row">
@@ -58,12 +60,15 @@
                                         <ul class="list-group list-group-flush">
                                            <li class="list-group-item d-flex border-0 row g-0 px-0">
                                                 <% if(locals.category) %>
-                                                <select id="selectCAtegory" class="form-select fw-bolder"  onchange="window.location.href=this.value">
-                                                    <option  selected>All</option>
+                                                <select id="selectCategory" class="form-select fw-bolder" onchange="window.location.href=this.value">
+                                                    <option value="" disabled selected>Select Category</option>
                                                     <% category.map(function(cat){ %>
                                                         <option value="/shop?categid=<%=cat.name %>"><%= cat.name %></option>
                                                     <% }); %>
+                                                    <option value="/shop">All</option>
                                                 </select>
+                                                
+                                                
                                             </li>
                                         </ul>
                                         <form class="form-inline d-flex justify-content-center md-form form-sm active-pink-2 mt-2">
@@ -296,4 +301,9 @@ document.addEventListener('DOMContentLoaded', function () {
 
 
 
+</script>
+<script>
+
+    // script fot razorpay 
+    
 </script>

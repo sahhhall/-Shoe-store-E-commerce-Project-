@@ -140,24 +140,39 @@
         Payment Method
       </button>
     </h2>
-    <div id="collapseTwo" class="accordion-collapse collapse" data-bs-parent="#accordionExample">
-      <div class="accordion-body">
-        <div class="form-check form-group form-check-custom form-radio-custom form-radio-highlight mb-3">
-          <div class="form-check form-group form-check-custom form-radio-custom form-radio-highlight mb-3">
-            <input class="form-check-input" type="radio" name="checkoutShippingMethod" id="checkoutShippingMethodCashOnDelivery">
-            <label class="form-check-label" for="checkoutShippingMethodCashOnDelivery">
+  <!-- Inside the existing accordion item -->
+<div id="collapseTwo" class="accordion-collapse collapse" data-bs-parent="#accordionExample">
+  <div class="accordion-body">
+      <!-- Existing payment method (Cash on Delivery) -->
+      <div class="form-check form-group form-check-custom form-radio-custom form-radio-highlight mb-3">
+          <input class="form-check-input" type="radio" name="checkoutShippingMethod" id="checkoutShippingMethodCashOnDelivery">
+          <label class="form-check-label" for="checkoutShippingMethodCashOnDelivery">
               <span class="d-flex justify-content-between align-items-start">
-                <span>
-                  <span class="mb-0 fw-bolder d-block">Cash on Delivery</span>
-                  <small class="fw-bolder">Pay when your order is delivered</small>
-                </span>
-                <span class="small fw-bolder text-uppercase">Free</span>
+                  <span>
+                      <span class="mb-0 fw-bolder d-block">Cash on Delivery</span>
+                      <small class="fw-bolder">Pay when your order is delivered</small>
+                  </span>
+                  <span class="small fw-bolder text-uppercase">Free</span>
               </span>
-            </label>
-          </div>
-        </div>
+          </label>
       </div>
-    </div>
+
+      <!-- New payment method (Online Payment) -->
+      <div class="form-check form-group form-check-custom form-radio-custom form-radio-highlight mb-3">
+          <input class="form-check-input" type="radio" name="checkoutShippingMethod" id="checkoutShippingMethodOnlinePayment">
+          <label class="form-check-label" for="checkoutShippingMethodOnlinePayment">
+              <span class="d-flex justify-content-between align-items-start">
+                  <span>
+                      <span class="mb-0 fw-bolder d-block">Online Payment</span>
+                      <small class="fw-bolder">Pay securely online</small>
+                  </span>
+                  <span class="small fw-bolder text-uppercase">Additional Charges Apply</span>
+              </span>
+          </label>
+      </div>
+  </div>
+</div>
+
   </div>
   <button type="button" class="btn btn-dark d-block w-100 mb-5">Place order</button>
 </div>
@@ -349,6 +364,7 @@ function trimValue(elementId) {
 </script>
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script> 
  <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+ <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
 
 <script>
   $(document).ready(function() {
@@ -362,8 +378,8 @@ function trimValue(elementId) {
       var selectedShippingMethod;
       if ($('#checkoutShippingMethodCashOnDelivery').is(':checked')) {
         selectedShippingMethod = 'COD';
-      } else {
-
+      } else if($('#checkoutShippingMethodOnlinePayment').is(':checked')) {
+        selectedShippingMethod = 'onlinePayment';
       }
      
       if (selectedAddress && selectedShippingMethod) {
@@ -382,7 +398,11 @@ function trimValue(elementId) {
             if (response.success == true) {
                  location.href = `/order-success/${response.params}`;
                  console.log('Order placed successfully:', response);
-            }
+            }else {
+              console.log("why not ocomeeeeeees")
+              console.log("Order details:", response.order);
+          razorPayment(response.order);
+        }
            
           },
           error: function(error) {
@@ -395,6 +415,70 @@ function trimValue(elementId) {
       }
     });
   });
+
+  function razorPayment(order) {
+    console.log('Order for Razorpay:', order);
+    var options = {
+      key: "rzp_test_fxwtmaR2OrRwYA", // Enter the Key ID generated from the Dashboard
+      amount: order.amount, // Amount is in currency subunits. Default currency is INR. Hence, 50000 refers to 50000 paise
+      currency: "INR",
+      name: "SAcolllective Pvt.Ltd", //your business name
+      description: "Test Transaction",
+      image: "/user/images/icons/logo.png",
+      order_id: order.id, //This is a sample Order ID. Pass the `id` obtained in the response of Step 1
+      handler: function (response) {
+        verifyPayment(response, order);
+      },
+      prefill: {
+        //We recommend using the prefill parameter to auto-fill customer's contact information especially their phone number
+        name: "SAcollective Pvt.Ltd", //your customer's name
+        email: "SAcollective@example.com",
+        contact: "910000000369", //Provide the customer's phone number for better conversion rates
+      },
+      notes: {
+        address: "Razorpay Corporate Office",
+      },
+      theme: {
+        color: "#c96",
+      },
+    };
+
+    var rzp1 = new Razorpay(options);
+    rzp1.open();
+  }
+
+  function verifyPayment(payment, order) {
+    const amount2 = document.getElementById("total").innerHTML;
+    console.log("am here to confiem order",amount2)
+    $.ajax({
+      url: "/verify-payment",
+      method: "post",
+      data: {
+        payment: payment,
+        amount2: amount2,
+        order: order,
+      },
+      success: (response) => {
+        if (response.codsuccess == true) {
+          location.href = `/order-success/${response.params}`;
+        } else {
+          swal.fire({
+            positon: "center",
+            icon: "error",
+            title: "Payment failed",
+            showConfirmButton: false,
+            timer: 1500,
+          });
+        }
+      },
+    });
+  }
+
+
+
+
+
+
 </script>
 <script>
  function displaySelectedAddress(addressJSON) {

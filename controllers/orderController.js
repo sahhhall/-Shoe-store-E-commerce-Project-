@@ -9,7 +9,17 @@ const dotenv = require('dotenv');
 const Product = require('../models/productSchema');
 const Order = require('../models/orderSchema');
 const Cart = require('../models/cartSchema')
+const Razorpay = require("razorpay");
 dotenv.config();
+
+
+//================================RAZORPAY INSTANCE========================================
+
+var instance = new Razorpay({
+    key_id: process.env.RazorId,
+    key_secret: process.env.RazorKey,
+});
+
 
 // ===============================ORDER PLACING ================================//
 const placeOrder = async (req, res) => {
@@ -53,26 +63,74 @@ const placeOrder = async (req, res) => {
 
         let orderDetailsData = await newOrder.save();
         const orderId = orderDetailsData._id;
-        await Cart.deleteOne({userid: userId});
-        for (let i = 0; i < cartData.products.length; i++) {
-            const productId = cartProducts[i].productId;
-            const count = cartProducts[i].quantity;
 
-            await Product.updateOne({
-                _id: productId
-            }, {
-                $inc: {
-                    stockQuantity: - count
-                }
-            });
+        if(orderDetailsData){
+                    // cash on delivery 
+
+                    if(orderDetailsData.status === "placed"){
+                       
+                        await Cart.deleteOne({userid: userId});
+                        for (let i = 0; i < cartData.products.length; i++) {
+                            const productId = cartProducts[i].productId;
+                            const count = cartProducts[i].quantity;
+                
+                            await Product.updateOne({
+                                _id: productId
+                            }, {
+                                $inc: {
+                                    stockQuantity: - count
+                                }
+                            });
+                        }
+                        res.json({success: true, params: orderId});
+
+                    }else{
+                            // order not cod
+                            const orderId = orderDetailsData._id;
+                            const totalAmount = orderDetailsData.total_amount;
+                            console.log("both of two ",orderId,totalAmount)
+
+
+                            if (orderDetailsData.payment == "onlinePayment") {
+                                var options = {
+                                  amount: totalAmount * 100,
+                                  currency: "INR",
+                                  receipt: "" + orderId,
+                                };
+                                console.log(options.amount)
+                                instance.orders.create(options, function (err, order) {
+                                    console.log("here i syourt oerdaer",order)
+                                  res.json({ success:false,order });
+                                });
+                              }
+                            
+                            
+                            
+
+                    }
         }
-        res.json({success: true, params: orderId});
+  
 
     } catch (err) {
 
         console.log(err.message)
     }
 }
+
+const paymentVerfication = async(req,res)=>{
+    try{
+        const cartData = await Cart.findOne({userid:req.session.user._id});
+        const products = cartData.products;
+        const details = req.body.data;
+        console.log("hey am here",details);
+    }catch(err){
+        console.log(err.message)
+    }
+}
+
+
+
+
 // =============================== SUCCESS PAGE ================================//
 const loadSuccess = async (req, res) => {
     try {
@@ -374,6 +432,7 @@ const orderDetailedview = async(req,res)=>{
 
 module.exports = {
     placeOrder,
+    paymentVerfication,
     loadSuccess,
     loadOrderlist,
     loadOrder,
