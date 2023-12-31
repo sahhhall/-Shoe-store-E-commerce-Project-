@@ -235,7 +235,7 @@ const loadShop = async (req, res) => {
         if (req.query.page) {
             page = req.query.page;
         }
-        let limit = 8;
+        let limit = 3;
         let previous = (page > 1) ? page - 1 : 1;
         let next = page + 1;
 
@@ -271,6 +271,7 @@ const loadShop = async (req, res) => {
             .skip((page - 1) * limit)
             .exec();
 
+                // here am checking the product is listed or not listed one only works 
         const listedProducts = products.filter((product) => {
             return product.is_Listed === true && listedCategoryNames.includes(product.category);
         });

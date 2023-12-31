@@ -8,8 +8,10 @@ const categoryController = require('../controllers/categoryController')
 const productController = require('../controllers/productController')
 const orderController = require('../controllers/orderController')
 const couponController = require('../controllers/couponController')
+const bannerController = require('../controllers/bannerController')
 const auth = require('../middlewares/adminAuth')
 const multer = require('../middlewares/multerConfig');
+const multerBanner = require('../middlewares/multerBanner')
 const {isLogin} = require('../middlewares/userAuth');
 
 
@@ -84,5 +86,17 @@ adminRoute.get('/product-detail',auth.isLogin,orderController.orderDetailedview)
 // =========================================< coupon >================================================= //
 
 adminRoute.get('/coupons',auth.isLogin,couponController.loadCouponPage);
+
+
+
+// =========================================< Banner  >=================================================
+
+
+adminRoute.get('/banners',auth.isLogin,bannerController.loadbanner);
+adminRoute.get('/add-banner',auth.isLogin,bannerController.loadAddBannerPage)
+adminRoute.post('/add-banner',auth.isLogin,multerBanner.single('image'),bannerController.addBannner);
+adminRoute.get('/edit-banner-page',auth.isLogin,bannerController.editBannerPageload);
+adminRoute.post('/edit-banner-page',auth.isLogin,multerBanner.single('image'),bannerController.editBannerPost);
+
 
 module.exports = adminRoute;

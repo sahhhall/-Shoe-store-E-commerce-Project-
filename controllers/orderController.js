@@ -13,12 +13,9 @@ const Razorpay = require("razorpay");
 dotenv.config();
 
 
-//================================RAZORPAY INSTANCE========================================
+// ================================RAZORPAY INSTANCE========================================
 
-var instance = new Razorpay({
-    key_id: process.env.RazorId,
-    key_secret: process.env.RazorKey,
-});
+var instance = new Razorpay({key_id: process.env.RazorId, key_secret: process.env.RazorKey});
 
 
 // ===============================ORDER PLACING ================================//
@@ -64,52 +61,48 @@ const placeOrder = async (req, res) => {
         let orderDetailsData = await newOrder.save();
         const orderId = orderDetailsData._id;
 
-        if(orderDetailsData){
-                    // cash on delivery 
+        if (orderDetailsData) { // cash on delivery
 
-                    if(orderDetailsData.status === "placed"){
-                       
-                        await Cart.deleteOne({userid: userId});
-                        for (let i = 0; i < cartData.products.length; i++) {
-                            const productId = cartProducts[i].productId;
-                            const count = cartProducts[i].quantity;
-                
-                            await Product.updateOne({
-                                _id: productId
-                            }, {
-                                $inc: {
-                                    stockQuantity: - count
-                                }
-                            });
+            if (orderDetailsData.status === "placed") {
+
+                await Cart.deleteOne({userid: userId});
+                for (let i = 0; i < cartData.products.length; i++) {
+                    const productId = cartProducts[i].productId;
+                    const count = cartProducts[i].quantity;
+
+                    await Product.updateOne({
+                        _id: productId
+                    }, {
+                        $inc: {
+                            stockQuantity: - count
                         }
-                        res.json({success: true, params: orderId});
+                    });
+                }
+                res.json({success: true, params: orderId});
 
-                    }else{
-                            // order not cod
-                            const orderId = orderDetailsData._id;
-                            const totalAmount = orderDetailsData.total_amount;
-                            console.log("both of two ",orderId,totalAmount)
+            } else { // order not cod
+                const orderId = orderDetailsData._id;
+                const totalAmount = orderDetailsData.total_amount;
+                console.log("both of two ", orderId, totalAmount)
 
 
-                            if (orderDetailsData.payment == "onlinePayment") {
-                                var options = {
-                                  amount: totalAmount * 100,
-                                  currency: "INR",
-                                  receipt: "" + orderId,
-                                };
-                                console.log(options.amount)
-                                instance.orders.create(options, function (err, order) {
-                                    console.log("here i syourt oerdaer",order)
-                                  res.json({ success:false,order });
-                                });
-                              }
-                            
-                            
-                            
+                if (orderDetailsData.payment == "onlinePayment") {
+                    var options = {
+                        amount: totalAmount * 100,
+                        currency: "INR",
+                        receipt: "" + orderId, // /we want here objectid t o strung
+                    };
+                    console.log(options.amount)
+                    instance.orders.create(options, function (err, order) {
+                        console.log("here i syourt oerdaer", order)
+                        res.json({success: false, order});
+                    });
+                }
 
-                    }
+
+            }
         }
-  
+
 
     } catch (err) {
 
@@ -117,18 +110,59 @@ const placeOrder = async (req, res) => {
     }
 }
 
-const paymentVerfication = async(req,res)=>{
-    try{
-        const cartData = await Cart.findOne({userid:req.session.user._id});
+const paymentVerfication = async (req, res) => {
+    try {
+        const cartData = await Cart.findOne({userid: req.session.user._id});
         const products = cartData.products;
-        const details = req.body.data;
-        console.log("hey am here",details);
-    }catch(err){
+        const details = req.body;
+        console.log("hey am here", details);
+        const hmac = crypto.createHmac("sha256", process.env.RazorKey);
+        hmac.update(details.payment.razorpay_order_id + "|" + details.payment.razorpay_payment_id);
+        const hmacValue = hmac.digest("hex");
+        if (hmacValue === details.payment.razorpay_signature) {
+            for (let i = 0; i < cartData.products.length; i++) {
+                const productId = products[i].productId;
+                const count = products[i].quantity;
+
+                await Product.updateOne({
+                    _id: productId
+                }, {
+                    $inc: {
+                        stockQuantity: - count
+                    }
+                });
+            }
+            console.log("how", details.order.receipt)
+            await Order.findByIdAndUpdate({
+                _id: details.order.receipt
+            }, {
+                $set: {
+                    status: "placed",
+                    statusLevel: 1
+                }
+            });
+
+            await Order.findByIdAndUpdate({
+                _id: details.order.receipt
+            }, {
+                $set: {
+                    paymentId: details.payment.razorpay_payment_id
+                }
+            });
+            await Cart.deleteOne({userId: req.session.user._id});
+            const orderid = details.order.receipt;
+            console.log("how?")
+
+            res.json({codsuccess: true, orderid});
+
+        } else {
+            await Order.findByIdAndRemove({_id: details.order.receipt});
+            res.json({success: false});
+        }
+    } catch (err) {
         console.log(err.message)
     }
 }
-
-
 
 
 // =============================== SUCCESS PAGE ================================//
@@ -145,12 +179,53 @@ const loadSuccess = async (req, res) => {
 
 const loadOrder = async (req, res) => {
     try {
+        
 
+        let page = 1;
+        // if in query page we've to set 
+        if(req.query.page){
+            page = req.query.page
+        }
+        let limit = 3;
+        let previous = (page>1) ? page - 1 : 1;
+        let next = page + 1;
 
+        const sortOption = req.query.sortbyorder;
+        console.log("hi ame", sortOption);
         const userId = req.session.user._id;
+        console.log(userId, "its myyyy");
+        // this is not thath url query 
+        let query = {userId: userId, status: 'placed'};
+     
+        if(sortOption === 'defaultbyplaced' ){
+                query.status = 'placed'
+        }else if( sortOption === 'Shipped' ){
+            query.status = 'shipped'
+        }
+        else if( sortOption === 'Delivered' ){
+            query.status = 'delivered'
+        }
+        else if( sortOption === 'cancelled' ){
+                query.status = 'cancelled'
+        }
+        else if( sortOption === 'pending' ){
+            query.status = 'pending';
+        }
 
-        const orders = await Order.find({userId}).populate('products.productId').sort({date: -1});
+        const orders = await Order.find(query).populate('products.productId').sort({date: -1}).limit(limit)
+        .skip((page - 1) * limit)
+        .exec();
 
+        const count  = await Order.countDocuments(query);
+
+        const totalPages = Math.ceil(count / limit);
+
+        if(next > totalPages){
+            next = totalPages
+        }
+
+
+        console.log("here my all orders", orders);
         // Extract product details from orders
         const orderData = orders.map(order => ({
             _id: order._id,
@@ -172,7 +247,14 @@ const loadOrder = async (req, res) => {
             products: order.products.map(product => ({productId: product.productId, proquantity: product.quantity}))
         }));
 
-        res.render('ordersUserPage', {orderData});
+        res.render('ordersUserPage', {
+            orderData,
+            totalPages:totalPages,
+            next: next,
+            previous: previous,
+            currentPage : page,
+            sortOption : sortOption   //this foe i set pafination if paginartion press this should checl
+        });
 
     } catch (err) {
         console.error(err.message);
@@ -192,7 +274,6 @@ const userOderDetails = async (req, res) => {
         const addressId = orderedProduct.delivery_address;
         const user = await User.findOne({"addresses._id": addressId});
         const selectedAddress = user.addresses.find(address => address._id.equals(addressId));
-    
 
 
         // Define arrays for day and month names
@@ -241,7 +322,7 @@ const userOderDetails = async (req, res) => {
 const loadOrderlist = async (req, res) => {
     try {
         const ordersData = await Order.find().populate("products.productId").sort({date: -1});
-       
+
         res.render('orderPage', {orders: ordersData})
     } catch (err) {
         console.log(err.message)
@@ -304,55 +385,53 @@ const statusUpdate = async (req, res) => {
 }
 
 
-const cancelOrder = async(req,res)=>{
-  try{
-    const {orderId} =req.body;
-    const orderData = await Order.findOne({_id: orderId});
-    const products = orderData.products;
+const cancelOrder = async (req, res) => {
+    try {
+        const {orderId} = req.body;
+        const orderData = await Order.findOne({_id: orderId});
+        const products = orderData.products;
 
-    // console.log("am hereee guys")
-            await Order.updateOne({
-              _id: orderId
-          }, {
-              $set: {
-                  status: "cancelled",
-                  statusLevel: 0
-              }
-          });
-          for (let i = 0; i < products.length; i++) {
-              let pro = products[i].productId;
-              let count = products[i].quantity;
-              await Product.findOneAndUpdate({
-                  _id: pro
-              }, {
-                  $inc: {
+        // console.log("am hereee guys")
+        await Order.updateOne({
+            _id: orderId
+        }, {
+            $set: {
+                status: "cancelled",
+                statusLevel: 0
+            }
+        });
+        for (let i = 0; i < products.length; i++) {
+            let pro = products[i].productId;
+            let count = products[i].quantity;
+            await Product.findOneAndUpdate({
+                _id: pro
+            }, {
+                $inc: {
                     stockQuantity: count
-                  }
-              });
-          }
-          res.json({cancelled:true});
-  }catch(err){
-    console.log(err.message)
-  }
+                }
+            });
+        }
+        res.json({cancelled: true});
+    } catch (err) {
+        console.log(err.message)
+    }
 }
 
 
-const returnReason = async(req,res)=>{
+const returnReason = async (req, res) => {
     try {
-            const { reason,
-                orderid} = req.body;
-                await Order.findByIdAndUpdate(
-                    { _id: orderid },
-                    {
-                        $set: {
-                            cancellationReason: reason,
-                            status: "Return Requested",
-                            statusLevel: 4
-                        }
-                    }
-                );
-                res.json({reason: true});
-    }catch(err){
+        const {reason, orderid} = req.body;
+        await Order.findByIdAndUpdate({
+            _id: orderid
+        }, {
+            $set: {
+                cancellationReason: reason,
+                status: "Return Requested",
+                statusLevel: 4
+            }
+        });
+        res.json({reason: true});
+    } catch (err) {
         console.log(err)
     }
 }
@@ -362,12 +441,14 @@ const returnReason = async(req,res)=>{
 const returnConf = async (req, res) => {
     try {
         console.log("I am here for confirmation");
-        const { orderId ,btndata} = req.body;
-        const orderDet = await Order.findOne({ _id: orderId });
+        const {orderId, btndata} = req.body;
+        const orderDet = await Order.findOne({_id: orderId});
         const products = orderDet.products;
-       
-        if(btndata == "accept"){
-            await Order.updateOne({_id:orderId},{
+
+        if (btndata == "accept") {
+            await Order.updateOne({
+                _id: orderId
+            }, {
                 $set: {
                     status: "returned",
                     statusLevel: 5
@@ -384,48 +465,59 @@ const returnConf = async (req, res) => {
                     }
                 });
             }
-        }else if(btndata  == "reject"  ){
-        
-            await Order.updateOne({_id:orderId},{
-                $set:{
+        } else if (btndata == "reject") {
+
+            await Order.updateOne({
+                _id: orderId
+            }, {
+                $set: {
                     status: "delivered",
-                    
+
                     statusLevel: 3
                 }
             })
         }
-        
-        res.json({isOK: true });
+
+        res.json({isOK: true});
     } catch (err) {
         console.log(err.message);
     }
 };
 
-const orderDetailedview = async(req,res)=>{
-    try{
+const orderDetailedview = async (req, res) => {
+    try {
         const orderId = req.query.id;
-        
 
 
-        const ordersData = await Order.findOne({_id:orderId}).populate("products.productId");
+        const ordersData = await Order.findOne({_id: orderId}).populate("products.productId");
         const userId = ordersData.userId;
-        console.log("here all data ",ordersData)
-      // Extract the delivery address ObjectId
-      const addressId = ordersData.delivery_address;
- 
-    //   here am doing get first documetn in array of address
-      const userAddresses = await User.findOne({ "addresses": { $exists: true, $ne: {} } }, { "addresses": 1 });
-      const userFirstadd = userAddresses.addresses[0];
-     
-      const userad = await User.findOne({ "addresses._id": addressId });
-     
-      const selectedAddress = userad.addresses.find(address => address._id.equals(addressId));
+        console.log("here all data ", ordersData)
+        // Extract the delivery address ObjectId
+        const addressId = ordersData.delivery_address;
+
+        // here am doing get first documetn in array of address
+        const userAddresses = await User.findOne({
+            "addresses": {
+                $exists: true,
+                $ne: {}
+            }
+        }, {"addresses": 1});
+        const userFirstadd = userAddresses.addresses[0];
+
+        const userad = await User.findOne({"addresses._id": addressId});
+
+        const selectedAddress = userad.addresses.find(address => address._id.equals(addressId));
 
 
         const userData = await User.findById(userId);
 
-        res.render('orderDetail',{orders: ordersData,user: userData,selectedAddress:selectedAddress,userFirstadd:userFirstadd});
-    }catch(err){
+        res.render('orderDetail', {
+            orders: ordersData,
+            user: userData,
+            selectedAddress: selectedAddress,
+            userFirstadd: userFirstadd
+        });
+    } catch (err) {
         console.log(err.message)
     }
 }

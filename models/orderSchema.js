@@ -45,6 +45,9 @@ const orderSchema=new Schema({
         type: String,
         default: "none"
     },
+    paymentId: {
+        type: String
+      },
     products: [
         {
             productId: {

@@ -1,0 +1,64 @@
+
+<%- include('../layouts/admin/header.ejs') -%>
+
+<style>
+    #imagePreviewbanner{
+        width: 300px;
+        height: 300px;
+    }
+</style>
+<div class="main-panel">
+    <div class="content-wrapper">
+  <div class="col-12 grid-margin stretch-card">
+      <div class="card">
+        <div class="card-body">
+          <h4 class="card-title">Add Banners</h4>
+          <p class="card-description"> Give banner details </p>
+          <form class="forms-sample" action="/admin/add-banner" id="addBanner" method="post" enctype="multipart/form-data">
+              
+            <div class="form-group">
+              <label for="exampleInputName1">Banner Title</label>
+              <input type="text" class="form-control" id="title" name="title" placeholder="Name">
+              <p style="color: red; display: none;" id="titleError"></p>
+            </div>
+            
+            <div class="form-group">
+              <label for="exampleTextarea1">Description</label>
+              <input type="text" class="form-control" id="description" name="description" placeholder="Description">
+              <p style="color: red; display: none;" id="desError"></p>
+            </div>
+            <div class="col-lg-3 col-md-6 rounded-image-preview ">
+              <label for="exampleTextarea1">Banner Image</label>
+              <label for="imageInput1" class="image-label ">
+                <div class="rounded-image-preview">
+                  <img id="imagePreviewbanner"
+                 
+                    alt="Preview" />
+                </div>
+                <input name="image" type="file" accept="image/*" id="imageInput1" class="imageInput" onchange="previewBimage(event)" required>
+              </label>
+            </div>
+            <br>
+            <button type="submit" class="btn btn-primary mr-2">Submit</button>
+            <button class="btn btn-inverse-danger"><a href="/admin/bannerDetails">Cancel</a></button>
+          </form>
+        </div>
+      </div>
+    </div>
+    </div>
+    <%- include('../layouts/admin/footer.ejs') -%>
+
+    <script>
+        function previewBimage(e){
+            const input =e.target;
+            const image = document.getElementById('imagePreviewbanner')
+            if(input.files &&  input.files[0]){
+                var reader = new FileReader()
+                reader.onload = function(e){
+                    image.src = e.target.result
+                }
+                reader.readAsDataURL(input.files[0])
+            }
+
+        }
+    </script>

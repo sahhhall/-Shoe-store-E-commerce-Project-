@@ -664,6 +664,15 @@ const userId = req.session.user._id;
 
 
 
+const walletLoad = async(req,res)=>{
+    try{
+
+        res.render('walletPage')
+    }catch(err){
+        console.log(err.message)
+    }
+}
+
 module.exports = {
     loadLogin,
     loadHome,
@@ -687,7 +696,8 @@ module.exports = {
     resetPasswithOld,
     addAddress,
     editAddress,
-    deleteAddress
+    deleteAddress,
+    walletLoad
 
 
 }

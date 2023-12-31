@@ -83,7 +83,7 @@ userRouter.post('/edit-addresses',userController.editAddress)
 
 userRouter.post('/remove-addresses',userController.deleteAddress);
 
-
+userRouter.get('/wallet',userController.walletLoad)
 // ==========================================< CART HANDLING >==================================================== //
 
 userRouter.get('/cart',auth.authlogg,cartController.loadCart);

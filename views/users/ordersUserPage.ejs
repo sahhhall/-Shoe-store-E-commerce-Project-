@@ -98,6 +98,7 @@
       <div class="menu-itemmm" ><a href="/orders" aria-current="page"  class="bg-light active">Orders</a></div><hr>
 
       <div class="menu-itemmm"><a href="#">Wishlist</a></div><hr>
+      <div class="menu-itemmm"><a href="/wallet"  >Wallet</a></div><hr>
 
       <div class="menu-headinggg">Legal</div>
       <div class="menu-itemmm" ><a href="#">Terms of Use</a></div><hr>
@@ -116,15 +117,25 @@
         <li class="me-4"><a class="nav-link-checkout" href="/">Home</a></li>
         <li class="me-4"><a class="nav-link-checkout" href="/profile">Profile</a></li>
         <li class="me-4"><a class="nav-link-checkout active aria-current" href="/orders">Orders</a></li>
+        
     </ul>
 </nav>
 
   <div id="edit-profile-section"   style="display: block;"  >
      <h1>Orders</h1>
+     
      <div class="mt-5">
-      <h3 class="fs-5 fw-bolder mb-0 border-bottom pb-4">Your orders</h3>
+      <h3 class="fs-5 fw-bolder mb-0 pb-4">Your orders</h3>
+      <!-- inhere you see this The this keyword refers to the <select>   -->
+      <select id="filterOrder" class="form-select w-25 form-select-sm border-0 bg-light p-3 pe-5 lh-1 fs-7  pb-4 border-bottom " onchange="updateFilter(this)">
+        <option value="/orders?sortbyorder=defaultbyplaced" selected>placed</option>
+        <option value="/orders?sortbyorder=Shipped">Shipped</option>
+        <option value="/orders?sortbyorder=Delivered">Delivered</option>
+        <option value="/orders?sortbyorder=cancelled">Cancelled</option>
+        <option value="/orders?sortbyorder=pending">pending</option>
+    </select>
       <div class="table-responsive">
-          
+     
           <table class="table align-middle" id="reloadArea">
               <tbody class="border-0"  >
                   <!-- Cart Item--><% if (orderData && orderData.length > 0) { %>
@@ -230,8 +241,35 @@
                   
                   <!-- / Cart Item-->
               </tbody>
+            
           </table>
+          <nav aria-label="Page navigation example">
+            <ul class="pagination">
+              <% if (totalPages > 1) { %>
           
+                <% if (currentPage <= 1) { %>
+                  <li class="page-item"><a class="page-link" aria-disabled="true">Previous</a></li>
+                <% } else { %>
+                  <li class="page-item"><a class="page-link" href="?page=<%= previous %><% if (sortOption) { %>&sortbyorder=<%= sortOption %><% } %>">Previous</a></li>
+                <% } %>
+          
+               
+          
+                <% if (currentPage < totalPages) { %>
+                  <li class="page-item"><a class="page-link" href="?page=<%= next %><% if (sortOption) { %>&sortbyorder=<%= sortOption %><% } %>">Next</a></li>
+                <% } else { %>
+                  <li class="page-item"><a class="page-link" aria-disabled="true">Next</a></li>
+                <% } %>
+          
+              <% } else { %>
+          
+                <li class="page-item"><a class="page-link" aria-disabled="true">Previous</a></li>
+                <li class="page-item"><a class="page-link" aria-disabled="true">1</a></li>
+                <li class="page-item"><a class="page-link" aria-disabled="true">Next</a></li>
+          
+              <% } %>
+            </ul>
+          </nav>
       </div>
   </div>
 
@@ -297,7 +335,40 @@
     
    }
 </script>
+<script>
+// filter orders 
 
+
+function updateFilter(selectElement){
+  const selectedOption =selectElement.value;
+  window.location.href = selectedOption;
+
+}
+function getParameterByName(name) {
+        const urlParams = new URLSearchParams(window.location.search);
+        return urlParams.get(name);
+       
+    }
+document.addEventListener('DOMContentLoaded',function(){
+
+
+function setSelectedOptionn(){
+  const selectElement = document.getElementById('filterOrder');
+  const sortQueryParam = getParameterByName('sortbyorder');
+
+  for(let i=0;i< selectElement.options.length;i++){
+    const option = selectElement.options[i];
+    if(option.value=== `/orders?sortbyorder=${sortQueryParam}`){
+      option.selected = true;
+    }else{
+      option.selected = false;
+    }
+  }
+}
+setSelectedOptionn();
+})
+
+</script>
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
   
