@@ -87,6 +87,7 @@ adminRoute.get('/product-detail',auth.isLogin,orderController.orderDetailedview)
 
 adminRoute.get('/coupons',auth.isLogin,couponController.loadCouponPage);
 
+adminRoute.get('/addCoupon',auth.isLogin,couponController.loadAddCoupon);
 
 
 // =========================================< Banner  >=================================================

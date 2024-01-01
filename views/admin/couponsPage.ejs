@@ -1,6 +1,71 @@
 <%- include('../layouts/admin/header.ejs') -%>
 
 
+<section class="content-main">
+    <div class="content-header">
+        <div>
+            <h1 class="fw-bold fs-3 mb-2">Coupons </h1>
+            <nav aria-label="breadcrumb">
+                <ol class="breadcrumb">
+                    <li class="breadcrumb-item"><a href="/admin/home">Admin</a></li>
+                    <li class="breadcrumb-item active" aria-current="page">Coupons</li>
+                </ol>
+            </nav>
+            <p class="m-0 text-muted small">Add, edit, or list coupons</p>
+            <p class="m-0 text-muted small">Showing 1 - 9 of 121</p>
+        </div>
+        <div>
+            <a href="/admin/addCoupon" class="btn btn-primary"><i class="material-icons md-plus"></i> Add Coupon </a>
+        </div>
+    </div>
+    <div class="card mb-4">
+        <header class="card-header">
+            <div class="row gx-3">
+                <div class="col-lg-4 col-md-6 me-auto">
+                    <input type="text" placeholder="Search..." class="form-control" id="searchInput" />
+                </div>
+            </div>
+        </header>
+
+        <div class="card-body">
+            <div class="table-responsive" id="reloadArea">
+                <table class="table table-hover" id="couponTable">
+                    <thead>
+                        <tr class="table-dark">
+                            <th>ID</th>
+                            <th>Coupon Code</th>
+                            <th>Discount</th>
+                            <th>Validity</th>
+                            <th>Status</th>
+                            <th class="text-center">Action</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <!-- Static coupon data -->
+                        <tr>
+                            <td>1</td>
+                            <td>Coupon123</td>
+                            <td>20%</td>
+                            <td>2024-12-31</td>
+                            <td>Active</td>
+                            <td class="text-center">
+                                <a class="btn btn-sm btn-danger rounded font-sm mt-15 text-white" data-coupon-id="1" data-initial-status="true" onclick="toggleCouponStatus(1)">
+                                    Deactivate
+                                </a>
+                                <a class="btn btn-sm btn-brand rounded font-sm mt-15" href="/admin/edit-coupon?id=1">Edit</a>
+                            </td>
+                        </tr>
+                        <!-- Add more static coupon rows as needed -->
+
+                    </tbody>
+                </table>
+                <!-- table-responsive.// -->
+            </div>
+        </div>
+
+    </div>
+    <!-- card end// -->
+</section>
 
   
 <%- include('../layouts/admin/footer.ejs') -%>

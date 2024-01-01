@@ -25,7 +25,6 @@ app.use('*', (req, res) => {
     res.status(404).render(path.join(__dirname, 'views/users/404notfound.ejs'));
 });
 
-
 const port = process.env.PORT || 2001;
 app.listen(port, () => {
     console.log(`Server is connected at http://localhost:${port}/`);

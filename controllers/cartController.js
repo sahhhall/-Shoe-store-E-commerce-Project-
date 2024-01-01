@@ -131,7 +131,7 @@ const removeCartItem = async (req, res) => {
 
 const loadCheckOut = async(req,res)=>{
     try{
-      
+        
         const userId = req.session.user._id
         const user = await User.findById(userId);
         const addresses = user.addresses;
@@ -141,6 +141,8 @@ const loadCheckOut = async(req,res)=>{
           res.redirect('/cart');
         }
       else{
+       const walletAmount = user.wallet;
+      
         let  initialAmount =0;
         if(cartDetails){
             cartDetails.products.forEach((item)=>{
@@ -149,7 +151,7 @@ const loadCheckOut = async(req,res)=>{
             })
             
        
-        } res.render('checkOutshipping',{cartDetails, subTotal: initialAmount,addresses:addresses});
+        } res.render('checkOutshipping',{cartDetails, subTotal: initialAmount,addresses:addresses ,walletAmount:walletAmount});
       } 
         // const products = cartDetails.products;
 

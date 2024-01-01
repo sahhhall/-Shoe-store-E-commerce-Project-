@@ -1,0 +1,46 @@
+<%- include('../layouts/admin/header.ejs') -%>
+
+<section class="d-flex justify-content-center align-items-center p-4">
+    <div class="col col-md-8 col-lg-6 col-xxl-5">
+
+        <h1 class="text-center fw-bold mb-5 fs-2">Add Coupon</h1>
+
+        <!-- Your complete coupon addition form here -->
+        <form action="/admin/add-coupon" method="post" onsubmit="return validateCoupon()">
+            <div class="form-group">
+                <label for="couponName">Coupon Name</label>
+                <input type="text" class="form-control" id="couponName" name="couponName" placeholder="Name">
+                <div id="couponNameError" style="display: none; color: red;"></div>
+            </div>
+            <div class="form-group">
+                <label for="couponCode">Coupon Code</label>
+                <input type="text" class="form-control" id="couponCode" name="couponCode" placeholder="Code">
+                <div id="couponCodeError" style="display: none; color: red;"></div>
+            </div>
+            <div class="form-group">
+                <label for="discount">Discount Percntage</label>
+                <input type="text" class="form-control" id="discount" name="discount" placeholder="Discount">
+                <div id="disError" style="display: none; color: red;"></div>
+            </div>
+            <div class="form-group">
+                <label for="amount">Criteria Amount</label>
+                <input type="number" class="form-control" id="amount" name="criteriaAmount" placeholder="Criteria Amount">
+                <div id="amountError" style="display: none; color: red;"></div>
+            </div>
+            <div class="form-group">
+                <label for="expiryDate">Expiry Date</label>
+                <input type="date" class="form-control" id="expiryDate" name="expiryDate" placeholder="Expiry Date">
+                <div id="expiryDateError" style="display: none; color: red;"></div>
+            </div>
+            <div class="form-group">
+                <label for="usersLimit">Users Limit</label>
+                <input type="number" class="form-control" id="usersLimit" name="usersLimit" placeholder="Users Limit">
+                <div id="usersLimitError" style="display: none; color: red;"></div>
+            </div>
+            <button id="submitBtn" class="btn btn-primary mr-2">Submit</button>
+            <a class="btn btn-inverse-danger" href="/admin/coupons">Cancel</a>
+        </form>
+    </div>
+</section>
+
+<%- include('../layouts/admin/footer.ejs') -%>

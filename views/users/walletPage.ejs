@@ -76,6 +76,46 @@
     }   
 
 }
+
+
+
+
+/* wallet  */
+.card{
+	border: none;
+	border-radius: 10px;
+	width: 50%;
+  
+	
+}
+.fa-ellipsis-v{
+	font-size: 10px;
+	color: #C2C2C4;
+	margin-top: 6px;
+	cursor: pointer;
+}
+.text-dark{
+	font-weight: bold;
+	margin-top: 8px;
+	font-size: 13px;
+	letter-spacing: 0.5px;
+}
+.card-bottom{
+	background: #3E454D;
+	border-radius: 6px;
+}
+
+.flex-column p{
+	letter-spacing: 1px;
+	font-size: 18px;
+}
+.btn-secondary{
+	height: 40px!important;
+	margin-top: 3px;
+}
+.btn-secondary:focus{
+	box-shadow: none;
+}
   </style>
 </head>
 <body>
@@ -127,13 +167,52 @@
       <h3 class="fs-5 fw-bolder mb-0 pb-4">Your </h3>
       
       <div class="table-responsive">
-     
-          <table class="table align-middle" id="reloadArea">
-              <tbody class="border-0"  >
+        <div class=" d-flex ">
+          <div class="card p-3">
+            <div class="d-flex flex-row justify-content-between text-align-center">
+       
+              <i class="fas fa-ellipsis-v"></i>
+            </div>
+            <p class="text-dark"><%= name  %> Account</p>
+            <div class="card-bottom pt-3 px-3 mb-2">
+              <div class="d-flex flex-row justify-content-between text-align-center">
+                <div class="d-flex flex-column" style="	color: #adb5bd;
+                font-size: 13px;" ><span>Balance amount</span><p>₹ <span class="text-white"><%= walletAmount  %></span></p></div>
+        
+              </div>
+            </div>
+            <div class="new-div">
+              <div class="car"  >
+               <div class="card-body">
+                <h4 class="card-title text-center">Transaction History</h4>
+                <hr>
+                <%if(walletHistory.length > 0){%>
+                  <% walletHistory.forEach((walletHistory)=>{ %>
+                    <div class="d-flex justify-content-between transction- " >
+                      <p ><%= walletHistory.date.toLocaleDateString('en-US',
+                        { year: 'numeric', month: 'short', day: '2-digit'
+                        }) %></p>
+                      <p>
+                        ₹<%=  walletHistory.amount %>
+                      </p>
+                      <p>
+                        <%= walletHistory.reason %>
+                      </p>
+                    </div>
                   
-              </tbody>
-            
-          </table>
+                    <%})%>
+                
+                <% } %>
+               
+                <button class="btn text-white w-100" style="background-color: #3E454D">Add Money</button>
+
+               </div>
+              </div>
+              
+              <!-- Add your content here -->
+            </div>
+          </div>
+        </div>
      
       </div>
   </div>

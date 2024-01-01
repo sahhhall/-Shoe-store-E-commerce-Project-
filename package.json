@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "nodemon index.js"
+    "start": "node-dev index.js"
   },
   "author": "",
   "license": "ISC",
@@ -28,6 +28,6 @@
     "sweetalert2": "^11.10.1"
   },
   "devDependencies": {
-    "nodemon": "^3.0.2"
+    "node-dev": "^8.0.0"
   }
 }

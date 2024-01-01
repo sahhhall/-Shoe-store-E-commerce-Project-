@@ -8,7 +8,7 @@ const nodemailer = require('nodemailer');
 const dotenv = require('dotenv');
 const Product = require('../models/productSchema');
 const Order = require('../models/orderSchema');
-const { profile, log } = require('console');
+const {profile, log} = require('console');
 dotenv.config();
 
 
@@ -353,6 +353,7 @@ const sendResetPass = async (email, res) => {
             return res.status(400).send("user with given email doesn't exist");
         
 
+
         let token = await Token.findOne({userId: user._id});
         if (! token) {
             token = await new Token({userId: user._id, token: crypto.randomBytes(32).toString("hex")}).save();
@@ -467,7 +468,6 @@ const resetPassword = async (req, res) => {
 };
 
 
-
 const aboutUs = async (req, res) => {
     try {
         res.render('about-us')
@@ -485,190 +485,222 @@ const contactPage = async (req, res) => {
 }
 
 
-
 // =========================================< Profile >=================================================
 
-const loadProfile = async (req,res)=>{
-    try{
+const loadProfile = async (req, res) => {
+    try {
         const userid = req.session.user._id;
         const user = await User.findById(userid)
         // console.log("user",user)
-        res.render('profilePage',{user:user})
+        res.render('profilePage', {user: user})
 
-    }catch(err){
+    } catch (err) {
         console.log(err.message)
     }
 }
-const loadAddressManage = async(req,res)=>{
-    try{
+const loadAddressManage = async (req, res) => {
+    try {
         const userid = req.session.user._id;
 
         const user = await User.findById(userid);
         const addresses = user.addresses;
-    //    console.log("here i getted your  address",addresses)
-        res.render('manageAddress',{addresses:addresses});
-    }catch(err){
+        //    console.log("here i getted your  address",addresses)
+        res.render('manageAddress', {addresses: addresses});
+    } catch (err) {
         console.log(err.message)
     }
 }
 const editProfile = async (req, res) => {
     try {
-      const email = req.body.userEmail;
-      const newUserName = req.body.updatedName;
-      const newMobile = req.body.updatedMobile;
-  
-      const findUsernameExist = await User.find({ name: newUserName });
-  
-      if (findUsernameExist.length > 0) {
-        res.json({ edited: false });
-      } else {
-        // console.log("Here I find a username that exists:", findUsernameExist);
-  
-        const user = await User.findOneAndUpdate(
-          { email: email },
-          { $set: { name: newUserName, mobile: newMobile } },
-          { new: true }
-        );
-  
-        // console.log("Updated User:", user);
-        res.json({ edited: true, user: user });
-      }
-    } catch (err) {
-      console.error(err.message);
-      res.status(500).json({ edited: false, message: "Server error" });
-    }
-  };
-  
-  
-// reset pssworfd with older one progile page 
+        const email = req.body.userEmail;
+        const newUserName = req.body.updatedName;
+        const newMobile = req.body.updatedMobile;
 
-const resetPasswithOld = async(req,res)=>{
-    try{
-           
-        const { confirmPass, useremail, oldPass } = req.body;
-    
-        const user = await User.findOne({email: useremail });
+        const findUsernameExist = await User.find({name: newUserName});
+
+        if (findUsernameExist.length > 0) {
+            res.json({edited: false});
+        } else { // console.log("Here I find a username that exists:", findUsernameExist);
+
+            const user = await User.findOneAndUpdate({
+                email: email
+            }, {
+                $set: {
+                    name: newUserName,
+                    mobile: newMobile
+                }
+            }, {new: true});
+
+            // console.log("Updated User:", user);
+            res.json({edited: true, user: user});
+        }
+    } catch (err) {
+        console.error(err.message);
+        res.status(500).json({edited: false, message: "Server error"});
+    }
+};
+
+
+// reset pssworfd with older one progile page
+
+const resetPasswithOld = async (req, res) => {
+    try {
+
+        const {confirmPass, useremail, oldPass} = req.body;
+
+        const user = await User.findOne({email: useremail});
 
         const passwordMatch = await bcrypt.compare(oldPass, user.password);
-       
-        if(!passwordMatch){
-            res.json({res:false})
-        }
-        else{
+
+        if (! passwordMatch) {
+            res.json({res: false})
+        } else {
             const passwordSame = await bcrypt.compare(oldPass, confirmPass);
-            
+
             if (passwordSame || confirmPass === oldPass) {
-                return res.json({ reseted: false });
-            }
-    
-            else{
+                return res.json({reseted: false});
+            } else {
                 const securePass = await securePassword(confirmPass);
-                await User.findOneAndUpdate({email:useremail},{$set:{
-                    password:securePass
-                }})
+                await User.findOneAndUpdate({
+                    email: useremail
+                }, {
+                    $set: {
+                        password: securePass
+                    }
+                })
                 // console.log("amhere");
-                res.json({ reseted: true});
-    
+                res.json({reseted: true});
+
             }
-           
+
         }
-    }catch(err){
-console.log(err.message);
+    } catch (err) {
+        console.log(err.message);
     }
 }
 
-// adding new addewssws 
-const addAddress = async(req,res)=>{
-    try{
-        const {fullName, addressLine ,city, state , postcode,phone,userEmail}= req.body;
-        const user =await User.findOne({email:userEmail})
-        
-        await User.findOneAndUpdate(
-            { email: userEmail },
-            {
-                $push: {
-                    addresses: {
-                        name: fullName,
-                        addressline : addressLine,
-                        city: city,
-                        state: state,
-                        pincode: postcode,
-                        phone: phone
-                    }
+// adding new addewssws
+const addAddress = async (req, res) => {
+    try {
+        const {
+            fullName,
+            addressLine,
+            city,
+            state,
+            postcode,
+            phone,
+            userEmail
+        } = req.body;
+        const user = await User.findOne({email: userEmail})
+
+        await User.findOneAndUpdate({
+            email: userEmail
+        }, {
+            $push: {
+                addresses: {
+                    name: fullName,
+                    addressline: addressLine,
+                    city: city,
+                    state: state,
+                    pincode: postcode,
+                    phone: phone
                 }
             }
-        );
+        });
 
         // console.log("hihi am hte you usr ",user);
         //     console.log("am here how can i help you")
         //     console.log("here your all data",fullName,addressLine,city,state);
-            res.json({added :true})
-    }catch(err){
+        res.json({added: true})
+    } catch (err) {
         console.log(err.message)
     }
 }
 
-// editig entire address  with post method 
+// editig entire address  with post method
 
-const editAddress = async(req,res)=>{
-    try{
+const editAddress = async (req, res) => {
+    try {
         const userid = req.session.user._id;
-        const {id,
+        const {
+            id,
             fullName,
             address,
             city,
             state,
             post,
-            phone }=req.body;
+            phone
+        } = req.body;
 
-            const updatedUser = await User.findOneAndUpdate(
-                { _id: userid, "addresses._id": id },
-                {
-                    $set: {
-                        "addresses.$.name": fullName,
-                        "addresses.$.addressline": address,
-                        "addresses.$.city": city,
-                        "addresses.$.state": state,
-                        "addresses.$.pincode": post,
-                        "addresses.$.phone": phone,
-                    },
-                },
-                { new: true } // Return the updated document
-            );
-            
-            console.log(updatedUser, "here is your updated user");
-            res.json({edited:true})
-            
-    }catch(err){
-        console.log(err.message)
-    }
-}
-
-const deleteAddress = async(req,res)=>{
-    try{
-console.log("hihi")
-const userId = req.session.user._id;
-        const { Addid} = req.body;
-        console.log(Addid,"here we aere")
-
-        await User.updateOne(
-            { _id: userId },
-            { $pull: { addresses: { _id: Addid } } }
+        const updatedUser = await User.findOneAndUpdate({
+            _id: userid,
+            "addresses._id": id
+        }, {
+            $set: {
+                "addresses.$.name": fullName,
+                "addresses.$.addressline": address,
+                "addresses.$.city": city,
+                "addresses.$.state": state,
+                "addresses.$.pincode": post,
+                "addresses.$.phone": phone
+            }
+        }, {new: true} // Return the updated document
         );
 
-            res.json({deleted:true});
-    }catch(err){
+        console.log(updatedUser, "here is your updated user");
+        res.json({edited: true})
+
+    } catch (err) {
+        console.log(err.message)
+    }
+}
+
+const deleteAddress = async (req, res) => {
+    try {
+        console.log("hihi")
+        const userId = req.session.user._id;
+        const {Addid} = req.body;
+        console.log(Addid, "here we aere")
+
+        await User.updateOne({
+            _id: userId
+        }, {
+            $pull: {
+                addresses: {
+                    _id: Addid
+                }
+            }
+        });
+
+        res.json({deleted: true});
+    } catch (err) {
         console.log(err.message)
     }
 }
 
 
+const walletLoad = async (req, res) => {
+    try {
+        const user = req.session.user;
+        const userId = user._id;
+        const userData = await User.findById(userId);
+        const userName = userData.name;
+        let walletHistory;
+        let walletAmount;
+        if (userData) {
+            walletAmount = userData.wallet;
+            userData.walletHistory.sort((a, b) => b.date - a.date);
+            walletHistory = userData.walletHistory.slice(0, 3);
+            
+        }
 
-const walletLoad = async(req,res)=>{
-    try{
+        res.render('walletPage', {
+            walletAmount: walletAmount,
+            name: userName,
+            walletHistory: walletHistory
 
-        res.render('walletPage')
-    }catch(err){
+        })
+    } catch (err) {
         console.log(err.message)
     }
 }

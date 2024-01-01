@@ -227,7 +227,7 @@ const searchProduct = async(req,res)=>{
   
 // //////////////////////////////////shop ui//////////////////
 const loadShop = async (req, res) => {
-    try {
+    try {``
         const categId = req.query.categid;
         // here cominng sort option selected 
         const sortOption = req.query.sort;
@@ -235,7 +235,7 @@ const loadShop = async (req, res) => {
         if (req.query.page) {
             page = req.query.page;
         }
-        let limit = 3;
+        let limit = 8;
         let previous = (page > 1) ? page - 1 : 1;
         let next = page + 1;
 

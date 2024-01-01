@@ -97,6 +97,55 @@ const placeOrder = async (req, res) => {
                         console.log("here i syourt oerdaer", order)
                         res.json({success: false, order});
                     });
+                }else if(orderDetailsData.payment == "wallet" ){
+
+                    await Cart.deleteOne({userid: userId});
+                    for (let i = 0; i < cartData.products.length; i++) {
+                        const productId = cartProducts[i].productId;
+                        const count = cartProducts[i].quantity;
+                        
+                        await Product.updateOne({
+                            _id: productId
+                        }, {
+                            $inc: {
+                                stockQuantity: - count,
+                             
+                            },
+                          
+                        });
+                    }
+
+                    
+                    await Order.updateOne(
+                        {
+                        
+                            _id: orderId 
+                        },
+                        {
+                            $set: {
+                                status: "placed",
+                                statusLevel: 1
+                            }
+                        }
+                    );
+                    // here i updateing the wallet balance
+                    await User.updateOne({
+                        _id:userId
+                    },{
+                        $inc:{
+                            wallet : -totalAmount,
+                            
+                        },
+                        $push:{
+                            walletHistory:{
+                                date: new Date(),
+                                amount: `-${totalAmount}`,
+                                reason: 'ordered with wallet'
+                            }
+                        }
+                        
+                    })
+                    res.json({success: true, params: orderId});
                 }
 
 
@@ -210,6 +259,9 @@ const loadOrder = async (req, res) => {
         }
         else if( sortOption === 'pending' ){
             query.status = 'pending';
+        }
+        else if(  sortOption === 'return' ){
+            query.status ={ $in: ['Return Requested', 'returned'] };
         }
 
         const orders = await Order.find(query).populate('products.productId').sort({date: -1}).limit(limit)
@@ -440,12 +492,17 @@ const returnReason = async (req, res) => {
 
 const returnConf = async (req, res) => {
     try {
+        
         console.log("I am here for confirmation");
         const {orderId, btndata} = req.body;
         const orderDet = await Order.findOne({_id: orderId});
         const products = orderDet.products;
-
+        const userId = orderDet.userId;
+        
+      
+          let totalamountTowallet =   orderDet.total_amount;
         if (btndata == "accept") {
+
             await Order.updateOne({
                 _id: orderId
             }, {
@@ -465,6 +522,24 @@ const returnConf = async (req, res) => {
                     }
                 });
             }
+             
+            await User.findOneAndUpdate({
+                _id:userId
+            },{
+                $inc:{
+                    wallet: totalamountTowallet
+                },
+                $push:{
+                    walletHistory:{
+                        date: new Date(),
+                        amount: totalamountTowallet,
+                        reason: 'order return'
+                    }
+                }
+
+            })
+        
+           
         } else if (btndata == "reject") {
 
             await Order.updateOne({
