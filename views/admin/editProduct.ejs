@@ -15,7 +15,7 @@
   
             <div class="form-group">
               <label for="quantity">Quantity</label>
-              <input type="number" class="form-control" id="quantity" name="quantity" value="<%= productedit.stockQuantity  %>" >
+              <input  type="number" class="form-control" id="quantity" name="quantity" value="<%= productedit.stockQuantity  %>" >
             </div>
   
           
@@ -119,6 +119,15 @@
        alert("please fill desc more than 20 letters");
        return false
      }
+     else if ( quantity < 1 ) {
+      alert('minimum 1 product stock need');
+   
+      document.getElementById('quantity').style.border = ' 1px solid red';
+      setTimeout(()=> {
+        document.getElementById('quantity').style.border = '';
+      },3000)
+      return false;
+     }
      
      
       else if (!Number.isInteger(Number(quantity))) {
@@ -127,14 +136,29 @@
        }
 
      else  if (!Number.isInteger(Number(storeId))) {
-           alert('Store ID must be an integer');
+           alert(' previous price must be an integer');
            return false; 
        }
 
-     
+     else if (  storeId < 1 ) {
+      alert('previous price must be postive integer')
+        document.getElementById('store_id').style.border = ' 1px solid red';
+      setTimeout(()=> {
+        document.getElementById('store_id').style.border = '';
+      },3000)
+        return false;
+     }
       else if (!Number.isInteger(Number(price))) {
            alert('Price must be an integer');
            return false;
+       }
+       else if ( price < 1 ) {
+        alert('price must be postive integer')
+        document.getElementById('price').style.border = ' 1px solid red';
+      setTimeout(()=> {
+        document.getElementById('price').style.border = '';
+      },3000)
+        return false;
        }
       
      else  if (sizes.length === 0) {
