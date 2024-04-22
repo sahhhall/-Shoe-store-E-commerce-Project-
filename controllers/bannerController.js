@@ -19,22 +19,42 @@ const loadAddBannerPage = async (req, res) => {
     }
 }
 
+const listUnlistBanner = async (req, res) => {
+
+    try {
+        console.log("here for listnlist")
+        const bannerId = req.body.status;
+        const bannerSts = await Banner.findById(bannerId);
+        console.log(bannerSts);
+        if (bannerSts.status) {
+            await Banner.findByIdAndUpdate({
+                _id:bannerId
+            }, {
+                $set: {
+                    status: false
+                }
+            })
+        } else {
+            await Banner.findByIdAndUpdate({_id:bannerId},{$set:{status:true}})
+        }
+
+        res.json({list:true});
+    } catch (err) {
+        console.log(err.message)
+    }
+}
+
 const addBannner = async (req, res) => {
     try {
         const image = req.file.filename;
-        const banner = new Banner({
-             title: req.body.title,
-             description: req.body.description, 
-             image: req.file.filename, 
-             status: true
-        })
+        const banner = new Banner({title: req.body.title, description: req.body.description, image: req.file.filename, status: true})
 
         let result = await banner.save();
-        if(result){
+        if (result) {
             res.redirect('/admin/banners')
-          }else{
+        } else {
             console.log('not added in db');
-          }
+        }
 
     } catch (err) {
         console.log(err.message)
@@ -42,36 +62,36 @@ const addBannner = async (req, res) => {
 }
 
 
-const editBannerPageload = async(req,res)=>{
-    try{
+const editBannerPageload = async (req, res) => {
+    try {
         const bannerid = req.query.id;
         const bannerSpecific = await Banner.findById(bannerid)
-        console.log("here am",bannerSpecific);
-        res.render('editBanner',{banner:bannerSpecific})
+        console.log("here am", bannerSpecific);
+        res.render('editBanner', {banner: bannerSpecific})
 
-    }catch(err){
+    } catch (err) {
         console.log(err.message)
     }
 }
 
 
-const editBannerPost = async(req,res)=>{
-    try{
+const editBannerPost = async (req, res) => {
+    try {
         console.log("hi her nothing to i achive 8 lpa job in it")
         const bannerid = req.query.id;
         const bannerSpecific = await Banner.findById(bannerid)
-        await Banner.findById({bannerSpecific},
-          {
-            $set:{
+        await Banner.findById({
+            bannerSpecific
+        }, {
+            $set: {
                 title: req.body.title,
-                description: req.body.description, 
-                image: req.file.filename, 
-             
+                description: req.body.description,
+                image: req.file.filename
+
             }
-          }  
-            )
-            res.redirect('/admin/banners')
-    }catch(err){
+        })
+        res.redirect('/admin/banners')
+    } catch (err) {
         console.log(err.message)
     }
 }
@@ -80,6 +100,7 @@ const editBannerPost = async(req,res)=>{
 module.exports = {
     loadbanner,
     loadAddBannerPage,
+    listUnlistBanner,
     addBannner,
     editBannerPageload,
     editBannerPost

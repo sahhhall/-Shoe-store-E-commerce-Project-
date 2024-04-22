@@ -133,7 +133,7 @@
                      </div>
                      <!-- pagination  -->
                    <nav aria-label="Page navigation example">
-  <ul class="pagination">
+  <ul class="pagination" id="paginationHi">
     <% if (totalPages > 1) { %>
 
       <% if (currentPage <= 1) { %>
@@ -234,16 +234,18 @@ const debounce = (mainFunction, delay) => {
 };
         // search 
 
+ 
       function sendData(e) {
     const searchResults = document.getElementById('searchResults');
     const inputValue = e.value.trim();  
-
+    const categId = getParameterByName('categid');
+    console.log("tyuytuytuyuy",categId);
     
 
     fetch('getProduct', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ payload: inputValue })
+        body: JSON.stringify({ payload: inputValue , category:categId})
     })
     .then(res => res.json())
     .then(data => {
@@ -253,6 +255,7 @@ const debounce = (mainFunction, delay) => {
 
         if (products.length < 1) {
             searchResults.innerHTML = '<p>No matching products found</p>';
+            document.getElementById('paginationHi').style.display ='none';
             return;
         }
 
@@ -301,9 +304,4 @@ document.addEventListener('DOMContentLoaded', function () {
 
 
 
-</script>
-<script>
-
-    // script fot razorpay 
-    
 </script>

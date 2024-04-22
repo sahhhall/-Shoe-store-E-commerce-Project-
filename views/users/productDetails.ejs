@@ -131,9 +131,9 @@
                             
                         </div>
                        
-                            <input type="button"    class="border-0" class="incdec" onclick="decrementValue()" value="-" />
-                            <input type="text" class="incdec" name="quantity" value="1"     maxlength="2" max="<%= product.stockQuantity %>" size="1" id="number" />
-                            <input type="button" class="border-0" class="incdec" onclick="incrementValue()" value="+" />
+                            <input type="button"  style="border: none; background-color: black; color: white;"   class="border-0" class="incdec" onclick="decrementValue()" value="-" />
+                            <input type="text" class="incdec" name="quantity" value="1"  style="width: 30px;"   maxlength="2" max="<%= product.stockQuantity %>" size="1" id="number" />
+                            <input type="button" style="border: none; background-color: black; color: white;"  class="border-0" class="incdec" onclick="incrementValue()" value="+" />
                            
                         <button  onclick="addToCart('<%= product._id %>')" class="btn btn-dark w-100 mt-4 mb-0 hover-lift-sm hover-boxshadow">Add To Shopping Bag</button>
                     
@@ -688,7 +688,7 @@
     }
 
     function decrementValue() {
-        const value = parseInt(document.getElementById('number').value, 10);
+        var value = parseInt(document.getElementById('number').value, 10);
         value = isNaN(value) ? 0 : value;
         if (value > 1) {
             value--;
@@ -723,18 +723,20 @@ const data = {productId : productId,productquantity:productquantity };
                     })
                 }else if(response.success){
                     swal.fire({
-                        position: "center",
-                        icon: "success",
-                        title: "Product added to cart",
-                       
-                        confirmButtonColor: "#3085d6",
-                        confirmButtonText: '<a href="/cart">Go to cart</a>',
-                        showCancelButton: true,
-                        cancelButtonColor: "#d33",
-                        cancelButtonText:'ok',
-                        
-                        
-                    })
+                position: "center",
+                icon: "success",
+                title: "Product added to cart",
+                confirmButtonColor: "#000000",
+                confirmButtonText: 'Go to cart',  
+                showCancelButton: true,
+                cancelButtonColor: "#d33",
+                cancelButtonText: 'Contine Shopping',
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    // Handle the redirection manually
+                    window.location.href = "/cart";
+                }
+            });
                    
 
                 }   else{

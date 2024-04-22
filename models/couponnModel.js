@@ -17,20 +17,21 @@ const couponSchema = mongoose.Schema({
         type: Number,
         required : true
     },
-    couponDescription :{
-        type:String,
-        required:true
+    // couponDescription :{
+    //     type:String,
+    //     required:true
 
-    }, 
+    // }, 
      expiryDate: {
         type: Date,
         required: true,
       },
-     usedUsers: {
-        type: Array,
-        ref: 'User',
-        default: [],
-      },
+      usedUsers: [
+        {
+          type: mongoose.Types.ObjectId,
+          ref: "User",
+        },
+      ],
       usersLimit: {
         type: Number,
         required: true,

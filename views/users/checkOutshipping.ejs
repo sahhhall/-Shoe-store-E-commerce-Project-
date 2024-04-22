@@ -208,7 +208,7 @@
 
 
 
-            <div class="col-12 col-lg-5 bg-light pt-lg-10 aside-checkout pb-5 pb-lg-0 my-5 my-lg-0">
+            <div class="col-12 col-lg-5 bg-light pt-lg-10 aside-checkout pb-5 pb-lg-0 my-5 my-lg-0" >
                 <div class="p-4 py-lg-0 pe-lg-0 ps-lg-5">
                     <div class="pb-3">
                         <!-- Cart Item-->
@@ -236,14 +236,15 @@
                         <% } %>
                         <!-- / Cart Item-->
                     </div>
-                    <div class="py-4 border-bottom">
+                    
+                      <div class="py-4 border-bottom">
                         <div class="d-flex justify-content-between align-items-center mb-2">
                             <p class="m-0 fw-bolder fs-6">Subtotal</p>
                             <p class="m-0 fs-6 fw-bolder">₹<%= subTotal %></p>
                         </div>
                         <div class="d-flex justify-content-between align-items-center ">
-                            <p class="m-0 fw-bolder fs-6">Shipping</p>
-                            <p class="m-0 fs-6 fw-bolder">₹8.95</p>
+                            <p class="m-0 fw-bolder fs-6">saved</p>
+                            <p id="discountAmount" class="m-0 fs-6 fw-bolder">₹0.00</p>
                         </div>
                     </div>
                     <div class="py-4 border-bottom">
@@ -255,12 +256,18 @@
                             <p id="total" class="m-0 fs-5 fw-bold">₹<%= subTotal %></p>
                         </div>
                     </div>
+                    
+                  
+                    <a  class="btn btn-secondary w-100 text-center mt-4"  data-bs-toggle="modal" data-bs-target="#couponModal" role="button">Check available Coupons</a>  
                     <div class="py-4">
                         <div class="input-group mb-0">
-                            <input type="text" class="form-control" placeholder="Enter your coupon code">
-                            <button class="btn btn-dark btn-sm px-4">Apply</button>
+                            <input  id="couponCodeInput" type="text" class="form-control" placeholder="Enter your coupon code">
+                            <button class="btn btn-secondary btn-sm px-4" onclick="couponApply()" >Apply</button>
                         </div>
                     </div>
+                   
+                  
+                  
                 </div>
             </div>
             
@@ -270,6 +277,67 @@
     <!-- /Page Content -->
 </section>
 <!-- / Main Section-->
+
+
+
+
+
+ <!-- Modal for coupon -->
+
+ <div class="modal fade" id="couponModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h1 class="modal-title fs-5" id="exampleModalLabel">Available </h1>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+          <div class="table-responsive">
+                          
+              <table class="table align-middle">
+                  <tbody class="border-0">
+                      <!-- Cart Item-->
+                      <% if (couponView ) { %>
+                          <% couponView.forEach((value, index) => { %>
+                              <tr class="mx-0 py-4 g-0 border-bottom">
+                                  <td class="col-2 position-relative">
+                                      <picture class="d-block border">
+                                          <img class="img-fluid" src="/assets/logos/coupon.png" alt="hihi">
+                                      </picture>
+                                  </td>
+                                  <td class="col-9 offset-1">
+                                      <div>
+                                          <h6 class="justify-content-between d-flex align-items-start mb-2">
+                                              <%= value.couponName %>
+                                              
+                                          </h6>
+                                          <span class="d-block text-muted fw-bolder text-uppercase fs-9">Code : <%= value.couponCode %></span>
+                                          <span class="d-block text-muted fw-bolder text-uppercase fs-9">Expiry :<%= new Date(value.expiryDate).toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' }) %></span>
+                                          <span class="d-block text-muted fw-bolder text-uppercase fs-9"><%= value.discountAmount %>%</span>
+                                      </div>
+                                      <!-- <p class="fw-bolder text-end text-muted m-0"> </p> -->
+                                  </td>
+                              </tr>
+                          <% }) %>
+                      <% } else { %>
+                          <tr>
+                              <td colspan="2">No products available</td>
+                          </tr>
+                      <% } %>
+                      <!-- / Cart Item-->
+                  </tbody>
+              </table>
+              
+          </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+        
+      </div>
+    </div>
+  </div>
+</div>
+
 
 <script>
     
@@ -526,6 +594,88 @@ function trimValue(elementId) {
   );
   if (selectedAddressDisplayElement) {
     selectedAddressDisplayElement.style.display = "block";
+  }
+}
+
+</script>
+
+<!-- coupon apply  -->
+<script>
+function couponApply() {
+    var couponCode = document.getElementById('couponCodeInput').value;
+    const amount2 = document.getElementById("total").innerHTML;
+    const numericPart = amount2.substring(1);
+
+    console.log("Coupon Code:", couponCode);
+   
+  if(couponCode){
+
+    Swal.fire({
+      title: 'Are you sure?',
+      
+      showCancelButton: true,
+      confirmButtonColor: '#000000',
+      cancelButtonColor: '#d33',
+      confirmButtonText: 'Yes!',
+    }).then((res)=>{
+      if(res.isConfirmed){
+        $.ajax({
+    method: 'POST',
+    url: '/apply-coupon',
+    data: JSON.stringify({ couponCode: couponCode, total: numericPart }),
+    contentType: 'application/JSON',
+    success: function (res) {
+        if (res.list) {
+         document.getElementById('discountAmount').innerHTML = res.discountAmount
+         document.getElementById('total').innerHTML = '₹' + res.totalUpdated;
+         document.getElementById('couponCodeInput').value = '';
+          console.log("tttttttt",res.discountAmount);
+           Swal.fire({
+                icon: 'success', 
+                text: 'success ',
+                showConfirmButton: false,
+                timer: 1500
+            });
+        } else if (res.no === true) {
+            console.log("Invalid coupon or expired");
+            Swal.fire({
+              icon: 'error', 
+                text: 'Not a valid coupon ',
+                confirmButtonColor: '#000000',
+                confirmButtonText: 'OK',
+            });
+        } else if (res.minAmount) {
+            Swal.fire({
+              icon: 'error', 
+                text: `Minimum purchase amount is ${res.requiredAmount}`,
+                confirmButtonColor: '#000000',
+                confirmButtonText: 'OK',
+            }).then(()=>{
+              location.reload()
+            })
+        }else if(res.usedAlready){
+          Swal.fire({
+              icon: 'error', 
+                text: `Your limit exceeded`,
+                confirmButtonColor: '#000000',
+                confirmButtonText: 'OK',
+            });
+        }else if(res.time){
+          Swal.fire({
+                icon: 'error',
+                text: 'expired ',
+                confirmButtonColor: '#000000',
+                confirmButtonText: 'OK',
+            });
+        }
+    },
+    error: function (error) {
+        console.log("Error:", error);
+    }
+});
+
+      }
+    })
   }
 }
 

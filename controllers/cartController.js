@@ -3,7 +3,7 @@ const bcrypt = require('bcrypt');
 const Category = require('../models/categoriesModel');
 const Product = require('../models/productSchema')
 const Cart = require('../models/cartSchema')
-
+const Coupon = require('../models/couponnModel')
 
 // =============================================LOAD CART PAGE=========================================================//
 const loadCart = async (req, res) => {
@@ -15,7 +15,7 @@ const loadCart = async (req, res) => {
            res.redirect('/signin')
         }else{
             const userId = req.session.user._id
-          
+             
                 const cartDetails = await Cart.findOne({ userid: userId }).populate({path:'products.productId'});
                 let  initialAmount =0;
                 if(cartDetails){
@@ -127,11 +127,48 @@ const removeCartItem = async (req, res) => {
     }
   };
   
+const quantityUpdationCart = async(req,res)=>{
+    try{
+      let {product,count} = req.body;
+      const userId = req.session.user._id;
+       count = parseInt(count);
+       console.log(userId);
+       const productDetails = await Product.findById(product);
+      
+       const cartDetails = await Cart.findOne({userid: userId })
+     
+       const previousProduct = cartDetails.products.find((productt) => productt.productId.toString() === product.toString());
+       console.log("this",previousProduct);
 
+       
+       if( previousProduct.quantity + count > productDetails.stockQuantity){
+        res.json({ success: false, message: "Quantity limit reached!" });
+       }else{
+        
+        const productTotal = previousProduct.productPrice * (previousProduct.quantity + count);
+        console.log(productTotal);
+         await Cart.updateOne(
+            { userid: userId, "products.productId": product },
+            { $inc: { "products.$.quantity": count } }
+          );
+await Cart.updateOne(
+    { userid: userId, "products.productId": product },
+    { $set: { "products.$.totalPrice": productTotal } }
+);
+
+        res.json({ success: true });
+       }
+
+    }catch(err){
+        console.log(err.message)
+    }
+}
 
 const loadCheckOut = async(req,res)=>{
     try{
-        
+      
+        const coupons = await Coupon.find({status:true});
+        console.log("here all coupons",coupons);
         const userId = req.session.user._id
         const user = await User.findById(userId);
         const addresses = user.addresses;
@@ -151,7 +188,13 @@ const loadCheckOut = async(req,res)=>{
             })
             
        
-        } res.render('checkOutshipping',{cartDetails, subTotal: initialAmount,addresses:addresses ,walletAmount:walletAmount});
+        } res.render('checkOutshipping',{
+            cartDetails, 
+            subTotal: initialAmount,
+            addresses:addresses ,
+            walletAmount:walletAmount,
+            couponView:coupons  
+        });
       } 
         // const products = cartDetails.products;
 
@@ -159,9 +202,55 @@ const loadCheckOut = async(req,res)=>{
         console.log(err.message)
     }
 }
+const applyCoupon = async (req, res) => {
+    try {
+        const { couponCode, total } = req.body;
+     const appliedCoupon = await Coupon.findOne({ couponCode: couponCode });
+    
+        if (!appliedCoupon) {
+            console.log("Coupon not found");
+            return res.json({ no: true });
+        }
+
+        const { discountAmount, minAmount, expiryDate, usedUsers } = appliedCoupon;
+        const currUserId = req.session.user._id;
+
+        if (minAmount >= total) {
+            return res.json({ minAmount: true, requiredAmount: minAmount });
+        }
+
+        if (usedUsers.includes(currUserId)) {
+            return res.json({ usedAlready: true });
+        }
+
+        const isCouponExpired = expiryDate && expiryDate < new Date();
+
+        if (isCouponExpired) {
+            return res.json({ time: true });
+        }
+
+        // Apply the coupon
+        // Add the user to the usedUsers array
+        const discountValue = Math.floor((discountAmount / 100) * total);
+        const totalUpdated = total-discountValue;
+        console.log(discountValue,"discounttttttttttttt");
+        appliedCoupon.usedUsers.push(currUserId);
+        await appliedCoupon.save();
+
+        return res.json({ list: true,discountAmount:discountValue ,totalUpdated:totalUpdated});
+
+    } catch (err) {
+        console.log(err);
+        res.status(500).json({ error: 'Internal Server Error' });
+    }
+};
+
+
 module.exports = {
     loadCart,
     addtoCart,
     loadCheckOut,
-    removeCartItem
+    removeCartItem,
+    quantityUpdationCart,
+    applyCoupon
 }

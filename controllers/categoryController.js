@@ -70,13 +70,14 @@ const deleteCategory = async(req,res)=>{
 }
 const listUnlistCategory = async(req,res)=>{
     try{
-       const userid = req.body.user;
-       const Userdata = await Category.findOne({_id:userid});
-       if(Userdata.is_listed){
-        await Category.findByIdAndUpdate({_id:userid},{$set:{is_listed:false}})
-       }else{
-        await Category.findByIdAndUpdate({_id:userid},{$set:{is_listed:true}})
-       }
+       const {category} = req.body;
+       const CategoryData = await Category.findById(category);
+       await Category.findByIdAndUpdate(category,{
+        $set:{
+           is_listed: !CategoryData.is_listed
+        }
+       
+    })
     //    passing success obj ////
        res.json({list:true});
       

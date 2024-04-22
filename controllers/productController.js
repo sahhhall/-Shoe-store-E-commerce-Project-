@@ -192,12 +192,25 @@ const editProduct = async (req, res) => {
 
 const searchProduct = async(req,res)=>{
     try{
-          let payload = req.body.payload.trim();
-          console.log(payload)
-          let search = await Product.find({name:{$regex: new RegExp('^'+payload+'.*','i')}}).exec();
-          // limit search res to 8
-          search = search.slice(0,8);
-          res.send({payload:search})
+        let payload = req.body.payload.trim();
+        let category = req.body.category;
+        console.log(category);
+        console.log(payload);
+        
+        let searchQuery = { name: { $regex: new RegExp('^' + payload + '.*', 'i') } };
+        
+        // Check if category is not null, then include it in the query
+        if (category !== null) {
+            searchQuery.category = category;
+        }
+        
+        let search = await Product.find(searchQuery).exec();
+        console.log("gfhggggggggggggggggggg", search);
+        
+        // Limit search results to 8
+        search = search.slice(0, 8);
+        
+        res.send({ payload: search });
     }catch(err){
         console.log(err.message)
     }

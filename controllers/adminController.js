@@ -125,27 +125,17 @@ const loadUserMangment = async (req, res) => {
 const blockUser = async (req, res) => {
     try {
 
-        const user_id = req.body.userId
-        const userData = await User.findOne({_id: user_id})
+        const {userId} = req.body
+        const userData = await User.findById(userId)
 
-        if (userData.is_blocked) {
-            await User.findByIdAndUpdate({
-                _id: user_id
-            }, {
-                $set: {
-                    is_blocked: false
+        await User.findByIdAndUpdate(
+            userId,
+            {
+                $set:{
+                    is_blocked:!userData.is_blocked
                 }
-            })
-        } else {
-            await User.findByIdAndUpdate({
-                _id: user_id
-            }, {
-                $set: {
-                    is_blocked: true
-                }
-            })
-        }
-
+            }
+        )
         res.json({block: true})
 
     } catch (error) {

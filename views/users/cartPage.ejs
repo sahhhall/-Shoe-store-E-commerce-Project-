@@ -37,9 +37,21 @@
                                                     <div>
                                                         <h6 class="justify-content-between d-flex align-items-start mb-2">
                                                             <%= value.productId.name %>
-                                                            <i class="ri-close-line ms-3" onclick="deleteCartItem('<%= value.productId._id %>')"></i>
+                                                            <i style="cursor: pointer; color: black;" class="ri-close-line ms-3" onclick="deleteCartItem('<%= value.productId._id %>')" onmouseover="this.style.color='red'" onmouseout="this.style.color='black'"></i>
                                                         </h6>
                                                         <span class="d-block text-muted fw-bolder text-uppercase fs-9">Size: 9 / Qty: <%= value.quantity %></span>
+                                                        <div class="">
+                                                            <% if (value.quantity <= 1) { %>
+                                                                <button id="decrement" disabled style="cursor:not-allowed; border: none; background-color: black; color: white;" onclick="changeQuantity('<%= value.productId._id %>', -1)">-</button>
+                                                            <% } else { %>
+                                                                <button id="decrement" style="  border: none; background-color: black; color: white;" onclick="changeQuantity('<%= value.productId._id %>', -1)">-</button>
+                                                            <% } %>
+                                                            <input type="number" style="border: .5px solid black; width: 50px; text-align: center;" id="quantity" value="<%= value.quantity %>" readonly>
+
+                                                            <button id="increment" style="border: none; background-color: black; color: white;" onclick="changeQuantity('<%= value.productId._id %>', +1)">+</button>
+                                                        </div>
+                                                        
+                                                        
                                                     </div>
                                                     <p class="fw-bolder text-end text-muted m-0"> ₹<%= value.totalPrice %></p>
                                                 </td>
@@ -69,6 +81,8 @@
                             <p class="m-0 fs-5 fw-bold">₹<%= subTotal %></p>
                         </div>
                     </div>
+                    
+                        <!-- <a  class="btn btn-secondary w-100 text-center mt-4"  data-bs-toggle="modal" data-bs-target="#couponModal" role="button">Check available Coupons</a>   -->
                     <div class="py-4">
                         <div class="input-group mb-0">
                             <input type="text" class="form-control" placeholder="Enter coupon code">
@@ -82,7 +96,7 @@
     <!-- /Page Content -->
 </section>
 <!-- / Main Section-->
-  
+ 
 
 
 <script>
@@ -90,10 +104,10 @@
         swal.fire({
             title: "Are You Sure?",
             Text: " You wont be able to revert this!",
-            icon: "warning",
+            icon: "question",
             showCancelButton: true,
-            confirmButtonColor: "#3085d6",
-            cancelButtonColor: "#d33",
+            confirmButtonColor: "#d33",
+            cancelButtonColor: "#00000",
             confirmButtonText: "Yes, delete it!",
             cancelButtonText: "cancel",
         }).then((result)=>{
@@ -125,7 +139,36 @@
         })
     }
 </script>
-<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
-  
-<script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+<script>
+     function changeQuantity(productId, count) {
+        console.log("ffffffffffffffffffffff",productId,count);
+    $.ajax({
+      url: "/update-quantity",
+      data: {
+        product: productId,
+        count: count,
+      },
+      method: "post",
+      success: (response) => {
+        if (response.success) {
+            toastr.success('Quantity updated!', '', { timeOut: 1000, progressBar: true });
+
+               
+                setTimeout(() => {
+                    location.reload();
+                }, 1000);
+        //   $("#reloadDiv").load("/cart #reloadDiv");
+        }  else {
+            toastr.error('stock limit reached', {timeOut: 5000,progressBar: true})
+        }
+      },
+      error: (error) => {
+        console.log(error);
+      },
+    });
+  }
+</script><!-- Add this in the <head> section of your HTML -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
+    

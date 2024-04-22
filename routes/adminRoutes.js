@@ -88,8 +88,10 @@ adminRoute.get('/product-detail',auth.isLogin,orderController.orderDetailedview)
 adminRoute.get('/coupons',auth.isLogin,couponController.loadCouponPage);
 
 adminRoute.get('/addCoupon',auth.isLogin,couponController.loadAddCoupon);
+adminRoute.post('/addCoupon',auth.isLogin,couponController.addCoupon);
+adminRoute.post('/blockCoupon',auth.isLogin,couponController.deactivateCoupon);
 
-
+    
 // =========================================< Banner  >=================================================
 
 
@@ -98,6 +100,6 @@ adminRoute.get('/add-banner',auth.isLogin,bannerController.loadAddBannerPage)
 adminRoute.post('/add-banner',auth.isLogin,multerBanner.single('image'),bannerController.addBannner);
 adminRoute.get('/edit-banner-page',auth.isLogin,bannerController.editBannerPageload);
 adminRoute.post('/edit-banner-page',auth.isLogin,multerBanner.single('image'),bannerController.editBannerPost);
-
+adminRoute.post('/list-unlist-banner',auth.isLogin,bannerController.listUnlistBanner)
 
 module.exports = adminRoute;

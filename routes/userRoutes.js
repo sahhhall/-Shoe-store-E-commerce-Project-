@@ -91,10 +91,12 @@ userRouter.get('/cart',auth.authlogg,cartController.loadCart);
 userRouter.post('/add-to-cart',cartController.addtoCart)
 
 userRouter.post('/removeCartitem',auth.authlogg,cartController.removeCartItem)
-
+userRouter.post('/update-quantity',auth.authlogg,cartController.quantityUpdationCart)
 // =========================================< CHECKOUT HANDLING >================================================= //
 
 userRouter.get('/check-out',auth.authlogg,cartController.loadCheckOut);
+userRouter.post('/check-out',auth.authlogg,cartController.loadCheckOut);
+userRouter.post('/apply-coupon',auth.authlogg,cartController.applyCoupon)
 
 // ===========================================< ORDER HANDLING >================================================== //
 
