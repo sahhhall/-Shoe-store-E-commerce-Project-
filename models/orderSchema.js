@@ -1,45 +1,42 @@
-const mongoose=require('mongoose')
+const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 
-
-
-const orderSchema=new Schema({
+const orderSchema = new Schema({
     userId: {
-    type: mongoose.Schema.Types.ObjectId,
-    ref: 'User', 
-    required: true,
-  },
-    delivery_address:{
-        type:String,
-        required:true
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'User', 
+        required: true,
     },
-    user_name:{
-        type:String,
-        required:true
+    delivery_address: {
+        type: String,
+        required: true
     },
-    total_amount:{
-        type:Number,
-        required:true
+    user_name: {
+        type: String,
+        required: true
     },
-    date:{
-        type:String,
-        required:true
+    total_amount: {
+        type: Number,
+        required: true
     },
-    expected_delivery:{
-        type:String,
-        required:true
-
+    date: {
+        type: String,
+        required: true
+    },
+    expected_delivery: {
+        type: String,
+        required: true
     },
     status: {
         type: String,
-      },
-      statusLevel: {
+    },
+    statusLevel: {
         type: Number,
         default: 0
-      },
-    payment:{
-        type:String,
-        required:true
+    },
+    payment: {
+        type: String,
+        required: true
     },
     cancellationReason: {
         type: String,
@@ -47,14 +44,13 @@ const orderSchema=new Schema({
     },
     paymentId: {
         type: String
-      },
+    },
     products: [
         {
             productId: {
                 type: mongoose.Schema.Types.ObjectId,
                 ref: 'Product',
                 required: true
-
             },
             quantity: {
                 type: Number,
@@ -72,12 +68,10 @@ const orderSchema=new Schema({
                 type: String,
                 default: "placed"
             },
-          
-
         },
     ]
+}, {
+    timestamps: true 
+});
 
-
-})
-
-module.exports=mongoose.model('Order',orderSchema)
+module.exports = mongoose.model('Order', orderSchema);
