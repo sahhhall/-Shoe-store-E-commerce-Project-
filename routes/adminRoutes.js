@@ -86,10 +86,11 @@ adminRoute.get('/product-detail',auth.isLogin,orderController.orderDetailedview)
 // =========================================< coupon >================================================= //
 
 adminRoute.get('/coupons',auth.isLogin,couponController.loadCouponPage);
-
 adminRoute.get('/addCoupon',auth.isLogin,couponController.loadAddCoupon);
 adminRoute.post('/addCoupon',auth.isLogin,couponController.addCoupon);
 adminRoute.post('/blockCoupon',auth.isLogin,couponController.deactivateCoupon);
+adminRoute.get('/edit-coupon', auth.isLogin, couponController.editCouponPageLoad);
+adminRoute.post('/edit-coupon', auth.isLogin, couponController.editCoupon);
 
     
 // =========================================< Banner  >=================================================

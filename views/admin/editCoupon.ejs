@@ -2,7 +2,8 @@
 
 <section class="d-flex justify-content-center align-items-center p-4">
   <div class="col col-md-8 col-lg-6 col-xxl-5">
-    <h1 class="text-center fw-bold mb-5 fs-2">Add Coupon</h1>
+    <h1 class="text-center fw-bold mb-5 fs-2">Update Coupon</h1>
+
     <% if (locals.messages.conflicts) { %>
     <div
       class="alert alert-danger d-flex align-items-center"
@@ -29,8 +30,13 @@
       </div>
     </div>
     <% } %>
-    <!-- Your complete coupon addition form here -->
-    <form action="" method="post" onsubmit="return validateCoupon()">
+
+    <form
+      action="/admin/edit-coupon"
+      method="post"
+      onsubmit="return validateCoupon()"
+    >
+      <input hidden id="id" name="id" value="<%= coupon._id %>" />
       <div class="form-group">
         <label for="couponName">Coupon Name</label>
         <input
@@ -38,7 +44,7 @@
           class="form-control"
           id="couponName"
           name="couponName"
-          placeholder="Name"
+          value="<%= coupon.couponName%>"
         />
         <div id="couponNameError" style="display: none; color: red"></div>
       </div>
@@ -49,7 +55,7 @@
           class="form-control"
           id="discount"
           name="discount"
-          placeholder="Discount"
+          value="<%= coupon.discountAmount%>"
         />
         <div id="disError" style="display: none; color: red"></div>
       </div>
@@ -60,7 +66,7 @@
           class="form-control"
           id="amount"
           name="criteriaAmount"
-          placeholder="Criteria Amount"
+          value="<%= coupon.minAmount%>"
         />
         <div id="amountError" style="display: none; color: red"></div>
       </div>
@@ -71,7 +77,7 @@
           class="form-control"
           id="expiryDate"
           name="expiryDate"
-          placeholder="Expiry Date"
+          value="<%= coupon.expiryDate.toISOString().split('T')[0] %>"
         />
         <div id="expiryDateError" style="display: none; color: red"></div>
       </div>
@@ -82,7 +88,7 @@
           class="form-control"
           id="usersLimit"
           name="usersLimit"
-          placeholder="Users Limit"
+          value="<%= coupon.usersLimit%>"
         />
         <div id="usersLimitError" style="display: none; color: red"></div>
       </div>
@@ -91,19 +97,15 @@
     </form>
   </div>
 </section>
-
-<%- include('../layouts/admin/footer.ejs') -%>
 <script>
   function validateCoupon() {
     let couponName = document.getElementById("couponName").value.trim();
-
     let discount = document.getElementById("discount").value.trim();
     let criteriaAmount = document.getElementById("amount").value.trim();
     let usersLimit = document.getElementById("usersLimit").value.trim();
     let expiryDate = document.getElementById("expiryDate").value.trim();
 
     let couponNameError = document.getElementById("couponNameError");
-
     let disError = document.getElementById("disError");
     let amountError = document.getElementById("amountError");
     let usersLimitError = document.getElementById("usersLimitError");
@@ -119,7 +121,21 @@
       }, 5000);
       isValid = false;
     }
-
+    if (couponCode === "") {
+      couponCodeError.innerText = "Coupon code is required";
+      couponCodeError.style.display = "block";
+      setTimeout(() => {
+        couponCodeError.style.display = "none";
+      }, 5000);
+      isValid = false;
+    } else if (isNaN(couponCode) || couponCode < 1) {
+      couponCodeError.innerText = "Coupon code must be a postive number";
+      couponCodeError.style.display = "block";
+      setTimeout(() => {
+        couponCodeError.style.display = "none";
+      }, 5000);
+      isValid = false;
+    }
     if (discount === "") {
       disError.innerText = "Discount code is required";
       disError.style.display = "block";
@@ -165,7 +181,7 @@
       }, 5000);
       isValid = false;
     }
-    let currentDate = new Date().toISOString().split("T")[0];
+    let currentDate = new Date().toISOString().split("T")[0]; // Get current date in YYYY-MM-DD format
     if (expiryDate === "") {
       expiryDateErr.innerText = "Expiry date is required";
       expiryDateErr.style.display = "block";
@@ -184,9 +200,14 @@
 
     return isValid;
   }
-  //  function setMinDate() {
+  //      function setMinDate() {
   //         var currentDate = new Date().toISOString().split('T')[0]; // Get current date in YYYY-MM-DD format
   //         document.getElementById('expiryDate').min = currentDate;
   //     }
   //     window.onload = setMinDate;
 </script>
+<link
+  rel="stylesheet"
+  href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css"
+/>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
