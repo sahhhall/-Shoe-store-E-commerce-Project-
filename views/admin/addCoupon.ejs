@@ -30,6 +30,7 @@
             <div class="form-group">
                 <label for="expiryDate">Expiry Date</label>
                 <input type="date" class="form-control" id="expiryDate" name="expiryDate" placeholder="Expiry Date">
+                <div id="expiryDateError" style="display: none; color: red;"></div>
             </div>
             <div class="form-group">
                 <label for="usersLimit">Users Limit</label>
@@ -44,17 +45,106 @@
 
 <%- include('../layouts/admin/footer.ejs') -%>
 <script>
-    function validateCoupon() 
-    {
-    let couponName = document.getElementById("couponName");
-    let couponCode = document.getElementById("couponCode");
-    let discount = document.getElementById("discount");
-    let criteriaAmount = document.getElementById("amount");
-    
-    let usersLimit = document.getElementById("usersLimit");
-    return true
-        
-    } function setMinDate() {
+   function validateCoupon() {
+    let couponName = document.getElementById("couponName").value.trim();
+    let couponCode = document.getElementById("couponCode").value.trim();
+    let discount = document.getElementById("discount").value.trim();
+    let criteriaAmount = document.getElementById("amount").value.trim();
+    let usersLimit = document.getElementById("usersLimit").value.trim();
+    let expiryDate = document.getElementById("expiryDate").value.trim();
+
+    let couponNameError = document.getElementById("couponNameError");
+    let couponCodeError = document.getElementById("couponCodeError");
+    let disError = document.getElementById("disError");
+    let amountError = document.getElementById("amountError");
+    let usersLimitError = document.getElementById("usersLimitError");
+    let expiryDateErr = document.getElementById("expiryDateError")
+    let isValid = true;
+
+    // Check if fields are empty
+    if (couponName === "") {
+        couponNameError.innerText = "Coupon name is required";
+        couponNameError.style.display = "block";
+        setTimeout(() => {
+            couponNameError.style.display = "none";
+        }, 5000)
+        isValid = false;
+    } 
+    if (couponCode === "") {
+        couponCodeError.innerText = "Coupon code is required";
+        couponCodeError.style.display = "block";
+        setTimeout(() => {
+            couponCodeError.style.display = "none";
+        }, 5000)
+        isValid = false;
+    }     else if ( isNaN(couponCode) ||   couponCode < 1  ) {
+        couponCodeError.innerText = "Coupon code must be a postive number";
+        couponCodeError.style.display = "block";
+        setTimeout(() => {
+            couponCodeError.style.display = "none";
+        }, 5000)
+        isValid = false;
+    }
+    if (discount === "") {
+        disError.innerText = "Discount code is required";
+        disError.style.display = "block";
+        setTimeout(() => {
+            disError.style.display = "none";
+        }, 5000)
+        isValid = false;
+    } else if ( isNaN(discount) ||  discount < 1  ) {
+        disError.innerText = "Discount percntage must be a postive value";
+        disError.style.display = "block";
+        setTimeout(() => {
+            disError.style.display = "none";
+        }, 5000)
+        isValid = false;
+    }
+    if (criteriaAmount === "") {
+        amountError.innerText = "Crieteria amount is required";
+        amountError.style.display = "block";
+        setTimeout(() => {
+            amountError.style.display = "none";
+        }, 5000)
+        isValid = false;
+    } else if ( isNaN(criteriaAmount) ||  criteriaAmount < 0 ) {
+        amountError.innerText = "Crieteria amount must be a postive value";
+        amountError.style.display = "block";
+        setTimeout(() => {
+            amountError.style.display = "none";
+        }, 5000)
+        isValid = false;
+    }
+    if (usersLimit === "") {
+        usersLimitError.innerText = "Users limit is required";
+        usersLimitError.style.display = "block";
+        setTimeout(() => {
+            usersLimitError.style.display = "none";
+        }, 5000)
+        isValid = false;
+    } 
+    else if ( isNaN(usersLimit) ||  usersLimit < 0  ) {
+        usersLimitError.innerText = "Users  list must be a postive value";
+        usersLimitError.style.display = "block";
+        setTimeout(() => {
+            usersLimitError.style.display = "none";
+        }, 5000)
+        isValid = false;
+    }
+    if (expiryDate === "") {
+        expiryDateErr.innerText = "Expiry date is required";
+        expiryDateErr.style.display = "block";
+        setTimeout(() => {
+            expiryDateError.style.display = "none";
+        }, 5000)
+        isValid = false;
+    }
+
+
+
+    return isValid;
+}
+ function setMinDate() {
         var currentDate = new Date().toISOString().split('T')[0]; // Get current date in YYYY-MM-DD format
         document.getElementById('expiryDate').min = currentDate;
     }
