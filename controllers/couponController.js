@@ -55,7 +55,8 @@ const deactivateCoupon = async (req, res) => {
                 }
             }
         )
-        res.json({ block: true });
+        console.log(couponData);
+        res.json({ block: true, status: couponData.status });
     } catch (err) {
         console.log(err.message);
         res.status(500).json({ error: 'Internal Server Error' });
