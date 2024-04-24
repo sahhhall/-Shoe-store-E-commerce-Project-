@@ -259,12 +259,22 @@
                     
                   
                     <a  class="btn btn-secondary w-100 text-center mt-4"  data-bs-toggle="modal" data-bs-target="#couponModal" role="button">Check available Coupons</a>  
+                  
+                 
+                  
+                 
+                  
+                   
+
+                  
+               
                     <div class="py-4">
-                        <div class="input-group mb-0">
-                            <input  id="couponCodeInput" type="text" class="form-control" placeholder="Enter your coupon code">
-                            <button class="btn btn-secondary btn-sm px-4" onclick="couponApply()" >Apply</button>
-                        </div>
-                    </div>
+                      <div class="input-group mb-0">
+                          <input  id="couponCodeInput" type="text" class="form-control" placeholder="Enter your coupon code">
+                          <button id="couponButton" class="btn btn-secondary btn-sm px-4" onclick="handleCouponClick()" >Apply</button>
+                      </div>
+                  </div>
+                  
                    
                   
                   
@@ -601,6 +611,17 @@ function trimValue(elementId) {
 
 <!-- coupon apply  -->
 <script>
+  var coupon_Name;
+  function handleCouponClick() {
+    var buttonInnerText = document.getElementById("couponButton").innerText;
+    if (buttonInnerText.trim() === "Apply") {
+        couponApply();
+    } else {
+        var subTotal = "<%= subTotal %>"; // Assuming subTotal is a JavaScript variable in your code
+        removeCoupon(subTotal);
+    }
+}
+
 function couponApply() {
     var couponCode = document.getElementById('couponCodeInput').value;
     const amount2 = document.getElementById("total").innerHTML;
@@ -628,7 +649,11 @@ function couponApply() {
         if (res.list) {
          document.getElementById('discountAmount').innerHTML = res.discountAmount
          document.getElementById('total').innerHTML = '₹' + res.totalUpdated;
-         document.getElementById('couponCodeInput').value = '';
+        
+         document.getElementById('couponButton').innerText = "Remove";
+ 
+         coupon_Name = res.couponName;
+   
           console.log("tttttttt",res.discountAmount);
            Swal.fire({
                 icon: 'success', 
@@ -677,6 +702,44 @@ function couponApply() {
       }
     })
   }
+}
+
+function removeCoupon(subTotal) {
+  console.log("here you can see the subtota",subTotal)
+  if (!coupon_Name) {
+    console.error('coupon_Name is not initialized');
+    return;
+  }
+  console.log("this form fetch a", coupon_Name); // Verify if coupon_Name is correctly set
+  let data = { couponName: coupon_Name }; 
+  console.log(data);// Assuming your server expects the coupon name in a JSON object
+  fetch('/remove-coupon', {
+    method: 'POST',
+    headers: {
+      'Content-type': 'application/json'
+    },
+    body: JSON.stringify(data)
+  })
+  .then(response => {
+    // Handle response here if needed
+    if (response.ok) {
+      Swal.fire({
+                icon: 'success', 
+                text: 'successfully removed coupon ',
+                showConfirmButton: false,
+                timer: 1500
+            })
+      document.getElementById('discountAmount').innerHTML = 0;
+      document.getElementById('total').innerHTML = '₹' + subTotal;
+      document.getElementById('couponButton').innerText = "Apply";
+      document.getElementById('couponCodeInput').value = '';
+
+    }
+  })
+  .catch(error => {
+    // Handle error here if the fetch request fails
+    console.error('Error:', error);
+  });
 }
 
 </script>

@@ -1,148 +1,219 @@
 <%- include('../layouts/user/header.ejs') -%>
 
+<section class="mt-0 vh-lg-100">
+  <!-- Page Content Goes Here -->
+  <div class="container">
+    <div class="row g-0 vh-lg-100">
+      <div class="col-12 col-lg-7 pt-5 pt-lg-10">
+        <div class="pe-lg-5">
+          <nav class="d-none d-md-block">
+            <ul
+              class="list-unstyled d-flex justify-content-start mt-4 align-items-center fw-bolder small"
+            >
+              <li class="me-4">
+                <a class="nav-link-checkout" href="/">Home</a>
+              </li>
+              <li class="me-4">
+                <a class="nav-link-checkout active aria-current" href=""
+                  >Your Cart</a
+                >
+              </li>
+            </ul>
+          </nav>
 
-<section class="mt-0   vh-lg-100">
-    <!-- Page Content Goes Here -->
-    <div class="container">
-        <div class="row g-0 vh-lg-100">
-            <div class="col-12 col-lg-7 pt-5 pt-lg-10">
-                <div class="pe-lg-5">
-                   
-                    <nav class="d-none d-md-block">
-                        <ul class="list-unstyled d-flex justify-content-start mt-4 align-items-center fw-bolder small">
-                            <li class="me-4"><a class="nav-link-checkout "
-                                href="/">Home</a></li>
-                            <li class="me-4"><a class="nav-link-checkout active aria-current"
-                                    href="">Your Cart</a></li>
-                           
-                        </ul>
-                    </nav>                        
-                    
-                    <div class="mt-5">
-                        <h3 class="fs-5 fw-bolder mb-0 border-bottom pb-4">Your Cart</h3>
-                        <div class="table-responsive">
-                            
-                            <table class="table align-middle">
-                                <tbody class="border-0">
-                                    <!-- Cart Item-->
-                                    <% if (cartDetails && cartDetails.products && cartDetails.products.length > 0) { %>
-                                        <% cartDetails.products.forEach((value, index) => { %>
-                                            <tr class="mx-0 py-4 g-0 border-bottom">
-                                                <td class="col-2 position-relative">
-                                                    <picture class="d-block border">
-                                                        <img class="img-fluid" src="/assets/images/productImage/sharped/<%= value.productId.images[0] %>" alt="hihi">
-                                                    </picture>
-                                                </td>
-                                                <td class="col-9 offset-1">
-                                                    <div>
-                                                        <h6 class="justify-content-between d-flex align-items-start mb-2">
-                                                            <%= value.productId.name %>
-                                                            <i style="cursor: pointer; color: black;" class="ri-close-line ms-3" onclick="deleteCartItem('<%= value.productId._id %>')" onmouseover="this.style.color='red'" onmouseout="this.style.color='black'"></i>
-                                                        </h6>
-                                                        <span class="d-block text-muted fw-bolder text-uppercase fs-9">Size: 9 / Qty: <%= value.quantity %></span>
-                                                        <div class="">
-                                                            <% if (value.quantity <= 1) { %>
-                                                                <button id="decrement" disabled style="cursor:not-allowed; border: none; background-color: black; color: white;" onclick="changeQuantity('<%= value.productId._id %>', -1)">-</button>
-                                                            <% } else { %>
-                                                                <button id="decrement" style="  border: none; background-color: black; color: white;" onclick="changeQuantity('<%= value.productId._id %>', -1)">-</button>
-                                                            <% } %>
-                                                            <input type="number" style="border: .5px solid black; width: 50px; text-align: center;" id="quantity" value="<%= value.quantity %>" readonly>
+          <div class="mt-5">
+            <h3 class="fs-5 fw-bolder mb-0 border-bottom pb-4">Your Cart</h3>
+            <div class="table-responsive">
+              <table class="table align-middle">
+                <tbody class="border-0">
+                  <!-- Cart Item-->
+                  <% if (cartDetails && cartDetails.products &&
+                  cartDetails.products.length > 0) { %> <%
+                  cartDetails.products.forEach((value, index) => { %>
+                  <tr class="mx-0 py-4 g-0 border-bottom">
+                    <td class="col-2 position-relative">
+                      <picture class="d-block border">
+                        <img
+                          class="img-fluid"
+                          src="/assets/images/productImage/sharped/<%= value.productId.images[0] %>"
+                          alt="hihi"
+                        />
+                      </picture>
+                    </td>
+                    <td class="col-9 offset-1">
+                      <div>
+                        <h6
+                          class="justify-content-between d-flex align-items-start mb-2"
+                        >
+                          <%= value.productId.name %>
+                          <i
+                            style="cursor: pointer; color: black"
+                            class="ri-close-line ms-3"
+                            onclick="deleteCartItem('<%= value.productId._id %>')"
+                            onmouseover="this.style.color='red'"
+                            onmouseout="this.style.color='black'"
+                          ></i>
+                        </h6>
+                        <span
+                          class="d-block text-muted fw-bolder text-uppercase fs-9"
+                          >Size: 9 / Qty: <%= value.quantity %></span
+                        >
+                        <div class="">
+                          <% if (value.quantity <= 1) { %>
+                          <button
+                            id="decrement"
+                            disabled
+                            style="
+                              cursor: not-allowed;
+                              border: none;
+                              background-color: black;
+                              color: white;
+                            "
+                            onclick="changeQuantity('<%= value.productId._id %>', -1)"
+                          >
+                            -
+                          </button>
+                          <% } else { %>
+                          <button
+                            id="decrement"
+                            style="
+                              border: none;
+                              background-color: black;
+                              color: white;
+                            "
+                            onclick="changeQuantity('<%= value.productId._id %>', -1)"
+                          >
+                            -
+                          </button>
+                          <% } %>
+                          <input
+                            type="number"
+                            style="
+                              border: 0.5px solid black;
+                              width: 50px;
+                              text-align: center;
+                            "
+                            id="quantity"
+                            value="<%= value.quantity %>"
+                            readonly
+                          />
 
-                                                            <button id="increment" style="border: none; background-color: black; color: white;" onclick="changeQuantity('<%= value.productId._id %>', +1)">+</button>
-                                                        </div>
-                                                        
-                                                        
-                                                    </div>
-                                                    <p class="fw-bolder text-end text-muted m-0"> ₹<%= value.totalPrice %></p>
-                                                </td>
-                                            </tr>
-                                        <% }) %>
-                                    <% } else { %>
-                                        <tr>
-                                            <td colspan="2">No products available</td>
-                                        </tr>
-                                    <% } %>
-                                    <!-- / Cart Item-->
-                                </tbody>
-                            </table>
-                            
+                          <button
+                            id="increment"
+                            style="
+                              border: none;
+                              background-color: black;
+                              color: white;
+                            "
+                            onclick="changeQuantity('<%= value.productId._id %>', +1)"
+                          >
+                            +
+                          </button>
                         </div>
-                    </div>
-                </div>
+                      </div>
+                      <p class="fw-bolder text-end text-muted m-0">
+                        ₹<%= value.totalPrice %>
+                      </p>
+                    </td>
+                  </tr>
+                  <% }) %> <% } else { %>
+                  <tr>
+                    <td colspan="2">No products available</td>
+                  </tr>
+                  <% } %>
+                  <!-- / Cart Item-->
+                </tbody>
+              </table>
             </div>
-            <div class="col-12 col-lg-5 bg-light pt-lg-10 aside-checkout pb-5 pb-lg-0 my-5 my-lg-0">
-                <div class="p-4 py-lg-0 pe-lg-0 ps-lg-5">
-                    <div class="pb-4 border-bottom">
-                        <div class="d-flex flex-column flex-md-row justify-content-md-between mb-4 mb-md-2">
-                            <div>
-                                <p class="m-0 fw-bold fs-5">Grand Total</p>
-                                <span class="text-muted small">Inc ₹45.89 sales tax</span>
-                            </div>
-                            <p class="m-0 fs-5 fw-bold">₹<%= subTotal %></p>
-                        </div>
-                    </div>
-                    
-                        <!-- <a  class="btn btn-secondary w-100 text-center mt-4"  data-bs-toggle="modal" data-bs-target="#couponModal" role="button">Check available Coupons</a>   -->
-                    <div class="py-4">
-                        <div class="input-group mb-0">
-                            <input type="text" class="form-control" placeholder="Enter coupon code">
-                            <button class="btn btn-secondary btn-sm px-4">Apply</button>
-                        </div>
-                    </div>
-                    <a href="/check-out" class="btn btn-dark w-100 text-center" role="button">Proceed to checkout</a>                    </div>
-            </div>
+          </div>
         </div>
+      </div>
+      <div
+        class="col-12 col-lg-5 bg-light pt-lg-10 aside-checkout pb-5 pb-lg-0 my-5 my-lg-0"
+      >
+        <div class="p-4 py-lg-0 pe-lg-0 ps-lg-5">
+          <div class="pb-4 border-bottom">
+            <div
+              class="d-flex flex-column flex-md-row justify-content-md-between mb-4 mb-md-2"
+            >
+              <div>
+                <p class="m-0 fw-bold fs-5">Grand Total</p>
+                <span class="text-muted small">Inc ₹45.89 sales tax</span>
+              </div>
+              <p class="m-0 fs-5 fw-bold">₹<%= subTotal %></p>
+            </div>
+          </div>
+
+          <!-- <a  class="btn btn-secondary w-100 text-center mt-4"  data-bs-toggle="modal" data-bs-target="#couponModal" role="button">Check available Coupons</a>   -->
+          <div class="py-4">
+            <div class="input-group mb-0">
+              <input
+                type="text"
+                class="form-control"
+                placeholder="Enter coupon code"
+              />
+              <button class="btn btn-secondary btn-sm px-4">Apply</button>
+            </div>
+          </div>
+          <a
+            href="/check-out"
+            class="btn btn-dark w-100 text-center"
+            role="button"
+            >Proceed to checkout</a
+          >
+        </div>
+      </div>
     </div>
-    <!-- /Page Content -->
+  </div>
+  <!-- /Page Content -->
 </section>
 <!-- / Main Section-->
- 
-
 
 <script>
-    function deleteCartItem(proId){
-        swal.fire({
-            title: "Are You Sure?",
-            Text: " You wont be able to revert this!",
-            icon: "question",
-            showCancelButton: true,
-            confirmButtonColor: "#d33",
-            cancelButtonColor: "#00000",
-            confirmButtonText: "Yes, delete it!",
-            cancelButtonText: "cancel",
-        }).then((result)=>{
-            if(result.isConfirmed){
-                $.ajax({
-                    url:"/removeCartitem",
-                    data:{
-                        product:proId
-                    },
-                    method:"post",
-                    success:(response)=>{
-                        if((response.success = true )){
-                          
-                            swal.fire({
-                            title: "Deleted!",
-                            text: "Your item has been deleted.",
-                            icon: "Suscces",
-                            timer:2000,
-                            showConfirmButton: false,
-                }).then(()=>{
+  function deleteCartItem(proId) {
+    swal
+      .fire({
+        title: "Are You Sure?",
+        Text: " You wont be able to revert this!",
+        icon: "question",
+        showCancelButton: true,
+        confirmButtonColor: "#d33",
+        cancelButtonColor: "#00000",
+        confirmButtonText: "Yes, delete it!",
+        cancelButtonText: "cancel",
+      })
+      .then((result) => {
+        if (result.isConfirmed) {
+          $.ajax({
+            url: "/removeCartitem",
+            data: {
+              product: proId,
+            },
+            method: "post",
+            success: (response) => {
+              if ((response.success = true)) {
+                swal
+                  .fire({
+                    title: "Deleted!",
+                    text: "Your item has been deleted.",
+                    icon: "Suscces",
+                    timer: 2000,
+                    showConfirmButton: false,
+                  })
+                  .then(() => {
                     location.reload();
-                })
-                      
-               
-                        }
-                    }
-                })
-            }
-        })
-    }
+                  });
+              }
+            },
+          });
+        }
+      });
+  }
 </script>
 
 <script>
-     function changeQuantity(productId, count) {
-        console.log("ffffffffffffffffffffff",productId,count);
+  function changeQuantity(productId, count) {
+    console.log("ffffffffffffffffffffff", productId, count);
     $.ajax({
       url: "/update-quantity",
       data: {
@@ -152,15 +223,20 @@
       method: "post",
       success: (response) => {
         if (response.success) {
-            toastr.success('Quantity updated!', '', { timeOut: 1000, progressBar: true });
+          toastr.success("Quantity updated!", "", {
+            timeOut: 1000,
+            progressBar: true,
+          });
 
-               
-                setTimeout(() => {
-                    location.reload();
-                }, 1000);
-        //   $("#reloadDiv").load("/cart #reloadDiv");
-        }  else {
-            toastr.error('stock limit reached', {timeOut: 5000,progressBar: true})
+          setTimeout(() => {
+            location.reload();
+          }, 1000);
+          //   $("#reloadDiv").load("/cart #reloadDiv");
+        } else {
+          toastr.error("stock limit reached", {
+            timeOut: 5000,
+            progressBar: true,
+          });
         }
       },
       error: (error) => {
@@ -168,7 +244,10 @@
       },
     });
   }
-</script><!-- Add this in the <head> section of your HTML -->
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css">
+</script>
+<!-- Add this in the <head> section of your HTML -->
+<link
+  rel="stylesheet"
+  href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css"
+/>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
-    

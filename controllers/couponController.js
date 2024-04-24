@@ -21,7 +21,9 @@ const loadAddCoupon = async (req, res) => {
 
 const addCoupon = async (req, res) => {
   try {
-    const existingName = await Coupon.findOne({ couponName: req.body.couponName });
+    const existingName = await Coupon.findOne({
+      couponName: req.body.couponName,
+    });
     if (existingName) {
       req.flash("conflicts", "Coupon name already exists");
       return res.redirect(`/admin/addCoupon`);
@@ -111,6 +113,26 @@ const editCoupon = async (req, res) => {
   }
 };
 
+const reomoveCoupon = async (req, res) => {
+  try {
+    const { couponName } = req.body;
+    await Coupon.updateOne(
+      { couponName: couponName },
+      {
+        $pop: {
+          usedUsers: 1,
+        },
+      }
+    );
+
+    const subTotal = await Order.find()
+    return res.json({ reomoved: true })
+  } catch (err) {
+    console.log(err);
+    res.status(500).json({ error: "internal server error" });
+  }
+};
+
 module.exports = {
   loadCouponPage,
   loadAddCoupon,
@@ -118,4 +140,5 @@ module.exports = {
   deactivateCoupon,
   editCouponPageLoad,
   editCoupon,
+  reomoveCoupon,
 };

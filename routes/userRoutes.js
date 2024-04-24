@@ -6,6 +6,7 @@ const config = require('../config/config')
 const productController = require('../controllers/productController')
 const cartController = require('../controllers/cartController')
 const orderController = require('../controllers/orderController')
+const couponController = require('../controllers/couponController')
 const {loadCartMiddleware} = require('../middlewares/cartMiddle')
 const auth = require('../middlewares/userAuth')
 userRouter.use(session({secret:config.sessionSecret,resave:false,
@@ -92,6 +93,7 @@ userRouter.post('/add-to-cart',cartController.addtoCart)
 
 userRouter.post('/removeCartitem',auth.authlogg,cartController.removeCartItem)
 userRouter.post('/update-quantity',auth.authlogg,cartController.quantityUpdationCart)
+userRouter.post('/remove-coupon', auth.authlogg, couponController.reomoveCoupon)
 // =========================================< CHECKOUT HANDLING >================================================= //
 
 userRouter.get('/check-out',auth.authlogg,cartController.loadCheckOut);
