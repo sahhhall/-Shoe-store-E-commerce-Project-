@@ -38,10 +38,6 @@ const orderSchema = new Schema({
         type: String,
         required: true
     },
-    cancellationReason: {
-        type: String,
-        default: "none"
-    },
     paymentId: {
         type: String
     },
@@ -67,6 +63,14 @@ const orderSchema = new Schema({
             status: {
                 type: String,
                 default: "placed"
+            },
+            statusLevel: {
+                type: Number,
+                default: 0
+            },
+            cancellationReason: {
+                type: String,
+                default: "none"
             },
         },
     ]

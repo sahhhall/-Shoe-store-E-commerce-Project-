@@ -1,157 +1,176 @@
 <%- include('../layouts/user/header.ejs') -%>
 <style>
-    @import url('https://fonts.googleapis.com/css2?family=Roboto&display=swap');
-*{
+  @import url("https://fonts.googleapis.com/css2?family=Roboto&display=swap");
+  * {
     padding: 0;
     margin: 0;
     box-sizing: border-box;
-    font-family: 'Roboto', sans-serif;
-}
+    font-family: "Roboto", sans-serif;
+  }
 
-
-#order-heading{
+  #order-heading {
     background-color: #edf4f7;
     position: relative;
     border-top-left-radius: 25px;
     max-width: 800px;
     padding-top: 20px;
     margin: 30px auto 0px;
-}
-#order-heading .text-uppercase{
+  }
+  #order-heading .text-uppercase {
     font-size: 0.9rem;
     color: #777;
     font-weight: 600;
-}
-#order-heading .h4{
+  }
+  #order-heading .h4 {
     font-weight: 600;
-}
-#order-heading .h4 + div p{
+  }
+  #order-heading .h4 + div p {
     font-size: 0.8rem;
     color: #777;
-}
-.close{
+  }
+  .close {
     padding: 10px 15px;
     background-color: #777;
     border-radius: 50%;
     position: absolute;
     right: -15px;
     top: -20px;
-}
-.wrapper{
+  }
+  .wrapper {
     padding: 0px 50px 50px;
     max-width: 800px;
     margin: 0px auto 40px;
     border-bottom-left-radius: 25px;
     border-bottom-right-radius: 25px;
-}
-.table th {
+  }
+  .table th {
     border-top: none;
-}
-.table thead tr.text-uppercase th{
+  }
+  .table thead tr.text-uppercase th {
     font-size: 0.8rem;
     padding-left: 0px;
     padding-right: 0px;
-}
-.table tbody tr th,
-.table tbody tr td{
+  }
+  .table tbody tr th,
+  .table tbody tr td {
     font-size: 0.9rem;
     padding-left: 0px;
     padding-right: 0px;
     padding-bottom: 5px;
-}
-.table-responsive{
+  }
+  .table-responsive {
     height: 100px;
-}
-.list div b{
+  }
+  .list div b {
     font-size: 0.8rem;
-}
-.list .order-item{
+  }
+  .list .order-item {
     font-weight: 600;
     color: #6db3ec;
-}
-.list:hover{
+  }
+  .list:hover {
     background-color: #f4f4f4;
     cursor: pointer;
     border-radius: 5px;
-}
-label{
+  }
+  label {
     margin-bottom: 0;
     padding: 0;
     font-weight: 900;
-}
-button.btn{
+  }
+  button.btn {
     font-size: 0.9rem;
     background-color: #66cdaa;
-}
-button.btn:hover{
+  }
+  button.btn:hover {
     background-color: #5cb99a;
-}
-.price{
+  }
+  .price {
     color: #5cb99a;
     font-weight: 700;
-}p.text-justify{
+  }
+  p.text-justify {
     font-size: 0.9rem;
     margin: 0;
-}
-.row{
+  }
+  .row {
     margin: 0px;
-}
-.subscriptions{
+  }
+  .subscriptions {
     border: 1px solid #ddd;
     border-left: 5px solid #ffa500;
     padding: 10px;
-}
-.subscriptions div{
+  }
+  .subscriptions div {
     font-size: 0.9rem;
-}
-@media(max-width: 425px){
-    .wrapper{
-        padding: 20px;
+  }
+  @media (max-width: 425px) {
+    .wrapper {
+      padding: 20px;
     }
-    body{
-        font-size: 0.85rem;
+    body {
+      font-size: 0.85rem;
     }
-    .subscriptions div{
-        padding-left: 5px;
+    .subscriptions div {
+      padding-left: 5px;
     }
-    img + label{
-        font-size: 0.75rem;
+    img + label {
+      font-size: 0.75rem;
     }
-
-}
+  }
 </style>
 
-<div class="d-flex flex-column justify-content-center align-items-center" id="order-heading">
-    
-    <div class="text-uppercase">
-        <p>Order detail</p>
-    </div>
-    <div class="h4"><%= formattedDate %></div>
-    <div class="pt-1">
-        <p>Order #<%= orders._id %> is currently<b class="text-dark"> processing</b></p>
-    </div>
-   
+<div
+  class="d-flex flex-column justify-content-center align-items-center"
+  id="order-heading"
+>
+  <div class="text-uppercase">
+    <p>Order detail</p>
+  </div>
+  <div class="h4"><%= formattedDate %></div>
+  <div class="pt-1">
+    <p>
+      Order #<%= orders._id %> is currently<b class="text-dark"> processing</b>
+    </p>
+  </div>
 </div>
 <div class="wrapper bg-white">
-    
-    <% orders.products.forEach((product) => { %>
-        <div class="d-flex justify-content-start align-items-center list py-1 ">
-        
-            <div><b> <%= product.productId.name %></b></div>
-            <div><b> : <%= product.quantity %></b></div>
-            <div class="mx-3">
-                <img src="/assets/images/productImage/sharped/<%= product.productId.images[0] %>"
-                    alt="apple" class="rounded-circle" width="30" height="30">
-            </div>
-            <div class="order-item"></div>
-        
-        </div>
-        <% }); %>
-   
-  
- 
-    <div class="pt-2 border-bottom mb-3"></div>
-    <!-- <div class="d-flex justify-content-start align-items-center pl-3">
+  <% orders.products.forEach((product) => { %>
+  <div class="d-flex justify-content-start align-items-center list py-1">
+    <div><b> <%= product.productId.name %></b></div>
+    <div><b> : <%= product.quantity %></b></div>
+    <div class="mx-3">
+      <img
+        src="/assets/images/productImage/sharped/<%= product.productId.images[0] %>"
+        alt="apple"
+        class="rounded-circle"
+        width="30"
+        height="30"
+      />
+    </div>
+    <% if( product.statusLevel === 3 ){ %>
+    <button
+      onclick="handleReturnProductButtonClick(`<%= product.productId._id %>`)"
+      type="button"
+      class="border-0 p-2 btn-dark"
+      style="letter-spacing: 0.1rem; font-size: 0.6rem; border-radius: 0.5rem"
+      data-bs-toggle="modal"
+      data-bs-target="#ReturnModal"
+    >
+      Return Product
+    </button>
+    <% } else if ( product.statusLevel === 4 ) { %>
+    <button class="border-0 p-3" disabled>Pending Return</button>
+
+    <% } %>
+    <% if( product.statusLevel === 5 ){ %>
+      <button class="border-0 p-2 "  style="background-color: rgb(2, 59, 2); border-radius: 1rem; font-weight: bold; color: white;" disabled> Product Returned</button>
+      <% }  %>
+  </div>
+  <% }); %>
+
+  <div class="pt-2 border-bottom mb-3"></div>
+  <!-- <div class="d-flex justify-content-start align-items-center pl-3">
         <div class="text-muted">Payment Method</div>
         <div class="ml-auto">
             <img src="https://www.freepnglogos.com/uploads/mastercard-png/mastercard-logo-logok-15.png" alt=""
@@ -159,134 +178,163 @@ button.btn:hover{
             <label>Mastercard ******5342</label>
         </div>
     </div> -->
-    <div class="d-flex justify-content-start align-items-center py-1 pl-3">
-        <div class="text-muted">Shipping</div>
-        <div class="ps-3 ml-auto">
-            <label>Free</label>
-        </div>
+  <div class="d-flex justify-content-start align-items-center py-1 pl-3">
+    <div class="text-muted">Shipping</div>
+    <div class="ps-3 ml-auto">
+      <label>Free</label>
     </div>
-    
-    <div class="d-flex justify-content-start align-items-center pl-3 py-3 mb-4 border-bottom">
-        <div class="text-muted">
-           Total
-        </div> 
-        <div class="ps-2 ml-auto h5">
-            ₹<%= orders.total_amount%>
-        </div>
+  </div>
+
+  <div
+    class="d-flex justify-content-start align-items-center pl-3 py-3 mb-4 border-bottom"
+  >
+    <div class="text-muted">Total</div>
+    <div class="ps-2 ml-auto h5">₹<%= orders.total_amount%></div>
+  </div>
+  <div class="row border rounded p-1 my-3">
+    <div class="col-md-6 py-3">
+      <div class="d-flex flex-column align-items start statusord">
+        <b>Shipping Address</b>
+        <p class="text-justify pt-2"><%= selectedAddress.addressline %>(H)</p>
+        <p class="text-justify">
+          <%= selectedAddress.city %>,<%= selectedAddress.pincode %>,<%=
+          selectedAddress.state %>
+        </p>
+      </div>
     </div>
-    <div class="row border rounded p-1 my-3">
-       
-        <div class="col-md-6 py-3">
-            <div class="d-flex flex-column align-items start statusord">
-                <b>Shipping Address</b>
-                <p class="text-justify pt-2"><%= selectedAddress.addressline %>(H)</p>
-                <p class="text-justify"><%= selectedAddress.city  %>,<%= selectedAddress.pincode %>,<%= selectedAddress.state %></p>
-            </div>
-        </div>
+  </div>
+  <!-- <div class="pl-3 font-weight-bold">Related Subsriptions</div> -->
+  <div
+    class="d-sm-flex justify-content-between rounded my-3 subscriptions statusord"
+  >
+    <div>
+      <b>#<%= orders._id %></b>
     </div>
-    <!-- <div class="pl-3 font-weight-bold">Related Subsriptions</div> -->
-    <div class="d-sm-flex justify-content-between rounded my-3 subscriptions statusord">
-        <div>
-            <b>#<%= orders._id %></b>
-        </div>
-        <% if(orders.statusLevel !== '3' ){ %>
-            <div><%= orders.expected_delivery %></div>
-        <% } %>
-      
-            <div class="statusord">Status: <%= orders.status %> </div>
-        
-      
-        <div>
-            Total: <b> ₹<%= orders.total_amount %> for <%= orders.products.length %> items</b>
-        </div>
+    <% if(orders.statusLevel !== '3' ){ %>
+    <div><%= orders.expected_delivery %></div>
+    <% } %>
+
+    <div class="statusord">Status: <%= orders.status %></div>
+
+    <div>
+      Total:
+      <b>
+        ₹<%= orders.total_amount %> for <%= orders.products.length %> items</b
+      >
     </div>
-    <!-- Modal -->
-<div class="modal fade" id="ReturnModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+  </div>
+  <!-- Modal -->
+  <div
+    class="modal fade"
+    id="ReturnModal"
+    data-bs-backdrop="static"
+    data-bs-keyboard="false"
+    tabindex="-1"
+    aria-labelledby="staticBackdropLabel"
+    aria-hidden="true"
+  >
     <div class="modal-dialog">
       <div class="modal-content">
         <div class="modal-header">
-          <h1 class="modal-title fs-5" id="staticBackdropLabel">Modal title</h1>
-          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+          <h1 class="modal-title fs-5" id="staticBackdropLabel">
+            Return Reason
+          </h1>
+          <button
+            type="button"
+            class="btn-close"
+            data-bs-dismiss="modal"
+            aria-label="Close"
+          ></button>
         </div>
         <div class="modal-body">
-            <form method="post">
-                <div class="form-group">
-                  <label for="reason" class="form-label">reason</label>
-                  <input type="text" class="form-control" id="reason" placeholder="reason" name="reason" required>
-                </div>
-               
-      
-                <button type="button" onclick=" returnOrder('<%= orders._id %>')" class=" btn-dark  w-100 my-4">Submit</button>
-                
-            </form>
+          <form method="post">
+            <div class="form-group">
+              <label for="reason" class="form-label">reason</label>
+              <input type="hidden" id="productId" value="" />
+              <input
+                type="text"
+                class="form-control"
+                id="reason"
+                placeholder="reason"
+                name="reason"
+                required
+              />
+            </div>
+
+            <button
+              type="button"
+              onclick=" returnOrder('<%= orders._id %>')"
+              class="btn-dark w-100"
+            >
+              Submit
+            </button>
+          </form>
         </div>
-       
       </div>
     </div>
   </div>
 
-
-    <% if( orders.statusLevel ===3 ){ %>
+  <!-- <% if( orders.statusLevel ===3 ){ %>
         <button  type="button" class="border-0 p-2 btn-dark" data-bs-toggle="modal" data-bs-target="#ReturnModal"> Return Order </button>
         <% } else { %>
             <button class=" border-0  p-3" disabled> Return Order </button>
 
-            <% } %>
-    
+            <% } %> -->
 </div>
 <%- include('../layouts/user/footer.ejs') -%>
 
 <script>
-
-      function  returnOrder(orderid){
-           
-      const reason  =  document.getElementById('reason').value
-        const data={
-                reason:reason,
-                orderid:orderid
-        }
-        Swal.fire({
-            title: 'Are you sure?',
-      icon: 'warning',
+  function handleReturnProductButtonClick(productId) {
+    // Set the product ID value into the hidden input field inside the modal
+    console.log("am doiiii", productId);
+    document.getElementById("productId").value = productId;
+  }
+  function returnOrder(orderId) {
+    const productId = document.getElementById("productId").value;
+    console.log(orderId, productId);
+    console.log("fuck", productId);
+    const reason = document.getElementById("reason").value;
+    const data = {
+      reason: reason,
+      productId: productId,
+      orderId: orderId,
+    };
+    Swal.fire({
+      title: "Are you sure?",
+      icon: "warning",
       showCancelButton: true,
-      confirmButtonColor: '#3085d6',
-      cancelButtonColor: '#d33',
-      confirmButtonText: 'Yes!',
-        }).then((res)=>{
-            if(res.isConfirmed){
-                $.ajax({
-          method: 'POST',
-          url: '/returnreason',
+      confirmButtonColor: "#3085d6",
+      cancelButtonColor: "#d33",
+      confirmButtonText: "Yes!",
+    }).then((res) => {
+      if (res.isConfirmed) {
+        $.ajax({
+          method: "POST",
+          url: "/returnreason",
           data: JSON.stringify(data),
-          contentType: 'application/json',
+          contentType: "application/json",
           success: function (response) {
             if (response.reason === true) {
               Swal.fire({
-                icon:'success',
-                text:'submitted success fully'
-              }).then(()=>{
-              
-                location.reload()
+                icon: "success",
+                text: "submitted success fully",
+              }).then(() => {
+                location.reload();
                 clearInputValues();
-              })
-              
-        $('#ReturnModal').modal('hide');
-             
+              });
+
+              $("#ReturnModal").modal("hide");
             } else {
-             
-             
             }
           },
           error: function (error) {
             console.error(error);
           },
         });
-            }
-        })
-        
-    }
+      }
+    });
+  }
 </script>
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
-  
 <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>

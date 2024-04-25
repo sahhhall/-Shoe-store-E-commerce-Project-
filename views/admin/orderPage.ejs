@@ -39,14 +39,14 @@
                         <tr>
                             <th>No.</th>
                             <th>customer name</th>
-                            <th>Product Namw</th>
-                            <th>photo</th>
+                            <th>Order Id</th>
+                            <!-- <th>photo</th> -->
                             <th>Order Date</th>
                             <th>Payment</th>
                             <th>Status</th>
                             <!-- <th>View</th> -->
-                            <th>Action</th>
-                            <th>Return reuests</th>
+                             <th>Action</th>
+                            <!-- <th>Return reuests</th>  -->
                            <th>Details</th>
                         </tr>
                     </thead>
@@ -56,13 +56,15 @@
                             <td><%= index + 1 %></td>
                             <td><%= order.user_name %></td>
                           
-                            <% order.products.forEach((value, index) => { %>
+                            <td><%= order._id %></td>
+                          
+                            <!-- <% order.products.forEach((value, index) => { %>
                                 <td><%=  value.productId.name %></td>
                                 <td>
                                    
                                     <img src="/assets/images/productImage/sharped/<%= value.productId.images[0] %>" alt="Product Image" style="width: 50px; height: 50px;">
                                 </td>
-                            <% }); %>
+                            <% }); %> -->
                             <td><%= new Date(order.date).toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' }) %></td>
 
                             <td><%= order.payment %></td>
@@ -72,12 +74,10 @@
                                   
                                
                             </td> -->
-                           
                             <td>
                                 <% if (order.status == "shipped" || order.status == "placed") { %>
                                 <div class="dropdown">
-                                    <button class="btn btn-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown"
-                                        aria-expanded="false">
+                                    <button class="btn btn-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
                                         Actions
                                     </button>
                                     <ul class="dropdown-menu">
@@ -86,15 +86,27 @@
                                         <li><a class="dropdown-item" href="/admin/status-update?id=<%= order._id %>&status=3">Delivery</a></li>
                                     </ul>
                                 </div>
+                                <% } else { %>
+                                <% var productWithStatusLevel4 = order.products.find(product => product.statusLevel === 4); %>
+                                <% if (productWithStatusLevel4) { %>
+                                    <div class="flex" style="display: flex;">
+                                        <img src="/assets/images/icons/returnalert.png" style="height: 25px; width: 25px;" alt="df" >
+                                        <p style="color: red;">new return request</p>  
+                                      
+                                    </div>
+                                  
+                                <% } %>
                                 <% } %>
                             </td>
+                            
+                            
                           
-                            <td>
+                            <!-- <td>
                                 <% if(order.status == "Return Requested" ){ %>
                                     <button class="btn btn-dark" onclick="returnModal('<%= order.cancellationReason%>','<%= order._id %>')">return req</button>
 
                                 <% } %>
-                                </td>
+                                </td> -->
                               
                             <td>
                                 <a href="/admin/product-detail?id=<%= order._id %>">
