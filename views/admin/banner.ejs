@@ -1,131 +1,136 @@
 <%- include('../layouts/admin/header.ejs') -%>
 
-<section class="content-main" >
-   
-    <div class="content-header">
-        
-        <div><h1 class="fw-bold fs-3 mb-2">Products  (<%= banner.length %>)</h1>
-            <nav aria-label="breadcrumb">
-                <ol class="breadcrumb">
-                  <li class="breadcrumb-item"><a href="/admin/home">Admin</a></li>
-                
-                  <li class="breadcrumb-item active" aria-current="page">banner</li>
-                </ol>
-            </nav>
-            <p class="m-0 text-muted small">Add,edit or list products</p>        
-            <p class="m-0 text-muted small">Showing 1 - 9 of 121</p>
-           
-        </div>
-        <div>
-            <a href="/admin/add-banner" class="btn btn-primary"><i class="material-icons md-plus"></i> Add Banner </a>
-        </div>
+<section class="content-main">
+  <div class="content-header">
+    <div>
+      <h1 class="fw-bold fs-3 mb-2">Products (<%= banner.length %>)</h1>
+      <nav aria-label="breadcrumb">
+        <ol class="breadcrumb">
+          <li class="breadcrumb-item"><a href="/admin/home">Admin</a></li>
+
+          <li class="breadcrumb-item active" aria-current="page">banner</li>
+        </ol>
+      </nav>
+      <p class="m-0 text-muted small">Add,edit or list products</p>
+      <p class="m-0 text-muted small">Showing 1 - 9 of 121</p>
     </div>
-    <div class="card mb-4">
-        <header class="card-header">
-            <div class="row gx-3">
-                <div class="col-lg-4 col-md-6 me-auto">
-                    <input type="text" placeholder="Search..." class="form-control" id="searchInput" />
-                </div>
-            </div>
-        </header>
+    <div>
+      <a href="/admin/add-banner" class="btn btn-primary"
+        ><i class="material-icons md-plus"></i> Add Banner
+      </a>
+    </div>
+  </div>
+  <div class="card mb-4">
+    <header class="card-header">
+      <div class="row gx-3">
+        <div class="col-lg-4 col-md-6 me-auto">
+          <input
+            type="text"
+            placeholder="Search..."
+            class="form-control"
+            id="searchInput"
+          />
+        </div>
+      </div>
+    </header>
 
-<div class="card-body">
-    <div class="table-responsive" id="reloadArea">
-        <table class="table table-hover" id="productTable" >
-            <thead>
-                <tr class="table-dark">
-                    <th>Images</th>
-                  <th>Title</th>
-                  <th>Description</th>
-                  <th>Status</th>
-                  <th>Action</th>
-               
-                </tr>
-            </thead>
-            <tbody>
-                <% if(banner.length > 0){ %>
-                    <% banner.forEach((banner)=> { %>
-               
-                <tr>
-                  
-                  <td>
-                    <img src="/banner/<%= banner.image %>" alt="">
-                  </td>
-                  <td><%= banner.title %></td>
-                  <td><%= banner.description %></td>
-                  <td   >
-                                       
-                    <a class="btn btn-sm btn-danger rounded font-sm mt-15 text-white"  data-user-id="<%= banner._id  %>" data-initial-status="<%= banner.status %>" onclick="block('<%= banner._id %>')" >
-                    <%= banner.status?"Unlist":"List"  %>
-                    </a>
-                  
-               
-            </td>
-                 
-                    <td><a href="/admin/edit-banner-page?id=<%= banner._id %>" class="badge badge-warning bg-light">Update</a></td>
+    <div class="card-body">
+      <div class="table-responsive" id="reloadArea">
+        <table class="table table-hover" id="productTable">
+          <thead>
+            <tr class="table-dark">
+              <th>Images</th>
+              <th>Title</th>
+              <th>Description</th>
+              <th>Url</th>
+              <th>Status</th>
+              <th>Action</th>
+            </tr>
+          </thead>
+          <tbody>
+            <% if(banner.length > 0){ %> <% banner.forEach((banner)=> { %>
 
-                </tr>
-                
-                 
-                 <% }) %>
-               <% }else{ %>
-                <tr>
-                  <td colspan="5">Banners Not Found</td>
-                </tr>
-                <% } %>
-            </tbody>
+            <tr>
+              <td>
+                <img
+                  src="/assets/banners/sharped/<%= banner.image %>"
+                  alt="<%= banner.image %>"
+                  style="height: 125px; width: 350px"
+                />
+              </td>
+              <td><%= banner.title %></td>
+              <td><%= banner.description %></td>
+              <td><%= banner.url %></td>
+              <td>
+                <a
+                  class="btn btn-sm btn-danger rounded font-sm mt-15 text-white"
+                  data-user-id="<%= banner._id  %>"
+                  data-initial-status="<%= banner.status %>"
+                  onclick="block('<%= banner._id %>')"
+                >
+                  <%= banner.status?"Unlist":"List" %>
+                </a>
+              </td>
+
+              <td>
+                <a
+                  href="/admin/edit-banner-page?id=<%= banner._id %>"
+                  class="badge badge-warning bg-light"
+                  >Update</a
+                >
+              </td>
+            </tr>
+
+            <% }) %> <% }else{ %>
+            <tr>
+              <td colspan="5">Banners Not Found</td>
+            </tr>
+            <% } %>
+          </tbody>
         </table>
         <!-- table-responsive.// -->
+      </div>
     </div>
-</div>
-
-</div>
-<!-- card end// -->
-
+  </div>
+  <!-- card end// -->
 </section>
 
-  
-   
 <%- include('../layouts/admin/footer.ejs') -%>
 <script>
-    function block(status){
-  const data = {status:status};
-  Swal.fire({
-        title: 'Are you sure?',
-          text: "You won't to list/unlist",
-          icon: 'warning',
-          showCancelButton: true,
-          confirmButtonColor: '#3085d6',
-          cancelButtonColor: '#d33',
-          confirmButtonText: 'Yes!',
-        
-
-    }).then((result) => {
-        if(result.isConfirmed){
-            $.ajax({
-                method:'POST',
-                url:'/admin/list-unlist-banner',
-                data:JSON.stringify(data),
-                contentType:'application/JSON',
-                success:function(res){
-                    if(res.list == true){ 
-                          $('#reloadArea').load('/admin/banners #reloadArea');
-                    }else{
-
-                    }
-                },
-                error:function(error){
-                    console.log("dfsdafs")
-                    console.log(error);
-                }
-            })
+  function block(status) {
+    const data = { status: status };
+    Swal.fire({
+      title: "Are you sure?",
+      text: "You won't to list/unlist",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#3085d6",
+      cancelButtonColor: "#d33",
+      confirmButtonText: "Yes!",
+    })
+      .then((result) => {
+        if (result.isConfirmed) {
+          $.ajax({
+            method: "POST",
+            url: "/admin/list-unlist-banner",
+            data: JSON.stringify(data),
+            contentType: "application/JSON",
+            success: function (res) {
+              if (res.list == true) {
+                $("#reloadArea").load("/admin/banners #reloadArea");
+              } else {
+              }
+            },
+            error: function (error) {
+              console.log("dfsdafs");
+              console.log(error);
+            },
+          });
         }
-    }).catch((err) => {
-        
-    });
+      })
+      .catch((err) => {});
+  }
 
-
-
-    }
+  
 </script>
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>

@@ -8,6 +8,7 @@ const nodemailer = require('nodemailer');
 const dotenv = require('dotenv');
 const Product = require('../models/productSchema');
 const Order = require('../models/orderSchema');
+const Banner = require("../models/bannerModel");
 const {profile, log} = require('console');
 dotenv.config();
 
@@ -29,9 +30,12 @@ const loadHome = async (req, res) => {
     try {
         const categories = await Category.find({is_listed: 1});
         const products = await Product.find({is_Listed: 1})
+        const banners = await Banner.find({status:true});
+        console.log(banners);
         res.render('homepage', {
             category: categories,
-            product: products
+            product: products,
+            banners: banners
         })
     } catch (err) {
         console.log(err.message)

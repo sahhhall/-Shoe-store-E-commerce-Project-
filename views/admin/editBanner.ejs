@@ -1,68 +1,98 @@
-
 <%- include('../layouts/admin/header.ejs') -%>
 
 <style>
-    #imagePreviewbanner{
-        width: 300px;
-        height: 300px;
-    }
+  #imagePreviewbanner {
+    width: 300px;
+    height: 300px;
+  }
 </style>
 <div class="main-panel">
-    <div class="content-wrapper">
-  <div class="col-12 grid-margin stretch-card">
+  <div class="content-wrapper">
+    <div class="col-12 grid-margin stretch-card">
       <div class="card">
         <div class="card-body">
           <h4 class="card-title">Edit Banners</h4>
-          <p class="card-description"> Give banner details </p>
-          <form class="forms-sample" action="/admin/add-banner" id="addBanner" method="post" enctype="multipart/form-data">
-              
+          <p class="card-description">Give banner details</p>
+          <form
+            class="forms-sample"
+            action="/admin/edit-banner-page"
+            id="addBanner"
+            method="post"
+            enctype="multipart/form-data"
+          >
             <div class="form-group">
               <label for="exampleInputName1">Banner Title</label>
-              <input value="<%= banner.title %>" class="form-control" id="title" name="title" placeholder="Name">
-              <p style="color: red; display: none;" id="bannerNameError"></p>
+              <input
+                value="<%= banner.title %>"
+                class="form-control"
+                id="title"
+                name="title"
+                placeholder="Name"
+              />
+              <p style="color: red; display: none" id="bannerNameError"></p>
             </div>
-            
+
             <div class="form-group">
               <label for="exampleTextarea1">Description</label>
-              <input value="<%= banner.description %>" class="form-control" id="description" name="description" placeholder="Description">
-              <p style="color: red; display: none;" id="BannerdesError"></p>
+              <input
+                value="<%= banner.description %>"
+                class="form-control"
+                id="description"
+                name="description"
+                placeholder="Description"
+              />
+              <p style="color: red; display: none" id="BannerdesError"></p>
             </div>
             <div class="col-lg-3 col-md-6 rounded-image-preview">
               <label for="exampleTextarea1">Banner Image</label>
               <label for="imageInput1" class="image-label">
-                  <div class="rounded-image-preview">
-                      <img id="imagePreviewbanner" src="/assets/images/banners/<%= banner.image %>" alt="Preview" />
-                  </div>
-                  <input style="display: none;" name="image" type="file" accept="image/*" id="imageInput1" class="imageInput" onchange="previewBimage(event)">
+                <div class="rounded-image-preview">
+                  <img
+                    id="imagePreviewbanner"
+                    src="/assets/banners/sharped/<%= banner.image %>"
+                    alt="Preview"
+                  />
+                </div>
+                <input
+                  style="display: none"
+                  name="image"
+                  type="file"
+                  accept="image/*"
+                  id="imageInput1"
+                  class="imageInput"
+                  onchange="previewBimage(event)"
+                  src="<%= banner.image %>"
+                />
               </label>
+              <input type="hidden" value="<%= banner._id %>" name="id">
+
               <!-- Add a delete image button -->
               <!-- <button type="button" class="btn btn-danger" onclick="deleteImage()">Delete Image</button> -->
-          </div>
-            
-            
-            <br>
+            </div>
+
+            <br />
             <button type="submit" class="btn btn-primary mr-2">Submit</button>
-            <button class="btn btn-inverse-danger"><a href="/admin/bannerDetails">Cancel</a></button>
+            <button class="btn btn-inverse-danger">
+              <a href="/admin/banners">Cancel</a>
+            </button>
           </form>
         </div>
       </div>
     </div>
-    </div>
-    <%- include('../layouts/admin/footer.ejs') -%>
+  </div>
+  <%- include('../layouts/admin/footer.ejs') -%>
 
-    <script>
-        function previewBimage(e){
-            const input =e.target;
-            const image = document.getElementById('imagePreviewbanner')
-            if(input.files &&  input.files[0]){
-                var reader = new FileReader()
-                reader.onload = function(e){
-                    image.src = e.target.result
-                }
-                reader.readAsDataURL(input.files[0])
-            }
-
-        }
-    </script>
-  
-    
+  <script>
+    function previewBimage(e) {
+      const input = e.target;
+      const image = document.getElementById("imagePreviewbanner");
+      if (input.files && input.files[0]) {
+        var reader = new FileReader();
+        reader.onload = function (e) {
+          image.src = e.target.result;
+        };
+        reader.readAsDataURL(input.files[0]);
+      }
+    }
+  </script>
+</div>
