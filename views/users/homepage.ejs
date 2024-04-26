@@ -33,26 +33,29 @@
               <div class="swiper-wrapper">
             
                 <!-- Slide-->
+                <%  banners.map(function(banner){ %>
                 <div class="swiper-slide position-relative h-100 w-100">
                   <div class="w-100 h-100 overflow-hidden position-absolute z-index-1 top-0 start-0 end-0 bottom-0">
                     <div class="w-100 h-100 bg-img-cover bg-pos-center-center overflow-hidden" data-swiper-parallax="-100"
-                      style=" will-change: transform; background-image: url(/assets/banners/banner-1.jpg)">
+                          style="will-change: transform; background-image: url('/assets/banners/sharped/<%= banner.image %>')">
                     </div>
+
                   </div>
                   <div
                     class="container position-relative z-index-10 d-flex h-100 align-items-start flex-column justify-content-center">
-                    <p class="title-small text-white opacity-75 mb-0" data-swiper-parallax="-100">Everything You Need</p>
+                    <p class="title-small text-white opacity-75 mb-0" data-swiper-parallax="-100"><%= banner.title %></p>
                     <h2 class="display-3 tracking-wide fw-bold text-uppercase tracking-wide text-white" data-swiper-parallax="100">
-                      <span class="text-outline-light">Summer</span> Essentials</h2>
+                      <span class="text-outline-light"><%= banner.description.split(' ')[0] %></span> <%= banner.description.split(' ')[1] %></h2>
                     <div data-swiper-parallax-y="-25">
-                      <a href="./category.html" class="btn btn-psuedo text-white" role="button">Shop New Arrivals</a>
+                      <a href="http://localhost:4001<%=banner.url %>" class="btn btn-psuedo text-white" role="button">Shop New Arrivals</a>
                     </div>
                   </div>
                 </div>
+                <% }); %>
                 <!-- /Slide-->
             
                 <!-- Slide-->
-                <div class="swiper-slide position-relative h-100 w-100">
+                <!-- <div class="swiper-slide position-relative h-100 w-100">
                   <div class="w-100 h-100 overflow-hidden position-absolute z-index-1 top-0 start-0 end-0 bottom-0">
                     <div class="w-100 h-100 bg-img-cover bg-pos-center-center overflow-hidden" data-swiper-parallax="-100"
                       style=" will-change: transform; background-image: url(/assets/banners/banner-2.jpg)">
@@ -67,11 +70,11 @@
                       <a href="./category.html" class="btn btn-psuedo text-white" role="button">Shop Latest Adidas</a>
                     </div>
                   </div>
-                </div>
+                </div> -->
                 <!--/Slide-->
             
                 <!-- Slide-->
-                <div class="swiper-slide position-relative h-100 w-100">
+                <!-- <div class="swiper-slide position-relative h-100 w-100">
                   <div class="w-100 h-100 overflow-hidden position-absolute z-index-1 top-0 start-0 end-0 bottom-0">
                     <div class="w-100 h-100 bg-img-cover bg-pos-center-center overflow-hidden" data-swiper-parallax="-100"
                       style=" will-change: transform; background-image: url(/assets/banners/banner-4.jpg)">
@@ -86,11 +89,11 @@
                       <a href="./category.html" class="btn btn-psuedo text-white" role="button">Shop Latest Nike</a>
                     </div>
                   </div>
-                </div>
+                </div> -->
                 <!-- /Slide-->
             
                 <!--Slide-->
-                <div class="swiper-slide position-relative h-100 w-100">
+                <!-- <div class="swiper-slide position-relative h-100 w-100">
                   <div class="w-100 h-100 overflow-hidden position-absolute z-index-1 top-0 start-0 end-0 bottom-0">
                     <div class="w-100 h-100 bg-img-cover bg-pos-center-center overflow-hidden" data-swiper-parallax="-100"
                       style=" will-change: transform; background-image: url(/assets/banners/banner-3.jpg)">
@@ -105,7 +108,7 @@
                       <a href="./category.html" class="btn btn-psuedo text-white" role="button">Why We Are Different</a>
                     </div>
                   </div>
-                </div>
+                </div> -->
                 <!--/Slide-->
             
               </div>
