@@ -1,0 +1,170 @@
+<%- include('../layouts/user/header.ejs') -%>
+<style>
+  .containerrr {
+    display: flex;
+    flex-wrap: wrap;
+  }
+
+  .sidebarrr {
+    flex: 1;
+    min-width: 20%;
+    max-width: 25%;
+    padding: 20px;
+    color: #fff;
+    min-height: 100vh;
+  }
+
+  .main-contenttt {
+    flex: 3;
+    padding: 20px;
+  }
+
+  hr {
+    color: black;
+  }
+
+  .user-headerrr {
+    display: flex;
+    align-items: center;
+    margin-bottom: 20px;
+  }
+
+  .user-photooo {
+    border-radius: 50%;
+    width: 40px;
+    height: 40px;
+    margin-right: 10px;
+    background-color: #ddd;
+  }
+
+  .user-nameee {
+    font-size: 0.6rem;
+    font-weight: bold;
+  }
+
+  .menu-headinggg {
+    font-size: 0.7rem;
+    font-weight: bold;
+    margin-bottom: 10px;
+    color: rgba(127, 127, 127, 1);
+  }
+
+  .menu-itemmm {
+    margin-bottom: 10px;
+  }
+
+  .menu-itemmm a {
+    color: black;
+    text-decoration: none;
+    font-size: 0.9rem;
+    font-family: 'Quicksand';
+  }
+
+  .menu-itemmm.selected {
+    background-color: #f0f0f0;
+    border-radius: 5px;
+  }
+
+  @media screen and (max-width: 600px) {
+    .menu-itemmm a {
+      color: black;
+      text-decoration: none;
+      font-size: 0.5rem;
+    }
+  }
+</style>
+</head>
+<body>
+  <div class="containerrr">
+    <!-- Sidebar -->
+    <div class="sidebarrr" id="sidebar">
+      <div class="user-headerrr">
+        <div class="user-photooo"></div>
+        <div class="user-nameee">John Doe</div>
+      </div>
+
+      <!-- Sidebar Menu -->
+      <div class="menu-headinggg">General</div>
+      <div class="menu-itemmm"><a href="/addresses">Manage Address</a></div>
+      <hr />
+      <div class="menu-itemmm"><a href="/orders">Orders</a></div>
+      <hr />
+      <div class="menu-itemmm">
+        <a href="/wishlist" aria-current="page" class="bg-light active">Wishlist</a>
+      </div>
+      <hr />
+      <div class="menu-itemmm"><a href="/wallet">Wallet</a></div>
+      <hr />
+
+      <div class="menu-headinggg">Legal</div>
+      <div class="menu-itemmm"><a href="#">Terms of Use</a></div>
+      <hr />
+      <div class="menu-itemmm"><a href="#">Privacy Policy</a></div>
+      <hr />
+
+      <div class="menu-headinggg">Personal</div>
+      <div class="menu-itemmm"><a href="#">Report a Bug</a></div>
+      <hr />
+      <div class="menu-itemmm"><a href="/signout">Logout</a></div>
+      <hr />
+    </div>
+
+    <!-- Main Content -->
+    <div class="main-contenttt">
+      <nav class="d-none d-md-block">
+        <ul class="list-unstyled d-flex justify-content-start mt-4 align-items-center fw-bolder small">
+          <li class="me-4"><a class="nav-link-checkout" href="/">Home</a></li>
+          <li class="me-4"><a class="nav-link-checkout" href="/profile">Profile</a></li>
+          <li class="me-4">
+            <a class="nav-link-checkout active aria-current" href="/wishlist">wishlist</a>
+          </li>
+        </ul>
+      </nav>
+      <div>
+        <div class="mt-5">
+          <h3 class="fs-5 fw-bolder mb-0 border-bottom pb-4">Your Cart</h3>
+          <div class="table-responsive">
+            <table class="table align-middle">
+              <tbody class="border-0">
+              
+                <tr class="mx-0 py-4 g-0 border-bottom">
+                  <td class="col-2 position-relative">
+                    <picture class="d-block border">
+                      <img
+                        class="img-fluid"
+                        src="/assets/images/productImage/sharped/1702447587013-adidas2.jpg"
+                        alt="hihi"
+                      />
+                    </picture>
+                  </td>
+                  <td class="col-9 offset-1">
+                    <div>
+                      <h6 class="justify-content-between d-flex align-items-start mb-2">
+                        Converse Chuck Taylor All Star
+                        <i
+                          
+                          style="cursor: pointer; color: black"
+                          class="ri-close-line ms-3"
+                        
+                          onmouseover="this.style.color='red' "
+                          onmouseout="this.style.color='black'"
+                        ></i>
+                      </h6>
+                    </div>
+                    <p style="font-weight: 800; padding-left: 4px;">
+                        ₹ 1700
+                    </p>
+                   <button style="border: .1px solid black; padding: .61em; letter-spacing: .2em; ">
+                    Add to cart
+                   </button>
+                  </td>
+                </tr>
+             
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</body>

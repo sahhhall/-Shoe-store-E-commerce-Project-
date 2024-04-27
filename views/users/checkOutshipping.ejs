@@ -495,6 +495,14 @@ function trimValue(elementId) {
           url: '/place-order',
           data: data,
           success: function(response) {
+            if (response.quantity === true) {
+              Swal.fire({
+                icon: 'error', 
+                text: 'something went wrong(out of stock) ',
+                showConfirmButton: false,
+                timer: 1500
+            });
+            }
             if (response.success == true) {
                  location.href = `/order-success/${response.params}`;
                  console.log('Order placed successfully:', response);

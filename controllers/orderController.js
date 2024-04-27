@@ -24,9 +24,26 @@ const placeOrder = async (req, res) => {
   try {
     const userId = req.session.user._id;
     const { selectedAddress, selectedShippingMethod, subTotalValue } = req.body;
-    const cartData = await Cart.findOne({ userid: userId });
+    const cartData = await Cart.findOne({ userid: userId }).populate('products.productId');
     const cartProducts = cartData.products;
     console.log(cartProducts);
+
+    const quantityLessProducts = [];
+    cartProducts.forEach((pro) => {
+        const productStock = pro.productId.stockQuantity; // Stock quantity of the product from the database
+        console.log(productStock);
+        const cartQuantity = pro.quantity; // Quantity of the product in the cart
+        console.log(cartQuantity);
+        if (cartQuantity > productStock) {
+            quantityLessProducts.push(pro.productId.name);
+        }
+    });
+    
+if (quantityLessProducts.length > 0) { // Check if the array is not empty
+  console.log("Quantity less:", quantityLessProducts);
+  return res.json({ quantity: true });
+}
+    
     const total = subTotalValue;
     const userData = await User.findOne({ _id: userId });
     const name = userData.name;

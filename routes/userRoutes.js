@@ -7,6 +7,7 @@ const productController = require('../controllers/productController')
 const cartController = require('../controllers/cartController')
 const orderController = require('../controllers/orderController')
 const couponController = require('../controllers/couponController')
+const wishlistController = require('../controllers/wishlist.controller')
 const {loadCartMiddleware} = require('../middlewares/cartMiddle')
 const auth = require('../middlewares/userAuth')
 userRouter.use(session({secret:config.sessionSecret,resave:false,
@@ -84,7 +85,9 @@ userRouter.post('/edit-addresses',userController.editAddress)
 
 userRouter.post('/remove-addresses',userController.deleteAddress);
 
-userRouter.get('/wallet',userController.walletLoad)
+userRouter.get('/wallet',userController.walletLoad);
+
+userRouter.get('/wishlist', wishlistController.loadWishlistPage);
 // ==========================================< CART HANDLING >==================================================== //
 
 userRouter.get('/cart',auth.authlogg,cartController.loadCart);
@@ -113,6 +116,10 @@ userRouter.get('/viewOrderDetails',auth.authlogg,orderController.userOderDetails
 userRouter.post('/cancel-order',auth.authlogg,orderController.cancelOrder);
 
 userRouter.post('/returnreason',auth.authlogg,orderController.returnReason);
+
+// ==========================================< wishlist >===================================================== //
+
+userRouter.post('/add-to-wishlist', wishlistController.addToWishList);
 
 // ==========================================<  >===================================================== //
 

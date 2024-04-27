@@ -172,12 +172,22 @@
                             <input type="text" class="incdec" name="quantity" value="1"  style="width: 30px;"   maxlength="2" max="<%= product.stockQuantity %>" size="1" id="number" />
                             <input type="button" style="border: none; background-color: black; color: white;"  class="border-0" class="incdec" onclick="incrementValue()" value="+" />
                             -->
-            <button
-              onclick="addToCart('<%= product._id %>')"
-              class="btn btn-dark w-100 mt-4 mb-0 hover-lift-sm hover-boxshadow"
-            >
-              Add To Shopping Bag
-            </button>
+                            <% if (product.stockQuantity > 0) { %>
+                                <button
+                                  onclick="addToCart('<%= product._id %>')"
+                                  class="btn btn-dark w-100 mt-4 mb-0 hover-lift-sm hover-boxshadow"
+                                >
+                                  Add To Shopping Bag
+                                </button>
+                              <% } else { %>
+                                <button
+                                  disabled
+                                  style="background-color: rgb(209, 14, 14);"
+                                  class="btn btn-dark w-100 mt-4 mb-0 hover-lift-sm hover-boxshadow"
+                                >
+                                  Out of stock
+                                </button>
+                              <% } %>
 
             <!-- Product Highlights-->
             <div class="my-5">

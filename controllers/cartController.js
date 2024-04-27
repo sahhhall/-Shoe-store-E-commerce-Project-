@@ -152,8 +152,8 @@ const quantityUpdationCart = async (req, res) => {
     );
     console.log("this", previousProduct);
 
-    if (previousProduct.quantity + count > 5 ) {
-      res.json({ success: false, message: "Product Quantity (5) limit reached!" });
+    if (previousProduct.quantity + count > 5 || productDetails.stockQuantity < count ) {
+      res.json({ success: false, message: "Product Quantity  limit reached!" });
     } else {
       const productTotal =
         previousProduct.productPrice * (previousProduct.quantity + count);
