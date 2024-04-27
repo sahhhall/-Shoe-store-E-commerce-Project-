@@ -45,9 +45,10 @@ const addtoCart = async (req, res) => {
     } else {
       const userId = req.session.user._id;
       // const userData = await User.findOne({_id: userId});
-      const { productId, productquantity } = req.body;
+      const { productId } = req.body;
       const productData = await Product.findOne({ _id: productId });
       const cart = await Cart.findOne({ userid: userId });
+      let existingInCart = false;
       if (cart) {
         // we need to check the product exist or not because if exist we need onlu updation
 
@@ -55,19 +56,20 @@ const addtoCart = async (req, res) => {
           (pro) => pro.productId.toString() == productId
         );
         if (existProduct) {
-          await Cart.findOneAndUpdate(
-            {
-              userid: userId,
-              "products.productId": productId,
-            },
-            {
-              $inc: {
-                "products.$.quantity": productquantity,
-                "products.$.totalPrice":
-                  productquantity * existProduct.productPrice,
-              },
-            }
-          );
+          // await Cart.findOneAndUpdate(
+          //   {
+          //     userid: userId,
+          //     "products.productId": productId,
+          //   },
+          //   {
+          //     $inc: {
+          //       "products.$.quantity": productquantity,
+          //       "products.$.totalPrice":
+          //         productquantity * existProduct.productPrice,
+          //     },
+          //   }
+          // );
+          existingInCart = true;
         } else {
           //    add new product to cart
           await Cart.findOneAndUpdate(
@@ -78,9 +80,9 @@ const addtoCart = async (req, res) => {
               $push: {
                 products: {
                   productId: productId,
-                  quantity: productquantity,
+                  quantity: 1,
                   productPrice: productData.price,
-                  totalPrice: productquantity * productData.price,
+                  totalPrice: 1 * productData.price,
                 },
               },
             }
@@ -93,15 +95,15 @@ const addtoCart = async (req, res) => {
           products: [
             {
               productId: productId,
-              quantity: productquantity,
+              quantity: 1,
               productPrice: productData.price,
-              totalPrice: productquantity * productData.price,
+              totalPrice: 1 * productData.price,
             },
           ],
         });
         await newCart.save();
       }
-      res.json({ success: true });
+      res.json({ success: true, existingInCart });
     }
   } catch (err) {
     console.log(err.message);
@@ -150,8 +152,8 @@ const quantityUpdationCart = async (req, res) => {
     );
     console.log("this", previousProduct);
 
-    if (previousProduct.quantity + count > productDetails.stockQuantity) {
-      res.json({ success: false, message: "Quantity limit reached!" });
+    if (previousProduct.quantity + count > 5 ) {
+      res.json({ success: false, message: "Product Quantity (5) limit reached!" });
     } else {
       const productTotal =
         previousProduct.productPrice * (previousProduct.quantity + count);
@@ -251,7 +253,7 @@ const applyCoupon = async (req, res) => {
       list: true,
       discountAmount: discountValue,
       totalUpdated: totalUpdated,
-      couponName: appliedCoupon.couponName
+      couponName: appliedCoupon.couponName,
     });
   } catch (err) {
     console.log(err);

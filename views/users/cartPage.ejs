@@ -233,7 +233,7 @@
           }, 1000);
           //   $("#reloadDiv").load("/cart #reloadDiv");
         } else {
-          toastr.error("stock limit reached", {
+          toastr.error(`${response.message}`, {
             timeOut: 5000,
             progressBar: true,
           });
