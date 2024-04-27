@@ -124,13 +124,27 @@
             >
             <% } %>
 
+           <div style="display: flex;">
             <h1 class="mb-1 fs-2 fw-bold"><%= product.name %></h1>
+            <% if (locals.user ){ %> <% if (isWishlist ) { %>
+            <button
+            style="border: none ; background-color: transparent;"
+            onclick="removeFromCart('<%= product._id %>')"
+            > <i style="color: red; font-size: 29px;" class="ri-heart-fill"></i></button>
+            <% } else { %>
+            <button  style="border: none ; background-color: transparent; " onclick="addToWishList('<%= product._id %>')">
+             <i style=" font-size: 29px;" class="ri-heart-line"></i>
+            </button>
+
+            <% } %> <% } %>
+           </div> 
             <div class="d-flex justify-content-between align-items-center">
               <p class="mt-2 mb-0 small">
                 <s class="text-danger">₹<%= product.previous_price %></s>
                 <span class="ps-1 fs-4 m-0">₹<%= product.price %></span>
               </p>
             </div>
+
 
             <div class="border-top mt-4 mb-3 product-option">
               <small class="text-uppercase pt-4 d-block fw-bolder">
@@ -172,22 +186,22 @@
                             <input type="text" class="incdec" name="quantity" value="1"  style="width: 30px;"   maxlength="2" max="<%= product.stockQuantity %>" size="1" id="number" />
                             <input type="button" style="border: none; background-color: black; color: white;"  class="border-0" class="incdec" onclick="incrementValue()" value="+" />
                             -->
-                            <% if (product.stockQuantity > 0) { %>
-                                <button
-                                  onclick="addToCart('<%= product._id %>')"
-                                  class="btn btn-dark w-100 mt-4 mb-0 hover-lift-sm hover-boxshadow"
-                                >
-                                  Add To Shopping Bag
-                                </button>
-                              <% } else { %>
-                                <button
-                                  disabled
-                                  style="background-color: rgb(209, 14, 14);"
-                                  class="btn btn-dark w-100 mt-4 mb-0 hover-lift-sm hover-boxshadow"
-                                >
-                                  Out of stock
-                                </button>
-                              <% } %>
+            <% if (product.stockQuantity > 0) { %>
+            <button
+              onclick="addToCart('<%= product._id %>')"
+              class="btn btn-dark w-100 mt-4 mb-0 hover-lift-sm hover-boxshadow"
+            >
+              Add To Shopping Bag
+            </button>
+            <% } else { %>
+            <button
+              disabled
+              style="background-color: rgb(209, 14, 14)"
+              class="btn btn-dark w-100 mt-4 mb-0 hover-lift-sm hover-boxshadow"
+            >
+              Out of stock
+            </button>
+            <% } %>
 
             <!-- Product Highlights-->
             <div class="my-5">
@@ -934,7 +948,7 @@
       data: JSON.stringify(data),
       contentType: "application/json",
       success: function (response) {
-        if (response.login == true) {
+        if (response.login == "success") {
           swal
             .fire({
               icon: "warning",
@@ -987,4 +1001,86 @@
       },
     });
   }
+  function addToWishList(productId) {
+    console.log(productId);
+    const data = { productId: productId };
+    fetch("/add-to-wishlist", {
+      method: "POST",
+      headers: {
+        "Content-type": "application/json",
+      },
+      body: JSON.stringify(data),
+    })
+      .then((response) => response.json())
+      .then((data) => {
+        if (data.status === true) {
+          Swal.fire({
+            position: "center",
+            icon: "error",
+            title: "Item already in wishlist",
+            showConfirmButton: false,
+            timer: 1500,
+          });
+        } else {
+          Swal.fire({
+            position: "center",
+            icon: "success",
+            title: "Item added to wishlist",
+            showConfirmButton: false,
+            timer: 1500,
+          }).then(() => {
+            location.reload();
+          });
+        }
+      })
+      .catch((error) => {
+        console.error("Error:", error);
+        Swal.fire({
+          position: "center",
+          icon: "error",
+          title: "Error adding item to wishlist",
+          showConfirmButton: false,
+          timer: 1500,
+          background: "transparent",
+        });
+      });
+  }
+
+  function removeFromCart(productId) {
+    const data = { productId: productId };
+    fetch("/remove-wishlist", {
+      method: "POST",
+      headers: {
+        "Content-type": "application/json",
+      },
+      body: JSON.stringify(data),
+    })
+      .then((response) => {
+        if (response.ok) {
+          Swal.fire({
+            position: "center",
+            icon: "success",
+            title: "Item removed from wishlist",
+            showConfirmButton: false,
+            timer: 1500,
+          }).then(()=> {
+            location.reload()
+          })
+        } else {
+          // Handle other non-success cases if needed
+        }
+      })
+      .catch((error) => {
+        console.error("Error:", error);
+        Swal.fire({
+          position: "center",
+          icon: "error",
+          title: "Error removing item from wishlist",
+          showConfirmButton: false,
+          timer: 1500,
+          background: "transparent",
+        });
+      });
+}
+
 </script>

@@ -120,7 +120,7 @@ userRouter.post('/returnreason',auth.authlogg,orderController.returnReason);
 // ==========================================< wishlist >===================================================== //
 
 userRouter.post('/add-to-wishlist', wishlistController.addToWishList);
-
+userRouter.post('/remove-wishlist', wishlistController.removeFromWishlist);
 // ==========================================<  >===================================================== //
 
 userRouter.get('/about-us',userController.aboutUs);

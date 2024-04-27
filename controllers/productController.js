@@ -2,12 +2,13 @@ const User = require("../models/userModel");
 const bcrypt = require("bcrypt");
 const Category = require("../models/categoriesModel");
 const Product = require("../models/productSchema");
+const Wishlist = require("../models/wishlist.model");
+
 const sharp = require("sharp");
 const path = require("path");
 const loadProductList = async (req, res) => {
   try {
     const products = await Product.find({});
-
     res.render("products", { products: products });
   } catch (err) {
     res.status(400).send("internal server error");
@@ -19,7 +20,6 @@ const loadProductList = async (req, res) => {
 const loadAddproduct = async (req, res) => {
   try {
     const categories = await Category.find({});
-    console.log(categories);
     res.render("addProduct", { categories: categories });
   } catch (err) {
     console.log(err.message);
@@ -27,10 +27,8 @@ const loadAddproduct = async (req, res) => {
 };
 const listUnlistProduct = async (req, res) => {
   try {
-    console.log("hi am here in product list unlist");
     const userid = req.body.list;
     const productData = await Product.findOne({ _id: userid });
-    console.log("hi i product", productData);
     if (productData.is_Listed) {
       await Product.findByIdAndUpdate(
         {
@@ -62,13 +60,10 @@ const listUnlistProduct = async (req, res) => {
 
 const addProduct = async (req, res) => {
   try {
-    console.log("sahal");
-
     let sizes = [];
     for (i = 0; i < req.body.sizes.length; i++) {
       sizes[i] = req.body.sizes[i];
     }
-    console.log("reqfiles", req.files);
     let arrimages = [];
     if (Array.isArray(req.files)) {
       for (let i = 0; i < req.files.length; i++) {
@@ -88,13 +83,6 @@ const addProduct = async (req, res) => {
         await sharp(req.files[i].path).resize(500, 500).toFile(outputPath);
       }
     }
-
-    console.log("dsafsdfdsf", arrimages);
-
-    console.log(sizes);
-    console.log(req.body.quantity);
-    console.log(req.body.category);
-    console.log("ssssss");
 
     const product = new Product({
       previous_price: req.body.previous_price,
@@ -121,9 +109,6 @@ const editProductpageLoad = async (req, res) => {
     const id = req.query.id;
     const product = await Product.findById({ _id: id });
     const categories = await Category.find({});
-    console.log(categories);
-
-    console.log("hifrom edit load");
 
     if (product) {
       res.render("editProduct", {
@@ -205,7 +190,6 @@ const editProduct = async (req, res) => {
     }
     console.log("hiii", arrimages);
     if (arrimages) {
-      console.log("no hii");
       const image1 = arrimages[0] || existingData[0].images[0];
       const image2 = arrimages[1] || existingData[0].images[1];
       const image3 = arrimages[2] || existingData[0].images[2];
@@ -236,9 +220,6 @@ const searchProduct = async (req, res) => {
   try {
     let payload = req.body.payload.trim();
     let category = req.body.category;
-    console.log(category);
-    console.log(payload);
-
     let searchQuery = {
       name: { $regex: new RegExp("^" + payload + ".*", "i") },
     };
@@ -249,7 +230,6 @@ const searchProduct = async (req, res) => {
     }
 
     let search = await Product.find(searchQuery).exec();
-    console.log("gfhggggggggggggggggggg", search);
 
     // Limit search results to 8
     search = search.slice(0, 8);
@@ -285,7 +265,6 @@ const searchProduct = async (req, res) => {
 // //////////////////////////////////shop ui//////////////////
 const loadShop = async (req, res) => {
   try {
-    ``;
     const categId = req.query.categid;
     // here cominng sort option selected
     const sortOption = req.query.sort;
@@ -374,8 +353,8 @@ const productView = async (req, res) => {
     const viewProduct = await Product.findById(queryProduct);
     const productDate = viewProduct.date;
     var firstWord = viewProduct.name.split(" ")[0];
-    console.log(firstWord);
 
+    let isWishlist;
     const relatedProducts = await Product.find({
       category: viewProduct.category,
       _id: {
@@ -383,17 +362,35 @@ const productView = async (req, res) => {
       },
     });
 
-    console.log("this is releated", relatedProducts);
-
     const currentDate = new Date();
     const timeDifference = currentDate - productDate;
     const daysDifference = Math.floor(timeDifference / (1000 * 60 * 60 * 24));
-
+    if (req.session.user) {
+      var userId = req.session.user._id;
+    }
+    if (userId) {
+      const existInWishlist = await Wishlist.findOne({
+        userId: req.session.user._id,
+      });
+      console.log(existInWishlist, "f");
+      if (existInWishlist) {
+        console.log(existInWishlist, "d", queryProduct);
+        const productExistInWishlist = await Wishlist.findOne({
+          userId: userId,
+          products: { $in: [queryProduct] },
+        });
+        console.log("productExistInWishlist", productExistInWishlist);
+        if (productExistInWishlist) {
+          isWishlist = true;
+        }
+      }
+    }
     res.render("productDetails", {
       product: viewProduct,
       category: categories,
       daysDifference: daysDifference,
       relatedProducts: relatedProducts,
+      isWishlist,
     });
   } catch (err) {
     console.log(err.message);
