@@ -130,6 +130,10 @@
                             </div>
                             
                         </div>
+                        <% if (product.stockQuantity < 5) { %>
+                            <p style="color: red; letter-spacing: .1rem; font-weight: bold; font-size: small;">only <%= product.stockQuantity %> left</p>
+                          <% } %>
+                        
                        
                             <input type="button"  style="border: none; background-color: black; color: white;"   class="border-0" class="incdec" onclick="decrementValue()" value="-" />
                             <input type="text" class="incdec" name="quantity" value="1"  style="width: 30px;"   maxlength="2" max="<%= product.stockQuantity %>" size="1" id="number" />
