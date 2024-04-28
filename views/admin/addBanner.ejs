@@ -18,6 +18,7 @@
             action="/admin/add-banner"
             id="addBanner"
             method="post"
+            onsubmit="return validateBannerForm()"
             enctype="multipart/form-data"
           >
             <div class="form-group">
@@ -56,19 +57,20 @@
                   id="imageInput1"
                   class="imageInput"
                   onchange="previewBimage(event)"
-                  required
                 />
               </label>
+              <div id="imageErr" style="display: none; color: red"></div>
             </div>
             <div>
               <label for="bannerLink">Banner Link URL :</label>
               <input
-                style="width: 100%;"
+                style="width: 100%"
                 type="text"
                 id="bannerLink"
                 name="bannerLink"
                 placeholder="eg:/shop?categid=Clogs"
               />
+              <div id="urlError" style="display: none; color: red"></div>
             </div>
             <br />
             <button type="submit" class="btn btn-primary mr-2">Submit</button>
@@ -83,6 +85,48 @@
   <%- include('../layouts/admin/footer.ejs') -%>
 
   <script>
+    function validateBannerForm() {
+      let titleBanner = document.getElementById("title").value.trim();
+      let descriptionBanner = document
+        .getElementById("description")
+        .value.trim();
+      let imageInput = document.getElementById("imageInput1").value.trim();
+      let BannerUrl = document.getElementById("bannerLink").value.trim();
+
+      let titleErr = document.getElementById("titleError");
+      let descErr = document.getElementById("desError");
+      let imageErr = document.getElementById("imageErr");
+      let urlErr = document.getElementById("urlError");
+      let isValid = true;
+
+      function err(errorField, error) {
+        errorField.innerText = `${error} is required `;
+        errorField.style.display = "block";
+        setTimeout(() => {
+          errorField.style.display = "none";
+        }, 5000);
+        isValid = false;
+        return;
+      }
+      if (titleBanner === "") {
+        err(titleErr, "Title");
+      } else if (!/^[a-zA-Z]*$/.test(titleBanner)) {
+        err(titleErr, "title must contain only alphabetic characters");
+      }
+      if (descriptionBanner === "") {
+        err(descErr, "Description");
+      } else if (!/^[a-zA-Z]*$/.test(descriptionBanner)) {
+        err(descErr, "title must contain only alphabetic characters");
+      }
+      if (imageInput === "") {
+        err(imageErr, "Image");
+      }
+      if (BannerUrl === "") {
+        err(urlErr, "URL");
+      }
+      return isValid;
+    }
+
     function previewBimage(e) {
       const input = e.target;
       const image = document.getElementById("imagePreviewbanner");

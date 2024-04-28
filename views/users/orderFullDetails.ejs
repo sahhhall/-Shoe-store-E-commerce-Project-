@@ -162,10 +162,20 @@
     <% } else if ( product.statusLevel === 4 ) { %>
     <button class="border-0 p-3" disabled>Pending Return</button>
 
+    <% } %> <% if( product.statusLevel === 5 ){ %>
+    <button
+      class="border-0 p-2"
+      style="
+        background-color: rgb(2, 59, 2);
+        border-radius: 1rem;
+        font-weight: bold;
+        color: white;
+      "
+      disabled
+    >
+      Product Returned
+    </button>
     <% } %>
-    <% if( product.statusLevel === 5 ){ %>
-      <button class="border-0 p-2 "  style="background-color: rgb(2, 59, 2); border-radius: 1rem; font-weight: bold; color: white;" disabled> Product Returned</button>
-      <% }  %>
   </div>
   <% }); %>
 
@@ -247,7 +257,7 @@
           ></button>
         </div>
         <div class="modal-body">
-          <form method="post">
+          <form method="post" onsubmit=" return validateReason()">
             <div class="form-group">
               <label for="reason" class="form-label">reason</label>
               <input type="hidden" id="productId" value="" />
@@ -257,8 +267,8 @@
                 id="reason"
                 placeholder="reason"
                 name="reason"
-                required
               />
+              <p style="color: red; display: none" id="reasonErr"></p>
             </div>
 
             <button
@@ -284,12 +294,32 @@
 <%- include('../layouts/user/footer.ejs') -%>
 
 <script>
+  function validateReason() {
+    const reason = document.getElementById("reason").value.trim();
+    const reasonError = document.getElementById("reasonErr");
+
+    if (reason === "") {
+      reasonError.innerText = `reason field is required `;
+      reasonError.style.display = "block";
+      setTimeout(() => {
+        reasonError.style.display = "none";
+      }, 5000);
+      return false;
+    }
+    return;
+  }
+
   function handleReturnProductButtonClick(productId) {
     // Set the product ID value into the hidden input field inside the modal
     console.log("am doiiii", productId);
     document.getElementById("productId").value = productId;
   }
   function returnOrder(orderId) {
+    const isValidReason = validateReason();
+
+    if (!isValidReason) {
+      return; // Exit function if validation fails
+    }
     const productId = document.getElementById("productId").value;
     console.log(orderId, productId);
     console.log("fuck", productId);
