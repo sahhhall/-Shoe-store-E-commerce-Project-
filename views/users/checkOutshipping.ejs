@@ -552,6 +552,10 @@ function trimValue(elementId) {
     };
   // interface for razonpay page4
     var rzp1 = new Razorpay(options);
+    rzp1.on("payment.failed", () => {
+
+              window.location.href = `/orders?sortbyorder=pending`;
+            });
     rzp1.open();
   }
 

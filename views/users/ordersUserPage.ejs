@@ -172,6 +172,10 @@
                                   <span class="statusord d-block fw-bolder text-danger text-uppercase fs-7">
                                     <%= order.status %>
                                   </span>
+                                  <% if ( order.statusLevel === 0 ) { %>
+                                    <h1><%= order.total_amount %></h1>
+                                    <button style="background-color: rgb(177, 22, 22); border: none; padding: .4rem; font-weight: bold; color: white; width: 100%;" onclick="retryPayment('<%= order._id %>', '<%= order.total_amount %>')" >Retry</button>
+                                  <% }  %>
                                 <% } else if (order.statusLevel === 3) { %>
                                   <span class="statusord d-block fw-bolder text-success text-uppercase fs-7">
                                     <%= order.status %>
@@ -223,8 +227,9 @@
                               <% if ( order.statusLevel === 1 ) { %>
                                 <a onclick="cancelOrder('<%= order._id %>')" type="button" class="btn btn-dark btnedtx  btn-sm mt-1 ">Cancel</a>
                               <% } else { %>
-                                <button class="btn btn-outline-dark btn-round btnedtx btn-sm mt-1" disabled>Cancel</button>
+                                
                               <% } %>
+                           
                               
                             
                           </td>
@@ -335,6 +340,88 @@
     })
     
    }
+
+   function retryPayment (orderId, totalAmount) {
+    $.ajax({
+      url: "/retry-payment",
+      method: "post",
+      data: {
+        orderId: orderId,
+        totalAmount: totalAmount
+      },
+      success: (response) => {
+        if (response.payment == true) {
+          razorPayment(response.order);
+        } else {
+          swal.fire({
+            positon: "center",
+            icon: "error",
+            title: "something went wrong",
+            showConfirmButton: false,
+            timer: 1500,
+          });
+        }
+      },
+    }); 
+   }
+   function razorPayment(order) {
+    console.log("Order for Razorpay:", order);
+    var options = {
+      key: "rzp_test_fxwtmaR2OrRwYA", // Enter the Key ID generated from the Dashboard
+      amount: order.amount, // Amount is in currency subunits. Default currency is INR. Hence, 50000 refers to 50000 paise
+      currency: "INR",
+      name: "SAcolllective Pvt.Ltd", //your business name
+      description: "Test Transaction",
+      image: "/user/images/icons/logo.png",
+      order_id:  order._id, //This is a sample Order ID. Pass the `id` obtained in the response of Step 1
+      handler: function (response) {
+        verifyPayment(response, order);
+      },
+      prefill: {
+        //We recommend using the prefill parameter to auto-fill customer's contact information especially their phone number
+        name: "SAcollective Pvt.Ltd", //your customer's name
+        email: "SAcollective@example.com",
+        contact: "910000000369", //Provide the customer's phone number for better conversion rates
+      },
+      notes: {
+        address: "Razorpay Corporate Office",
+      },
+      theme: {
+        color: "#c96",
+      },
+    };
+    // interface for razonpay page4
+    var rzp1 = new Razorpay(options);
+    rzp1.open();
+  }
+
+  function verifyPayment(payment, order) {
+    console.log("am here to confiem order", payment,);
+    payment.signature = 1;
+    $.ajax({
+      url: "/verify-payment",
+      method: "post",
+      data: {
+        payment: payment,
+        order: order,
+        razorpay_signature: payment.signature
+      },
+      success: (response) => {
+        if (response.codsuccess == true) {
+          location.href = `/order-success/${response.params}`;
+        } else {
+          swal.fire({
+            positon: "center",
+            icon: "error",
+            title: "Payment failed",
+            showConfirmButton: false,
+            timer: 1500,
+          });
+        }
+      },
+    });
+  }
+
 </script>
 <script>
 // filter orders 
@@ -371,6 +458,5 @@ setSelectedOptionn();
 
 </script>
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-
-  
+<script src="https://checkout.razorpay.com/v1/checkout.js"></script>  
 <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>

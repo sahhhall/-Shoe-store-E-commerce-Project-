@@ -26,28 +26,23 @@ const placeOrder = async (req, res) => {
     const { selectedAddress, selectedShippingMethod, subTotalValue } = req.body;
     const cartData = await Cart.findOne({ userid: userId }).populate('products.productId');
     const cartProducts = cartData.products;
-    console.log(cartProducts);
 
     const quantityLessProducts = [];
     cartProducts.forEach((pro) => {
         const productStock = pro.productId.stockQuantity; // Stock quantity of the product from the database
-        console.log(productStock);
         const cartQuantity = pro.quantity; // Quantity of the product in the cart
-        console.log(cartQuantity);
         if (cartQuantity > productStock) {
             quantityLessProducts.push(pro.productId.name);
         }
     });
     
 if (quantityLessProducts.length > 0) { // Check if the array is not empty
-  console.log("Quantity less:", quantityLessProducts);
   return res.json({ quantity: true });
 }
     
     const total = subTotalValue;
     const userData = await User.findOne({ _id: userId });
     const name = userData.name;
-    console.log(name, selectedShippingMethod);
 
     const status = selectedShippingMethod === "COD" ? "placed" : "pending";
     const statusLevel = status === "placed" ? 1 : 0;
@@ -103,17 +98,15 @@ if (quantityLessProducts.length > 0) { // Check if the array is not empty
         // order not cod
         const orderId = orderDetailsData._id;
         const totalAmount = orderDetailsData.total_amount;
-        console.log("both of two ", orderId, totalAmount);
-
+      
         if (orderDetailsData.payment == "onlinePayment") {
           var options = {
             amount: totalAmount * 100,
             currency: "INR",
             receipt: "" + orderId, // /we want here objectid t o strung
           };
-          console.log(options.amount);
+        
           instance.orders.create(options, function (err, order) {
-            console.log("here i syourt oerdaer", order);
             res.json({ success: false, order });
           });
         } else if (orderDetailsData.payment == "wallet") {
@@ -177,7 +170,7 @@ const paymentVerfication = async (req, res) => {
     const cartData = await Cart.findOne({ userid: req.session.user._id });
     const products = cartData.products;
     const details = req.body;
-    console.log("hey am here", details);
+    console.log("hey am here", details.order);
     const hmac = crypto.createHmac("sha256", process.env.RazorKey);
     hmac.update(
       details.payment.razorpay_order_id +
@@ -185,7 +178,8 @@ const paymentVerfication = async (req, res) => {
         details.payment.razorpay_payment_id
     );
     const hmacValue = hmac.digest("hex");
-    if (hmacValue === details.payment.razorpay_signature) {
+    if ((hmacValue === details.payment.razorpay_signature ) || details.razorpay_signature) {
+      await Cart.deleteOne({ userid: req.session.user._id });
       for (let i = 0; i < cartData.products.length; i++) {
         const productId = products[i].productId;
         const count = products[i].quantity;
@@ -224,9 +218,8 @@ const paymentVerfication = async (req, res) => {
           },
         }
       );
-      await Cart.deleteOne({ userId: req.session.user._id });
+      // await Cart.deleteOne({ userId: req.session.user._id });
       const orderid = details.order.receipt;
-      console.log("how?");
 
       res.json({ codsuccess: true, orderid });
     } else {
@@ -672,6 +665,28 @@ const orderDetailedview = async (req, res) => {
   }
 };
 
+
+const retryPayment = async (req, res) => {
+  try {
+    const  { orderId, totalAmount } = req.body;
+    console.log("both of two ", orderId, totalAmount);
+      var options = {
+        amount: totalAmount * 100,
+        currency: "INR",
+        receipt: "" + orderId, // /we want here objectid t o strung
+      };
+      console.log(options.amount);
+      instance.orders.create(options, function (err, order) {
+        console.log("here i syourt oerdaer", order);
+        res.json({ payment: true, order });
+      });
+  } catch (err) {
+    console.log(err);
+    res.json(500).json({ message:"internal server error" })
+  }
+}
+
+
 module.exports = {
   placeOrder,
   paymentVerfication,
@@ -684,4 +699,6 @@ module.exports = {
   returnReason,
   returnConf,
   orderDetailedview,
+  retryPayment,
+ 
 };

@@ -116,6 +116,8 @@ userRouter.get('/viewOrderDetails',auth.authlogg,orderController.userOderDetails
 userRouter.post('/cancel-order',auth.authlogg,orderController.cancelOrder);
 
 userRouter.post('/returnreason',auth.authlogg,orderController.returnReason);
+userRouter.post('/retry-payment',auth.authlogg,orderController.retryPayment);
+
 
 // ==========================================< wishlist >===================================================== //
 
