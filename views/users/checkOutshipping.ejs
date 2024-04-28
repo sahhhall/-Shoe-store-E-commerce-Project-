@@ -305,25 +305,27 @@
           <div class="table-responsive">
                           
               <table class="table align-middle">
-                  <tbody class="border-0">
+                  <tbody class="border-0 " style="background-color: rgba(209, 209, 209, 0.973);">
                       <!-- Cart Item-->
                       <% if (couponView ) { %>
                           <% couponView.forEach((value, index) => { %>
                               <tr class="mx-0 py-4 g-0 border-bottom">
-                                  <td class="col-2 position-relative">
+                                  <!-- <td class="col-2 position-relative">
                                       <picture class="d-block border">
                                           <img class="img-fluid" src="/assets/logos/coupon.png" alt="hihi">
                                       </picture>
-                                  </td>
+                                  </td> -->
                                   <td class="col-9 offset-1">
                                       <div>
-                                          <h6 class="justify-content-between d-flex align-items-start mb-2">
+                                          <h6 style="font-weight: bolder; font-size: 2.3rem;" class="justify-content-between d-flex align-items-start mb-2">
                                               <%= value.couponName %>
                                               
                                           </h6>
-                                          <span class="d-block text-muted fw-bolder text-uppercase fs-9">Code : <%= value.couponCode %></span>
+                                          <div>
+                                            
+                                          </div><span class="d-block text-muted fw-bolder text-uppercase fs-9">Code : <%= value.couponCode %></span>
                                           <span class="d-block text-muted fw-bolder text-uppercase fs-9">Expiry :<%= new Date(value.expiryDate).toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' }) %></span>
-                                          <span class="d-block text-muted fw-bolder text-uppercase fs-9"><%= value.discountAmount %>%</span>
+                                          <span class="d-block text-muted fw-bolder text-uppercase fs-9"><%= value.discountAmount %>% on one order</span>
                                       </div>
                                       <!-- <p class="fw-bolder text-end text-muted m-0"> </p> -->
                                   </td>
