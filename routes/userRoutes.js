@@ -69,25 +69,25 @@ userRouter.post('/getProduct',productController.searchProduct);
 
 // ==========================================< USER PROFILE >==================================================== //
 
-userRouter.get('/profile',userController.loadProfile);
+userRouter.get('/profile',auth.userBlockCheck ,userController.loadProfile);
 
-userRouter.get('/addresses',userController.loadAddressManage)
+userRouter.get('/addresses' ,auth.userBlockCheck ,userController.loadAddressManage)
 
-userRouter.get('/orders',orderController.loadOrder);
+userRouter.get('/orders',auth.userBlockCheck ,orderController.loadOrder);
 
-userRouter.post('/edit-profile',userController.editProfile);
+userRouter.post('/edit-profile',auth.userBlockCheck,userController.editProfile);
 
-userRouter.post('/reset-pass',userController.resetPasswithOld)
+userRouter.post('/reset-pass',auth.userBlockCheck,userController.resetPasswithOld)
 
-userRouter.post('/add-address',userController.addAddress)
+userRouter.post('/add-address',auth.userBlockCheck,userController.addAddress)
 
-userRouter.post('/edit-addresses',userController.editAddress)
+userRouter.post('/edit-addresses',auth.userBlockCheck,userController.editAddress)
 
-userRouter.post('/remove-addresses',userController.deleteAddress);
+userRouter.post('/remove-addresses',auth.userBlockCheck,userController.deleteAddress);
 
-userRouter.get('/wallet',userController.walletLoad);
+userRouter.get('/wallet',auth.userBlockCheck,userController.walletLoad);
 
-userRouter.get('/wishlist', wishlistController.loadWishlistPage);
+userRouter.get('/wishlist',auth.userBlockCheck, wishlistController.loadWishlistPage);
 // ==========================================< CART HANDLING >==================================================== //
 
 userRouter.get('/cart',auth.authlogg,cartController.loadCart);
@@ -99,15 +99,15 @@ userRouter.post('/update-quantity',auth.authlogg,cartController.quantityUpdation
 userRouter.post('/remove-coupon', auth.authlogg, couponController.reomoveCoupon)
 // =========================================< CHECKOUT HANDLING >================================================= //
 
-userRouter.get('/check-out',auth.authlogg,cartController.loadCheckOut);
-userRouter.post('/check-out',auth.authlogg,cartController.loadCheckOut);
-userRouter.post('/apply-coupon',auth.authlogg,cartController.applyCoupon)
+userRouter.get('/check-out',auth.authlogg ,auth.userBlockCheck, cartController.loadCheckOut);
+userRouter.post('/check-out',auth.authlogg ,auth.userBlockCheck, cartController.loadCheckOut);
+userRouter.post('/apply-coupon',auth.authlogg ,auth.userBlockCheck, cartController.applyCoupon)
 
 // ===========================================< ORDER HANDLING >================================================== //
 
 userRouter.post('/place-order',auth.authlogg,orderController.placeOrder)
 
-userRouter.get('/order-success/:orderId',auth.authlogg,orderController.loadSuccess);
+userRouter.get('/order-success/:orderId',auth.authlogg,auth.userBlockCheck , orderController.loadSuccess);
 
 userRouter.post('/verify-payment', auth.authlogg,orderController.paymentVerfication);
 
