@@ -129,11 +129,11 @@
             <% if (locals.user ){ %> <% if (isWishlist ) { %>
             <button
             style="border: none ; background-color: transparent;"
-            onclick="removeFromCart('<%= product._id %>')"
-            > <i style="color: red; font-size: 29px;" class="ri-heart-fill"></i></button>
+            onclick="removeFromWishlist('<%= product._id %>')"
+            > <i onmouseover="this.style.color='red'; this.title='Remove from Wishlist';" style="color: red; font-size: 29px;" class="ri-heart-fill"></i></button>
             <% } else { %>
             <button  style="border: none ; background-color: transparent; " onclick="addToWishList('<%= product._id %>')">
-             <i style=" font-size: 29px;" class="ri-heart-line"></i>
+             <i style=" font-size: 29px; " onmouseout="this.style.color='black'" onmouseover="this.style.color='red'; this.title='Add to Wishlist';" class="ri-heart-line"></i>
             </button>
 
             <% } %> <% } %>
@@ -1046,7 +1046,7 @@
       });
   }
 
-  function removeFromCart(productId) {
+  function removeFromWishlist(productId) {
     const data = { productId: productId };
     fetch("/remove-wishlist", {
       method: "POST",
