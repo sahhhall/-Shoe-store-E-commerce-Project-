@@ -85,10 +85,11 @@ const editCoupon = async (req, res) => {
     const { id, couponName, discount, criteriaAmount, expiryDate, usersLimit } =
       req.body;
     const existingName = await Coupon.findOne({ couponName: couponName });
+    const sameCoupon = existingName._id.toString() === id;
+    console.log("sameCoupon", existingName._id, id);
     console.log("here", existingName);
     console.log("hi am from server");
-    if (existingName) {
-      console.log("hii");
+    if (existingName && sameCoupon === false) {
       req.flash("conflicts", "Coupon name already exists");
       return res.redirect(`/admin/edit-coupon?id=${id}`);
     } else {
@@ -116,6 +117,9 @@ const editCoupon = async (req, res) => {
 const reomoveCoupon = async (req, res) => {
   try {
     const { couponName } = req.body;
+    const userId = req.session.user._id;
+    await Cart.updateOne({ userid: userId }, { $unset: { couponApplied: "" } });
+
     await Coupon.updateOne(
       { couponName: couponName },
       {
@@ -125,8 +129,8 @@ const reomoveCoupon = async (req, res) => {
       }
     );
 
-    const subTotal = await Order.find()
-    return res.json({ reomoved: true })
+    const subTotal = await Order.find();
+    return res.json({ reomoved: true });
   } catch (err) {
     console.log(err);
     res.status(500).json({ error: "internal server error" });

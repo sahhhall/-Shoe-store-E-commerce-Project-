@@ -151,7 +151,10 @@ const quantityUpdationCart = async (req, res) => {
     );
     console.log("this", previousProduct);
 
-    if (previousProduct.quantity + count > 5 || productDetails.stockQuantity < previousProduct.quantity + count ) {
+    if (
+      previousProduct.quantity + count > 5 ||
+      productDetails.stockQuantity < previousProduct.quantity + count
+    ) {
       res.json({ success: false, message: "Product Quantity  limit reached!" });
     } else {
       const productTotal =
@@ -183,6 +186,14 @@ const loadCheckOut = async (req, res) => {
     const cartDetails = await Cart.findOne({ userid: userId }).populate({
       path: "products.productId",
     });
+    var couponCode;
+    var discountAmount;
+    var couponName;
+    if (cartDetails.couponApplied) {
+      couponCode = cartDetails.couponApplied.couponCode;
+      discountAmount = cartDetails.couponApplied.discountAmount;
+      couponName = cartDetails.couponApplied.couponName;
+    }
     if (cartDetails.products.length <= 0) {
       console.log("ddddd");
       res.redirect("/cart");
@@ -194,6 +205,9 @@ const loadCheckOut = async (req, res) => {
         cartDetails.products.forEach((item) => {
           let itemPrice = item.productPrice;
           initialAmount += itemPrice * item.quantity;
+          if (discountAmount) {
+            initialAmount -= discountAmount;
+          }
         });
       }
       res.render("checkOutshipping", {
@@ -202,6 +216,9 @@ const loadCheckOut = async (req, res) => {
         addresses: addresses,
         walletAmount: walletAmount,
         couponView: coupons,
+        couponCode,
+        discountAmount,
+        couponName,
       });
     }
     // const products = cartDetails.products;
@@ -211,7 +228,7 @@ const loadCheckOut = async (req, res) => {
 };
 const applyCoupon = async (req, res) => {
   try {
-    const { couponCode, total } = req.body;
+    const { couponCode, total, cartId } = req.body;
     console.log("hioiii", couponCode);
     const appliedCoupon = await Coupon.findOne({
       couponCode: { $regex: new RegExp(couponCode, "i") },
@@ -245,7 +262,17 @@ const applyCoupon = async (req, res) => {
     const discountValue = Math.floor((discountAmount / 100) * total);
     const totalUpdated = total - discountValue;
     console.log(discountValue, "discounttttttttttttt");
-    appliedCoupon.usedUsers.push(currUserId);
+    // appliedCoupon.usedUsers.push(currUserId);
+    await Cart.updateOne(
+      { _id: cartId },
+      {
+        $set: {
+          "couponApplied.couponCode": couponCode,
+          "couponApplied.discountAmount": discountValue,
+          "couponApplied.couponName": appliedCoupon.couponName,
+        },
+      }
+    );
     await appliedCoupon.save();
 
     return res.json({

@@ -121,21 +121,29 @@
       }, 5000);
       isValid = false;
     }
-    if (couponCode === "") {
-      couponCodeError.innerText = "Coupon code is required";
-      couponCodeError.style.display = "block";
+    else if (!/^[a-zA-Z]+$/.test(couponName)) {
+      couponNameError.innerText = "Only letters are allowed in the coupon name";
+      couponNameError.style.display = "block";
       setTimeout(() => {
-        couponCodeError.style.display = "none";
-      }, 5000);
-      isValid = false;
-    } else if (isNaN(couponCode) || couponCode < 1) {
-      couponCodeError.innerText = "Coupon code must be a postive number";
-      couponCodeError.style.display = "block";
-      setTimeout(() => {
-        couponCodeError.style.display = "none";
+        couponNameError.style.display = "none";
       }, 5000);
       isValid = false;
     }
+    // if (couponCode === "") {
+    //   couponCodeError.innerText = "Coupon code is required";
+    //   couponCodeError.style.display = "block";
+    //   setTimeout(() => {
+    //     couponCodeError.style.display = "none";
+    //   }, 5000);
+    //   isValid = false;
+    // } else if (isNaN(couponCode) || couponCode < 1) {
+    //   couponCodeError.innerText = "Coupon code must be a postive number";
+    //   couponCodeError.style.display = "block";
+    //   setTimeout(() => {
+    //     couponCodeError.style.display = "none";
+    //   }, 5000);
+    //   isValid = false;
+    // }
     if (discount === "") {
       disError.innerText = "Discount code is required";
       disError.style.display = "block";
@@ -143,8 +151,9 @@
         disError.style.display = "none";
       }, 5000);
       isValid = false;
-    } else if (isNaN(discount) || discount < 1) {
-      disError.innerText = "Discount percntage must be a postive value";
+    } else if (isNaN(discount) || discount < 1 || discount > 80) {
+      disError.innerText =
+        "Discount percntage must be a postive value and under 80";
       disError.style.display = "block";
       setTimeout(() => {
         disError.style.display = "none";

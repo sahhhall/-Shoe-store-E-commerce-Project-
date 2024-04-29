@@ -1,4 +1,5 @@
 const User = require("../models/userModel");
+const Coupon = require("../models/couponnModel");
 const userOtpVerification = require("../models/userOTPverification");
 const Category = require("../models/categoriesModel");
 const Token = require("../models/tokenModel");
@@ -9,11 +10,11 @@ const dotenv = require("dotenv");
 const Product = require("../models/productSchema");
 const Order = require("../models/orderSchema");
 const Cart = require("../models/cartSchema");
-const easyinvoice = require('easyinvoice');
-const puppeteer = require('puppeteer');
-const path = require('path');
-const ejs = require('ejs')
-const fs = require('fs');
+const easyinvoice = require("easyinvoice");
+const puppeteer = require("puppeteer");
+const path = require("path");
+const ejs = require("ejs");
+const fs = require("fs");
 const Razorpay = require("razorpay");
 dotenv.config();
 
@@ -28,23 +29,31 @@ var instance = new Razorpay({
 const placeOrder = async (req, res) => {
   try {
     const userId = req.session.user._id;
-    const { selectedAddress, selectedShippingMethod, subTotalValue } = req.body;
-    const cartData = await Cart.findOne({ userid: userId }).populate('products.productId');
+    const {
+      selectedAddress,
+      selectedShippingMethod,
+      subTotalValue,
+      couponCode,
+    } = req.body;
+    const cartData = await Cart.findOne({ userid: userId }).populate(
+      "products.productId"
+    );
     const cartProducts = cartData.products;
 
     const quantityLessProducts = [];
     cartProducts.forEach((pro) => {
-        const productStock = pro.productId.stockQuantity; // Stock quantity of the product from the database
-        const cartQuantity = pro.quantity; // Quantity of the product in the cart
-        if (cartQuantity > productStock) {
-            quantityLessProducts.push(pro.productId.name);
-        }
+      const productStock = pro.productId.stockQuantity; // Stock quantity of the product from the database
+      const cartQuantity = pro.quantity; // Quantity of the product in the cart
+      if (cartQuantity > productStock) {
+        quantityLessProducts.push(pro.productId.name);
+      }
     });
-    
-if (quantityLessProducts.length > 0) { // Check if the array is not empty
-  return res.json({ quantity: true });
-}
-    
+
+    if (quantityLessProducts.length > 0) {
+      // Check if the array is not empty
+      return res.json({ quantity: true });
+    }
+
     const total = subTotalValue;
     const userData = await User.findOne({ _id: userId });
     const name = userData.name;
@@ -73,6 +82,8 @@ if (quantityLessProducts.length > 0) { // Check if the array is not empty
       expected_delivery: deliveryDate,
       payment: selectedShippingMethod,
       products: cartProducts,
+      "couponApplied.discountAmount": cartData.couponApplied.discountAmount,
+      "couponApplied.couponName": cartData.couponApplied.couponName,
     });
 
     let orderDetailsData = await newOrder.save();
@@ -83,6 +94,14 @@ if (quantityLessProducts.length > 0) { // Check if the array is not empty
 
       if (orderDetailsData.status === "placed") {
         await Cart.deleteOne({ userid: userId });
+        if (couponCode) {
+          const appliedCoupon = await Coupon.findOne({
+            couponCode: { $regex: new RegExp(couponCode, "i") },
+          });
+          appliedCoupon.usedUsers.push(userId);
+          await appliedCoupon.save();
+        }
+
         for (let i = 0; i < cartData.products.length; i++) {
           const productId = cartProducts[i].productId;
           const count = cartProducts[i].quantity;
@@ -103,14 +122,14 @@ if (quantityLessProducts.length > 0) { // Check if the array is not empty
         // order not cod
         const orderId = orderDetailsData._id;
         const totalAmount = orderDetailsData.total_amount;
-      
+
         if (orderDetailsData.payment == "onlinePayment") {
           var options = {
             amount: totalAmount * 100,
             currency: "INR",
             receipt: "" + orderId, // /we want here objectid t o strung
           };
-        
+
           instance.orders.create(options, function (err, order) {
             res.json({ success: false, order });
           });
@@ -161,6 +180,13 @@ if (quantityLessProducts.length > 0) { // Check if the array is not empty
               },
             }
           );
+          if (couponCode) {
+            const appliedCoupon = await Coupon.findOne({
+              couponCode: { $regex: new RegExp(couponCode, "i") },
+            });
+            appliedCoupon.usedUsers.push(userId);
+            await appliedCoupon.save();
+          }
           res.json({ success: true, params: orderId });
         }
       }
@@ -183,7 +209,10 @@ const paymentVerfication = async (req, res) => {
         details.payment.razorpay_payment_id
     );
     const hmacValue = hmac.digest("hex");
-    if ((hmacValue === details.payment.razorpay_signature ) || details.razorpay_signature) {
+    if (
+      hmacValue === details.payment.razorpay_signature ||
+      details.razorpay_signature
+    ) {
       await Cart.deleteOne({ userid: req.session.user._id });
       for (let i = 0; i < cartData.products.length; i++) {
         const productId = products[i].productId;
@@ -225,6 +254,15 @@ const paymentVerfication = async (req, res) => {
       );
       // await Cart.deleteOne({ userId: req.session.user._id });
       const orderid = details.order.receipt;
+      const couponCode = details.couponCode; // Assuming details is defined and contains couponCode
+      if (couponCode) {
+        console.log("here wqeerewrwerewrwer", couponCode);
+        const appliedCoupon = await Coupon.findOne({
+          couponCode: { $regex: new RegExp(couponCode, "i") },
+        });
+        appliedCoupon.usedUsers.push(req.session.user._id);
+        await appliedCoupon.save();
+      }
 
       res.json({ codsuccess: true, orderid });
     } else {
@@ -479,7 +517,7 @@ const cancelOrder = async (req, res) => {
     const { orderId } = req.body;
     const orderData = await Order.findOne({ _id: orderId });
     const products = orderData.products;
-    const userId =  req.session.user._id;
+    const userId = req.session.user._id;
     // console.log("am hereee guys")
     await Order.updateOne(
       {
@@ -506,7 +544,7 @@ const cancelOrder = async (req, res) => {
         }
       );
     }
-    if (orderData.payment !==`COD` ){
+    if (orderData.payment !== `COD`) {
       await User.findOneAndUpdate(
         {
           _id: userId,
@@ -525,7 +563,7 @@ const cancelOrder = async (req, res) => {
         }
       );
     }
-   
+
     res.json({ cancelled: true });
   } catch (err) {
     console.log(err.message);
@@ -690,48 +728,49 @@ const orderDetailedview = async (req, res) => {
   }
 };
 
-
 const retryPayment = async (req, res) => {
   try {
-    const  { orderId, totalAmount } = req.body;
+    const { orderId, totalAmount } = req.body;
     console.log("both of two ", orderId, totalAmount);
-      var options = {
-        amount: totalAmount * 100,
-        currency: "INR",
-        receipt: "" + orderId, // /we want here objectid t o strung
-      };
-      console.log(options.amount);
-      instance.orders.create(options, function (err, order) {
-        console.log("here i syourt oerdaer", order);
-        res.json({ payment: true, order });
-      });
+    var options = {
+      amount: totalAmount * 100,
+      currency: "INR",
+      receipt: "" + orderId, // /we want here objectid t o strung
+    };
+    console.log(options.amount);
+    instance.orders.create(options, function (err, order) {
+      console.log("here i syourt oerdaer", order);
+      res.json({ payment: true, order });
+    });
   } catch (err) {
     console.log(err);
-    res.json(500).json({ message:"internal server error" })
+    res.json(500).json({ message: "internal server error" });
   }
-}
+};
 
 const downloadInvoice = async (req, res) => {
   try {
     const { orderId } = req.body;
     const userId = req.session.user._id;
-    const userDetails = await User.findById(userId)
-    const orderDetails = await Order.findById(orderId).populate("products.productId");
-    const date = new Date()
-  
+    const userDetails = await User.findById(userId);
+    const orderDetails = await Order.findById(orderId).populate(
+      "products.productId"
+    );
+    const date = new Date();
+
     data = {
       order: orderDetails,
       user: userDetails,
-      date
+      date,
     };
     const filepathName = path.resolve(__dirname, "../views/users/invoice.ejs");
 
     const html = fs.readFileSync(filepathName).toString();
-    const ejsData = ejs.render(html, data)
-    
-    const browser = await puppeteer.launch({ headless: "new"});
+    const ejsData = ejs.render(html, data);
+
+    const browser = await puppeteer.launch({ headless: "new" });
     const page = await browser.newPage();
-    await page.setContent(ejsData, { waitUntil: "networkidle0"});
+    await page.setContent(ejsData, { waitUntil: "networkidle0" });
     const pdfBytes = await page.pdf({ format: "letter" });
     await browser.close();
 
@@ -747,7 +786,6 @@ const downloadInvoice = async (req, res) => {
   }
 };
 
-
 module.exports = {
   placeOrder,
   paymentVerfication,
@@ -761,5 +799,5 @@ module.exports = {
   returnConf,
   orderDetailedview,
   retryPayment,
-  downloadInvoice
+  downloadInvoice,
 };
