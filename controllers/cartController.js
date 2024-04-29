@@ -142,7 +142,6 @@ const quantityUpdationCart = async (req, res) => {
     let { product, count } = req.body;
     const userId = req.session.user._id;
     count = parseInt(count);
-    console.log(userId);
     const productDetails = await Product.findById(product);
 
     const cartDetails = await Cart.findOne({ userid: userId });
@@ -152,7 +151,7 @@ const quantityUpdationCart = async (req, res) => {
     );
     console.log("this", previousProduct);
 
-    if (previousProduct.quantity + count > 5 || productDetails.stockQuantity < count ) {
+    if (previousProduct.quantity + count > 5 || productDetails.stockQuantity < previousProduct.quantity + count ) {
       res.json({ success: false, message: "Product Quantity  limit reached!" });
     } else {
       const productTotal =

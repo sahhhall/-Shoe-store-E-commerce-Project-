@@ -136,7 +136,7 @@
 </div>
 <div class="wrapper bg-white">
   <% orders.products.forEach((product) => { %>
-  <div class="d-flex justify-content-start align-items-center list py-1">
+  <div  class="mt-2 border rounded d-flex justify-content-start align-items-center list py-1">
     <div><b> <%= product.productId.name %></b></div>
     <div><b> : <%= product.quantity %></b></div>
     <div class="mx-3">
@@ -188,7 +188,7 @@
             <label>Mastercard ******5342</label>
         </div>
     </div> -->
-  <div class="d-flex justify-content-start align-items-center py-1 pl-3">
+  <div class="d-flex justify-content-start align-items-center border-bottom py-1 pl-3">
     <div class="text-muted">Shipping</div>
     <div class="ps-3 ml-auto">
       <label>Free</label>
@@ -220,7 +220,7 @@
     <div>
       <b>#<%= orders._id %></b>
     </div>
-    <% if(orders.statusLevel !== '3' ){ %>
+    <% if(orders.statusLevel !== 3 ){ %>
     <div><%= orders.expected_delivery %></div>
     <% } %>
 
@@ -232,6 +232,13 @@
         ₹<%= orders.total_amount %> for <%= orders.products.length %> items</b
       >
     </div>
+  </div>
+  <div>
+    <% if(orders.statusLevel === 3 ){ %>
+      <a  id="download"  onclick="downloadInvoice('<%= orders._id %>')"   style="cursor: pointer; background-color: white; color: #2874f0;padding: 6px 16px; border-radius: 1px; border: 1px solid gray;font-size: larger; font-weight: bolder;   text-align: center;">
+        Download Invoice
+      </a>
+      <% } %>
   </div>
   <!-- Modal -->
   <div
@@ -257,7 +264,7 @@
           ></button>
         </div>
         <div class="modal-body">
-          <form method="post" onsubmit=" return validateReason()">
+          <form method="post" >
             <div class="form-group">
               <label for="reason" class="form-label">reason</label>
               <input type="hidden" id="productId" value="" />
@@ -296,6 +303,7 @@
 <script>
   function validateReason() {
     const reason = document.getElementById("reason").value.trim();
+    
     const reasonError = document.getElementById("reasonErr");
 
     if (reason === "") {
@@ -306,7 +314,8 @@
       }, 5000);
       return false;
     }
-    return;
+    console.log("am here")
+    return true;
   }
 
   function handleReturnProductButtonClick(productId) {
@@ -316,10 +325,13 @@
   }
   function returnOrder(orderId) {
     const isValidReason = validateReason();
-
+ 
     if (!isValidReason) {
+      console.log("am her")
       return; // Exit function if validation fails
+     
     }
+    
     const productId = document.getElementById("productId").value;
     console.log(orderId, productId);
     console.log("fuck", productId);
@@ -364,7 +376,34 @@
       }
     });
   }
+
+  async function downloadInvoice(orderId) {
+    const data = { orderId };
+    fetch('/invoice-download', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify(data)
+    })
+      .then(response => response.blob())
+      .then(blob => {
+        //its a temporey link
+        const link = document.createElement('a');
+        link.href = window.URL.createObjectURL(blob);
+        link.download = `invoice${orderId}.pdf`;
+        // Append the link to the DOM for download
+        document.body.appendChild(link);
+        // Trigger a click event on the link to initiate the download
+        link.click();
+        // Remove the link from the DOM
+        document.body.removeChild(link);
+      })
+      .catch(err => {
+        console.error('Error downloading invoice:', err);
+        alert('Something went wrong while downloading the invoice.');
+      });
+  }
 </script>
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-
 <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>

@@ -9,6 +9,11 @@ const dotenv = require("dotenv");
 const Product = require("../models/productSchema");
 const Order = require("../models/orderSchema");
 const Cart = require("../models/cartSchema");
+const easyinvoice = require('easyinvoice');
+const puppeteer = require('puppeteer');
+const path = require('path');
+const ejs = require('ejs')
+const fs = require('fs');
 const Razorpay = require("razorpay");
 dotenv.config();
 
@@ -474,7 +479,7 @@ const cancelOrder = async (req, res) => {
     const { orderId } = req.body;
     const orderData = await Order.findOne({ _id: orderId });
     const products = orderData.products;
-
+    const userId =  req.session.user._id;
     // console.log("am hereee guys")
     await Order.updateOne(
       {
@@ -501,6 +506,26 @@ const cancelOrder = async (req, res) => {
         }
       );
     }
+    if (orderData.payment !==`COD` ){
+      await User.findOneAndUpdate(
+        {
+          _id: userId,
+        },
+        {
+          $inc: {
+            wallet: orderData.total_amount,
+          },
+          $push: {
+            walletHistory: {
+              date: new Date(),
+              amount: orderData.total_amount,
+              reason: "order cancellation",
+            },
+          },
+        }
+      );
+    }
+   
     res.json({ cancelled: true });
   } catch (err) {
     console.log(err.message);
@@ -686,6 +711,42 @@ const retryPayment = async (req, res) => {
   }
 }
 
+const downloadInvoice = async (req, res) => {
+  try {
+    const { orderId } = req.body;
+    const userId = req.session.user._id;
+    const userDetails = await User.findById(userId)
+    const orderDetails = await Order.findById(orderId).populate("products.productId");
+    const date = new Date()
+  
+    data = {
+      order: orderDetails,
+      user: userDetails,
+      date
+    };
+    const filepathName = path.resolve(__dirname, "../views/users/invoice.ejs");
+
+    const html = fs.readFileSync(filepathName).toString();
+    const ejsData = ejs.render(html, data)
+    
+    const browser = await puppeteer.launch({ headless: "new"});
+    const page = await browser.newPage();
+    await page.setContent(ejsData, { waitUntil: "networkidle0"});
+    const pdfBytes = await page.pdf({ format: "letter" });
+    await browser.close();
+
+    res.setHeader("Content-Type", "application/pdf");
+    res.setHeader(
+      "Content-Disposition",
+      "attachment; filename= order invoice.pdf"
+    );
+    res.send(pdfBytes);
+  } catch (err) {
+    console.log(err);
+    res.status(500).json({ message: "Internal server error" });
+  }
+};
+
 
 module.exports = {
   placeOrder,
@@ -700,5 +761,5 @@ module.exports = {
   returnConf,
   orderDetailedview,
   retryPayment,
- 
+  downloadInvoice
 };

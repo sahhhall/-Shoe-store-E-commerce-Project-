@@ -88,6 +88,10 @@ userRouter.post('/remove-addresses',auth.userBlockCheck,userController.deleteAdd
 userRouter.get('/wallet',auth.userBlockCheck,userController.walletLoad);
 
 userRouter.get('/wishlist',auth.userBlockCheck, wishlistController.loadWishlistPage);
+
+userRouter.post('/invoice-download', orderController.downloadInvoice);
+
+
 // ==========================================< CART HANDLING >==================================================== //
 
 userRouter.get('/cart',auth.authlogg,cartController.loadCart);
