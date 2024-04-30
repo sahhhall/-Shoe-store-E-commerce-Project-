@@ -172,7 +172,7 @@
                                   <span class="statusord d-block fw-bolder text-danger text-uppercase fs-7">
                                     <%= order.status %>
                                   </span>
-                                  <% if ( order.statusLevel === 0 ) { %>
+                                  <% if ( order.status === "pending" ) { %>
                                     <h1><%= order.total_amount %></h1>
                                     <button style="background-color: rgb(177, 22, 22); border: none; padding: .4rem; font-weight: bold; color: white; width: 100%;" onclick="retryPayment('<%= order._id %>', '<%= order.total_amount %>')" >Retry</button>
                                   <% }  %>
