@@ -83,7 +83,28 @@ const orderSchema = new Schema(
         },
       },
     ],
+    deliveryAddress: {
+      name: {
+        type: String,
+      },
+      addressline: {
+        type: String,
+      },
+      city: {
+        type: String,
+      },
+      state: {
+        type: String,
+      },
+      pincode: {
+        type: Number,
+      },
+      phone: {
+        type: Number,
+      },
+    },
   },
+
   {
     timestamps: true,
   }

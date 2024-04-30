@@ -183,24 +183,13 @@ button.btn:hover{
         </div>
     </div>
     <div class="row border rounded p-1 my-3">
-        <div class="col-md-6 py-3">
-            <div class="d-flex flex-column align-items start">
-                <b> Address</b>
-                <p class="text-justify pt-2"><%= userFirstadd.name %></p>
-                <p class="text-justify"> <%= userFirstadd.addressline %> , <%= userFirstadd.pincode %></p>
-                <p class="text-justify"><%= userFirstadd.city %> , <%= userFirstadd.state %></p>
-            </div>
-        </div>
+  
         <div class="col-md-6 py-3">
             <div class="d-flex flex-column align-items start">
                 <b>Shipping Address</b>
-                <% if (selectedAddress) { %>
-                    <p class="text-justify pt-2"><%= selectedAddress.name %></p>
-                    <p class="text-justify"> <%= selectedAddress.addressline %> , <%= selectedAddress.pincode %></p>
-                    <p class="text-justify"><%= selectedAddress.city %> , <%= selectedAddress.state %></p>
-                <% } else { %>
-                    <p class="text-justify">No address available.</p>
-                <% } %>
+                    <p class="text-justify pt-2"><%= orders.deliveryAddress.name %></p>
+                    <p class="text-justify"> <%= orders.deliveryAddress.addressline %> , <%= orders.deliveryAddress.pincode %></p>
+                    <p class="text-justify"><%= orders.deliveryAddress.city %> , <%= orders.deliveryAddress.state %></p>
             </div>
         </div>
         

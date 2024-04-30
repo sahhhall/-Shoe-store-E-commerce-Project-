@@ -53,6 +53,13 @@ const placeOrder = async (req, res) => {
       // Check if the array is not empty
       return res.json({ quantity: true });
     }
+    const addressUser = await User.findById(userId)
+    console.log(selectedAddress)
+    const addressUserSelected = addressUser.addresses.find(address => address._id.toString() === selectedAddress);
+    console.log("user selected", addressUserSelected);
+    console.log("user selceted", addressUserSelected)
+
+    
 
     const total = subTotalValue;
     const userData = await User.findOne({ _id: userId });
@@ -70,7 +77,7 @@ const placeOrder = async (req, res) => {
         day: "2-digit",
       })
       .replace(/\//g, "-");
-
+    
     const newOrder = new Order({
       userId: userId,
       delivery_address: selectedAddress,
@@ -84,6 +91,12 @@ const placeOrder = async (req, res) => {
       products: cartProducts,
       "couponApplied.discountAmount": cartData.couponApplied.discountAmount,
       "couponApplied.couponName": cartData.couponApplied.couponName,
+      "deliveryAddress.name": addressUserSelected.name,
+      "deliveryAddress.addressline": addressUserSelected.addressline,
+      "deliveryAddress.city": addressUserSelected.city,
+      "deliveryAddress.state":  addressUserSelected.state,
+      "deliveryAddress.pincode":  addressUserSelected.pincode,
+      "deliveryAddress.phone": addressUserSelected.phone,
     });
 
     let orderDetailsData = await newOrder.save();
@@ -379,12 +392,7 @@ const userOderDetails = async (req, res) => {
       "products.productId"
     );
 
-    // Extract the delivery address ObjectId
-    const addressId = orderedProduct.delivery_address;
-    const user = await User.findOne({ "addresses._id": addressId });
-    const selectedAddress = user.addresses.find((address) =>
-      address._id.equals(addressId)
-    );
+  
 
     // Define arrays for day and month names
     const daysOfWeek = [
@@ -420,7 +428,6 @@ const userOderDetails = async (req, res) => {
     console.log(orderedProduct);
     res.render("orderFullDetails", {
       orders: orderedProduct,
-      selectedAddress: selectedAddress,
       formattedDate: formattedDate,
     });
   } catch (err) {
@@ -695,33 +702,16 @@ const orderDetailedview = async (req, res) => {
     );
     const userId = ordersData.userId;
     // Extract the delivery address ObjectId
-    const addressId = ordersData.delivery_address;
+    // const addressId = ordersData.delivery_address;
 
     // here am doing get first documetn in array of address
-    const userAddresses = await User.findOne(
-      {
-        addresses: {
-          $exists: true,
-          $ne: {},
-        },
-      },
-      { addresses: 1 }
-    );
-    const userFirstadd = userAddresses.addresses[0];
-
-    const userad = await User.findOne({ "addresses._id": addressId });
-
-    const selectedAddress = userad.addresses.find((address) =>
-      address._id.equals(addressId)
-    );
+    
 
     const userData = await User.findById(userId);
 
     res.render("orderDetail", {
       orders: ordersData,
       user: userData,
-      selectedAddress: selectedAddress,
-      userFirstadd: userFirstadd,
     });
   } catch (err) {
     console.log(err.message);
