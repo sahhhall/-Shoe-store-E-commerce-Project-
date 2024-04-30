@@ -266,14 +266,15 @@ function submitForm(userEmail) {
       return;
    
     }
-    else if (updatedMobile.trim().length !== 10 || !/^\d+$/.test(updatedMobile)) {
-        Swal.fire({
-            icon: 'error',
-            title: 'Validation Error',
-            text: 'Mobile number must be 10 digits',
-        });
-        return;
-    }
+    if (updatedMobile.trim().length !== 10 || !/^\d+$/.test(updatedMobile) || /^0+$/.test(updatedMobile)) {
+    Swal.fire({
+        icon: 'error',
+        title: 'Validation Error',
+        text: 'Mobile number must be 10 non-zero digits',
+    });
+    return;
+   }
+
 
     const data = {
       userEmail: userEmail,

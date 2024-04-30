@@ -393,6 +393,7 @@ const productView = async (req, res) => {
       isWishlist,
     });
   } catch (err) {
+    res.render('404notfound')
     console.log(err.message);
   }
 };

@@ -181,14 +181,17 @@
           <div class="form-group">
             <label for="full-name" class="form-label">Full Name</label>
             <input type="text" class="form-control" id="full-name" placeholder="Full Name" name="fullname" required>
+            <p style="color: red; display: none" id="full-nameErr"></p>
           </div>
           <div class="form-group">
             <label for="address-line1" class="form-label">Address Line 1</label>
             <input type="text" class="form-control" id="address-line1" placeholder="Address Line 1" name="address_line1" required>
+            <p style="color: red; display: none" id="address-line1Err"></p>
           </div>
           <div class="form-group">
             <label for="city" class="form-label">City</label>
             <input type="text" class="form-control" id="city" placeholder="City" name="city" required>
+            <p style="color: red; display: none" id="cityErr"></p>
           </div>
           <div class="form-group">
             <label for="state" class="form-label">State</label>
@@ -204,11 +207,14 @@
           </div>
           <div class="form-group">
             <label for="postcode" class="form-label">Postcode</label>
+          
             <input type="text" class="form-control" id="postcode" placeholder="Postcode" name="postcode" required>
+            <p style="color: red; display: none" id="postcodeErr"></p>
           </div>
           <div class="form-group">
             <label for="mobile-number" class="form-label">Mobile Number</label>
             <input type="tel" class="form-control" id="mobile-number" placeholder="Mobile Number" name="mobile_number" required>
+            <p style="color: red; display: none" id="mobile-numberErr"></p>
           </div>
 
           <button type="button" onclick="addAddress('<%= locals.user.email %>')" class="btn btn-primary d-block w-100 my-4">Add Address</button>
@@ -252,10 +258,12 @@
         <div class="form-group">
           <label for="address-line1" class="form-label">Address Line 1</label>
           <input type="text" class="form-control" id="addressedit" placeholder="Address Line 1" name="addressedit" required>
+          <p id="addresseditError" class="error-message"></p>
         </div>
         <div class="form-group">
           <label for="city" class="form-label">City</label>
           <input type="text" class="form-control" id="cityedit" placeholder="City" name="cityedit" required>
+          <p id="cityeditError" class="error-message"></p>
         </div>
         <div class="form-group">
           <label for="state" class="form-label">State</label>
@@ -272,6 +280,7 @@
         <div class="form-group">
           <label for="postcode" class="form-label">Postcode</label>
           <input type="text" class="form-control" id="postcodeedit" placeholder="Postcode" name="postcodeedit" required>
+          <p id="postcodeeditError" class="error-message"></p>
         </div>
         <div class="form-group">
           
@@ -280,6 +289,7 @@
         <div class="form-group">
           <label for="mobile-number" class="form-label">Mobile Number</label>
           <input  class="form-control" id="phoneedit" placeholder="Mobile Number" name="mobile_numberedit" required>
+          <p id="phoneeditError" class="error-message"></p>
         </div>
         <!-- this how i passed the input huidden fiels value for ajax/fetch pos  -->
         <button type="button" style="border: none; background-color: black; color: white; padding: 4px; font-size: small;"  onclick="editAddress(document.getElementById('forid').value)">Update</button>
@@ -295,7 +305,7 @@
 <!-- modal ended for edited address -->
 
      <!-- card start here address  -->
-     <div class="card cardaddress mt-3" style="position: relative;" >
+     <div class="card cardaddress mt-3" style="position: relative;" id="reloadArea">
       <% if(locals.addresses && locals.addresses.length>0 )  { %>
 
         <%  addresses.forEach(function(address){ %>
@@ -335,6 +345,7 @@
 
 
 
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
 
 
   <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
@@ -354,15 +365,53 @@
     function setBorderColor(elementId, color) {
         document.getElementById(elementId).style.border = `1px solid ${color}`;
     }
+    function err(errorField, error) {
+        errorField.innerText = `${error} is required `;
+        errorField.style.display = "block";
+        setTimeout(() => {
+          errorField.style.display = "none";
+        }, 5000);
+        isValid = false;
+        return;
+      }
+      function validateField(value, fieldName, elementId) {
+    const errorField = document.getElementById(`${elementId}Err`);
 
-    function validateField(value, fieldName, elementId) {
-        if (value === "") {
+    if (value === "") {
+        setBorderColor(elementId, 'red');
+        err(errorField, fieldName);
+        return true; // Validation failed
+    }
+
+    if (fieldName === 'Mobile Number') {
+      if (!/^\d{10}$/.test(value) || value === '0000000000') {
             setBorderColor(elementId, 'red');
+            err(errorField, fieldName);
             return true; // Validation failed
         }
-        setBorderColor(elementId, ''); 
-        return false; // Validation passed
+    } else if (fieldName === 'Full Name' || fieldName === 'City') {
+        if (!/^[A-Za-z ]+$/.test(value)) {
+            setBorderColor(elementId, 'red');
+            err(errorField, fieldName);
+            return true; // Validation failed
+        }
+    } else if (fieldName === 'address_line1') {
+        if (!/^[A-Za-z\s]+$/.test(value)) {
+            setBorderColor(elementId, 'red');
+            err(errorField, fieldName);
+            return true; // Validation failed
+        }
+    } else if (fieldName === 'Postcode') {
+        if (!/^\d+$/.test(value)) {
+            setBorderColor(elementId, 'red');
+            err(errorField, fieldName);
+            return true; // Validation failed
+        }
     }
+
+    setBorderColor(elementId, '');
+    return false; // Validation passed
+}
     function clearInputValues() {
         const fields = [
             'full-name',
@@ -382,7 +431,7 @@
     function addAddress(userEmail) {
         const fields = [
             { id: 'full-name', name: 'Full Name' },
-            { id: 'address-line1', name: 'Address Line 1' },
+            { id: 'address-line1', name: 'address_line1' },
             { id: 'city', name: 'City' },
             { id: 'state', name: 'State' },
             { id: 'postcode', name: 'Postcode' },
@@ -523,21 +572,7 @@ $.ajax({
   // here we trying to eedit addreass with validation first we need to perfotm //////////////////////////////////
 
   function editAddress(addressid){
-    const fields = [
-            { id: 'fullnamedit', name: 'fullnameedit' },
-            { id: 'addressedit', name: 'addressedit' },
-            { id: 'cityedit', name: 'cityedit' },
-            { id: 'stateedit', name: 'stateedi' },
-            { id: 'postcodeedit', name: 'postcodeedit' },
-            { id: 'phoneedit', name: 'mobile_numberedit' }
-        ];
-
-        for (const field of fields) {
-            const value = trimValue(field.id);
-            if (validateField(value, field.name, field.id)) {
-                return;
-            }
-        }
+    
      const id =  document.getElementById('forid').value
      const fullName =   document.getElementById('fullnamedit').value 
     const address = document.getElementById('addressedit').value
@@ -546,6 +581,11 @@ $.ajax({
     const post =   document.getElementById('postcodeedit').value
       const phone =  document.getElementById('phoneedit').value 
       const modal = document.getElementById("customModal");
+      const fullNameError = document.getElementById('fullNameError');
+      const addresseditError = document.getElementById('addresseditError');
+      const cityeditError = document.getElementById('cityeditError');
+      const postcodeeditError = document.getElementById('postcodeeditError');
+      const phoneeditError = document.getElementById('phoneeditError');
 const data ={
     id:id,
     fullName:fullName,
@@ -566,7 +606,7 @@ $.ajax({
                 icon:'success',
                 text:'Successfully updated'
               }).then(()=>{
-                $('#reloadArea').load('/addresses #reloadArea');
+                location.reload()
               })
              
               modal.style.display = "none";

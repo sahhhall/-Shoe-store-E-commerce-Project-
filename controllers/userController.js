@@ -519,10 +519,11 @@ const editProfile = async (req, res) => {
         const email = req.body.userEmail;
         const newUserName = req.body.updatedName;
         const newMobile = req.body.updatedMobile;
-
+        const userId = req.session.user._id;
         const findUsernameExist = await User.find({name: newUserName});
-
-        if (findUsernameExist.length > 0) {
+        var sameUser = findUsernameExist[0]?._id?.toString() === userId;
+    
+        if (findUsernameExist.length > 0 && !sameUser ) {
             res.json({edited: false});
         } else { // console.log("Here I find a username that exists:", findUsernameExist);
 
