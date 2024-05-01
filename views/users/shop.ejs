@@ -60,13 +60,13 @@
                                         <ul class="list-group list-group-flush">
                                            <li class="list-group-item d-flex border-0 row g-0 px-0">
                                                 <% if(locals.category) %>
-                                                <select id="selectCategory" class="form-select fw-bolder" onchange="window.location.href=this.value">
+                                                <select id="selectCategory" class="form-select fw-bolder" onchange="updateCategory(this)">
                                                     <option value="" disabled selected>Select Category</option>
                                                     <% category.map(function(cat){ %>
                                                         <option value="/shop?categid=<%=cat.name %>"><%= cat.name %></option>
                                                     <% }); %>
-                                                    <option value="/shop">All</option>
-                                                </select>
+                                                    <option value="/shop?">All</option>
+                                                </select>                                                
                                                 
                                                 
                                             </li>
@@ -305,6 +305,14 @@ document.addEventListener('DOMContentLoaded', function () {
         debouncedSearch(this);
     });
 });
+function updateCategory(selectElement) {
+    const selectedCategory = selectElement.value;
+    const sortFilter = window.location.search.includes('sort');
+    const sortParam = sortFilter ? '&sort=' + getParameterByName('sort') : '';
+
+    // Redirect to the selected category page
+    window.location.href = selectedCategory + sortParam;
+}
 
 
 
