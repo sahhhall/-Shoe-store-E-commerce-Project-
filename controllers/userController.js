@@ -695,7 +695,7 @@ const walletLoad = async (req, res) => {
         if (userData) {
             walletAmount = userData.wallet;
             userData.walletHistory.sort((a, b) => b.date - a.date);
-            walletHistory = userData.walletHistory.slice(0, 3);
+            walletHistory = userData.walletHistory.slice(0, 5);
             
         }
 

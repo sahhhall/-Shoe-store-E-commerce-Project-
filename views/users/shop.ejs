@@ -117,8 +117,12 @@
                             <a class="text-decoration-none link-cover cardtitleshop"  href="/productView?id=<%=products._id%>" ><%= products.name %></a>
                             <small class="text-muted d-block smallcardtitle"><%= products.category %></small>
                             <small class="text-muted d-block smallcardtitle">1 colours, <%= products.sizes.length %> Sizes</small>
-                        
-                            <p class="mt-2 mb-0 small"><s class="text-danger">₹<%= products.previous_price %></s> <span class="text">₹<%= products.price %></span></p>
+                            <% if (parseInt(products.previous_price) === parseInt(products.price)) { %>
+                          <span style="font-size: 13px;" class="text">₹<%= products.price %></span>
+                            <% } else { %>
+                                <p class="mt-2 mb-0 small"><s class="text-danger">₹<%= products.previous_price %></s> <span class="text">₹<%= products.price %></span></p>
+                            <% } %>
+                          
                         </div>
                     </div>
                     <!--/ Card Product-->

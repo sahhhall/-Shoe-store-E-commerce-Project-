@@ -128,6 +128,10 @@
       },3000)
       return false;
      }
+     if ( storeId <= price ) {
+      alert('previous price must be less than the price');
+          return false; 
+        }
      
      
       else if (!Number.isInteger(Number(quantity))) {
