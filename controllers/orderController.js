@@ -388,11 +388,13 @@ const userOderDetails = async (req, res) => {
   try {
     const userId = req.session.user._id;
     const id = req.query.id;
-    const orderedProduct = await Order.findOne({ _id: id }).populate(
+    const orderedProduct = await Order.findOne({userId: userId, _id: id }).populate(
       "products.productId"
     );
-
-  
+    if (! orderedProduct) {
+      return res.render('404notfound')
+      
+    }
 
     // Define arrays for day and month names
     const daysOfWeek = [
@@ -431,6 +433,7 @@ const userOderDetails = async (req, res) => {
       formattedDate: formattedDate,
     });
   } catch (err) {
+    res.render('404notfound')
     console.log(err.message);
   }
 };
