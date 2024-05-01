@@ -254,16 +254,17 @@
         <div class="form-group">
           <label for="full-name" class="form-label">Full Name</label>
           <input  class="form-control" id="fullnamedit" placeholder="Full Name" name="fullnameedit" required>
+          <p id="fullNameError" style="color: red" class="error-message"></p>
         </div>
         <div class="form-group">
           <label for="address-line1" class="form-label">Address Line 1</label>
           <input type="text" class="form-control" id="addressedit" placeholder="Address Line 1" name="addressedit" required>
-          <p id="addresseditError" class="error-message"></p>
+          <p id="addresseditError" style="color: red" class="error-message"></p>
         </div>
         <div class="form-group">
           <label for="city" class="form-label">City</label>
           <input type="text" class="form-control" id="cityedit" placeholder="City" name="cityedit" required>
-          <p id="cityeditError" class="error-message"></p>
+          <p id="cityeditError" style="color: red" class="error-message"></p>
         </div>
         <div class="form-group">
           <label for="state" class="form-label">State</label>
@@ -280,7 +281,7 @@
         <div class="form-group">
           <label for="postcode" class="form-label">Postcode</label>
           <input type="text" class="form-control" id="postcodeedit" placeholder="Postcode" name="postcodeedit" required>
-          <p id="postcodeeditError" class="error-message"></p>
+          <p id="postcodeeditError" style="color: red" class="error-message"></p>
         </div>
         <div class="form-group">
           
@@ -289,7 +290,7 @@
         <div class="form-group">
           <label for="mobile-number" class="form-label">Mobile Number</label>
           <input  class="form-control" id="phoneedit" placeholder="Mobile Number" name="mobile_numberedit" required>
-          <p id="phoneeditError" class="error-message"></p>
+          <p id="phoneeditError" style="color: red;" class="error-message"></p>
         </div>
         <!-- this how i passed the input huidden fiels value for ajax/fetch pos  -->
         <button type="button" style="border: none; background-color: black; color: white; padding: 4px; font-size: small;"  onclick="editAddress(document.getElementById('forid').value)">Update</button>
@@ -384,7 +385,7 @@
     }
 
     if (fieldName === 'Mobile Number') {
-      if (!/^\d{10}$/.test(value) || value === '0000000000') {
+      if (!/^\d{10}$/.test(value) || /^(.)\1+$/.test(value) ) {
             setBorderColor(elementId, 'red');
             err(errorField, fieldName);
             return true; // Validation failed
@@ -586,6 +587,65 @@ $.ajax({
       const cityeditError = document.getElementById('cityeditError');
       const postcodeeditError = document.getElementById('postcodeeditError');
       const phoneeditError = document.getElementById('phoneeditError');
+        // Regular expressions for validation
+    const lettersOnlyRegex = /^[A-Za-z]+$/;
+    const numbersOnlyRegex = /^[0-9]+$/;
+
+    let isValid = true;
+
+    if (!fullName.match(lettersOnlyRegex)) {
+    fullNameError.style.display = "block";
+    fullNameError.innerText = "Full name should contain letters only.";
+    isValid = false;
+} else {
+    fullNameError.style.display = "none";
+}
+
+// Validation for Address
+if (!address.match(lettersOnlyRegex)) {
+    addresseditError.style.display = "block";
+    addresseditError.innerText = "Address should contain letters only.";
+    isValid = false;
+} else {
+    addresseditError.style.display = "none";
+}
+
+// Validation for City
+if (!city.match(lettersOnlyRegex)) {
+    cityeditError.style.display = "block";
+    cityeditError.innerText = "City should contain letters only.";
+    isValid = false;
+} else {
+    cityeditError.style.display = "none";
+}
+
+// Validation for Postcode
+if (!post.match(numbersOnlyRegex)) {
+    postcodeeditError.style.display = "block";
+    postcodeeditError.innerText = "Postcode should contain numbers only.";
+    isValid = false;
+} else {
+    postcodeeditError.style.display = "none";
+}
+
+// Validation for Phone
+if (!phone.match(numbersOnlyRegex)) {
+    phoneeditError.style.display = "block";
+    phoneeditError.innerText = "Phone should contain numbers only.";
+    isValid = false;
+} else if (phone.length !== 10 || /^(.)\1+$/.test(phone)) {
+    phoneeditError.style.display = "block";
+    phoneeditError.innerText = "Phone number should be 10 digits long and valid.";
+    isValid = false;
+} else {
+    phoneeditError.style.display = "none";
+}
+
+if (!isValid) {
+    // If any validation fails, return without making the AJAX call
+    return;
+}
+
 const data ={
     id:id,
     fullName:fullName,

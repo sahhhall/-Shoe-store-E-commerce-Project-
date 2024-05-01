@@ -208,7 +208,7 @@
       <label>Free</label>
     </div>
   </div>
-  <% if(orders.couponApplied) { %>
+  <% if(orders.couponApplied.discountAmount > 0) { %>
     <p style="margin: 0; margin-top: 2px;" >Subtotal: ₹<%= (orders.couponApplied.discountAmount + orders.total_amount).toFixed(2) %></p>
     <p style="margin: 0;" >saved : ₹<%= orders.couponApplied.discountAmount %></p>
     <% } %>

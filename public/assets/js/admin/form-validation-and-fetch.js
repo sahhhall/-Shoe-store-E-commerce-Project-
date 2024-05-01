@@ -129,55 +129,58 @@ function validate(){
     let password = document.getElementById("pass");
     let passwordconf = document.getElementById("confpass");
     let userphone = document.getElementById("uphone");
+    let umail = document.getElementById("umail");
     
-    
-    if( !/^\w+$/.test(username.value) ){
-    username.style.border = 'solid 1px red'    
-    userError.textContent = "only allow letters numbers and underscores"
-    setTimeout(function () {
-        username.style.border = '';
-        userError.textContent = '';
-    }, 3000); 
-   
-    return false;
-    }
-    else if (userphone.value.trim().length < 10 || !/^\d+$/.test(userphone.value)) {
-        
-    userphone.style.border = 'solid 1px red';
-    phoneErr.textContent = "Mobile number should be an Number with  10 digits";
-    setTimeout(function () {
-        userphone.style.border = '';
-        phoneErr.textContent = '';
-    }, 3000);
-    return false;
-}
-
-
-
-   else if (  !/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[a-zA-Z\d]{6,}$/.test(password.value) ) {
-      password.style.border = 'solid 1px red';
-      passwordError.textContent = "Password must be atleast 6 charcaters long and contain at least one uppercase letter one lowercase letter,and one number";
-      setTimeout(function () {
-        password.style.border = '';
-        passwordError.textContent = '';
-    }, 6000);
-      return false;
-   }
-
-    else if( password.value !== passwordconf.value ){
-        passwordconf.style.border = 'solid 1px red';
-        passwordError2.textContent = "Password should be same";
+    if (!/^\w+$/.test(username.value)) {
+        username.style.border = 'solid 1px red';    
+        userError.textContent = "Only letters, numbers, and underscores are allowed";
         setTimeout(function () {
-        passwordconf.style.border = '';
-        passwordError2.textContent = '';
-    }, 3000);
-        return false
-
+            username.style.border = '';
+            userError.textContent = '';
+        }, 3000); 
+        return false;
     }
-    else{
-         
-        true;
+    else if (!/\S+@\S+\.\S+/.test(umail.value)) {
+        umail.style.border = 'solid 1px red';
+        emailError.textContent = "Please enter a valid email address";
+        setTimeout(function () {
+            umail.style.border = '';
+            emailError.textContent = '';
+        }, 3000);
+        return false;
     }
+    else if (userphone.value.trim().length !== 10 || !/^\d{10}$/.test(userphone.value) || /^(.)\1+$/.test(userphone.value)) {
+        userphone.style.border = 'solid 1px red';
+        phoneErr.textContent = "Mobile number should be a number with 10 digits";
+        setTimeout(function () {
+            userphone.style.border = '';
+            phoneErr.textContent = '';
+        }, 3000);
+        return false;
+    }
+    else if (!/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[a-zA-Z\d]{6,}$/.test(password.value)) {
+        password.style.border = 'solid 1px red';
+        passwordError.textContent = "Password must be at least 6 characters long and contain at least one uppercase letter, one lowercase letter, and one number";
+        setTimeout(function () {
+            password.style.border = '';
+            passwordError.textContent = '';
+        }, 6000);
+        return false;
+    }
+    else if (password.value !== passwordconf.value) {
+        passwordconf.style.border = 'solid 1px red';
+        passwordError2.textContent = "Passwords should match";
+        setTimeout(function () {
+            passwordconf.style.border = '';
+            passwordError2.textContent = '';
+        }, 3000);
+        return false;
+    }
+   
+    else {
+        return true;
+    }
+    
 }
 
 let existAlert = document.getElementById('existAlert');

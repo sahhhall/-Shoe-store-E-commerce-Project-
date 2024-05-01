@@ -266,7 +266,7 @@ function submitForm(userEmail) {
       return;
    
     }
-    if (updatedMobile.trim().length !== 10 || !/^\d+$/.test(updatedMobile) || /^0+$/.test(updatedMobile)) {
+    if (updatedMobile.trim().length !== 10 || !/^\d+$/.test(updatedMobile) || /^(.)\1+$/.test(updatedMobile)) {
     Swal.fire({
         icon: 'error',
         title: 'Validation Error',

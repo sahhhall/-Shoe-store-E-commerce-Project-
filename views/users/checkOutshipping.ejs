@@ -42,14 +42,17 @@
             <div class="form-group">
               <label for="full-name" class="form-label">Full Name</label>
               <input type="text" class="form-control" id="full-name" placeholder="Full Name" name="fullname" required>
+              <p style="color: red; display: none" id="full-nameErr"></p>
             </div>
             <div class="form-group">
               <label for="address-line1" class="form-label">Address Line 1</label>
               <input type="text" class="form-control" id="address-line1" placeholder="Address Line 1" name="address_line1" required>
+              <p style="color: red; display: none" id="address-line1Err"></p>
             </div>
             <div class="form-group">
               <label for="city" class="form-label">City</label>
               <input type="text" class="form-control" id="city" placeholder="City" name="city" required>
+              <p style="color: red; display: none" id="cityErr"></p>
             </div>
             <div class="form-group">
               <label for="state" class="form-label">State</label>
@@ -66,10 +69,12 @@
             <div class="form-group">
               <label for="postcode" class="form-label">Postcode</label>
               <input type="text" class="form-control" id="postcode" placeholder="Postcode" name="postcode" required>
+              <p style="color: red; display: none" id="postcodeErr"></p>
             </div>
             <div class="form-group">
               <label for="mobile-number" class="form-label">Mobile Number</label>
               <input type="tel" class="form-control" id="mobile-number" placeholder="Mobile Number" name="mobile_number" required>
+              <p style="color: red; display: none" id="mobile-numberErr"></p>
             </div>
   
             <button type="button" onclick="addAddress('<%= locals.user.email %>')" class="btn btn-primary d-block w-100 my-4">Add Address</button>
@@ -144,15 +149,21 @@
 <div id="collapseTwo" class="accordion-collapse collapse" data-bs-parent="#accordionExample">
   <div class="accordion-body">
       <!-- Existing payment method (Cash on Delivery) -->
-      <div class="form-check form-group form-check-custom form-radio-custom form-radio-highlight mb-3">
-          <input class="form-check-input" type="radio" name="checkoutShippingMethod" id="checkoutShippingMethodCashOnDelivery">
+      <div class="form-check form-group form-check-custom form-radio-custom form-radio-highlight mb-3" >
+          <input class="form-check-input" type="radio" name="checkoutShippingMethod" id="checkoutShippingMethodCashOnDelivery"  <% if ((subTotal > 1500)) { %>disabled<% }%>>
           <label class="form-check-label" for="checkoutShippingMethodCashOnDelivery">
               <span class="d-flex justify-content-between align-items-start">
                   <span>
-                      <span class="mb-0 fw-bolder d-block">Cash on Delivery</span>
-                      <small class="fw-bolder">Pay when your order is delivered</small>
+                      <span class="mb-0 fw-bolder d-block" <% if (( subTotal > 1500)) { %>class="text-muted"<% } %>>Cash on Delivery</span>
+                      <small class="fw-bolder" <% if ((subTotal > 1500)) { %>class="text-muted"<% } %>>Pay when your order is delivered</small>
                   </span>
-                  <span class="small fw-bolder text-uppercase">Free</span>
+                  <% if (( subTotal < 1500)) { %>
+                    <span class="small fw-bolder text-uppercase">Free</span>
+                  <% } %>
+                  <% if (( subTotal > 1500)) { %>
+                    <span style=" color: red   !important;" >maximum 1500</span>
+                  
+                  <% } %>
               </span>
           </label>
       </div>
@@ -377,14 +388,53 @@ function trimValue(elementId) {
     function setBorderColor(elementId, color) {
         document.getElementById(elementId).style.border = `1px solid ${color}`;
     }
+    function err(errorField, error) {
+        errorField.innerText = `${error} is required `;
+        errorField.style.display = "block";
+        setTimeout(() => {
+          errorField.style.display = "none";
+        }, 5000);
+        isValid = false;
+        return;
+      }
 
     function validateField(value, fieldName, elementId) {
-        if (value === "") {
-            setBorderColor(elementId, 'red');
-            return true; // Validation failed
-        }
-        setBorderColor(elementId, ''); 
-        return false; // Validation passed
+      const errorField = document.getElementById(`${elementId}Err`);
+
+if (value === "") {
+    setBorderColor(elementId, 'red');
+    err(errorField, fieldName);
+    return true; // Validation failed
+}
+
+if (fieldName === 'Mobile Number') {
+  if (!/^\d{10}$/.test(value) || /^(.)\1+$/.test(value) ) {
+        setBorderColor(elementId, 'red');
+        err(errorField, fieldName);
+        return true; // Validation failed
+    }
+} else if (fieldName === 'Full Name' || fieldName === 'City') {
+    if (!/^[A-Za-z ]+$/.test(value)) {
+        setBorderColor(elementId, 'red');
+        err(errorField, fieldName);
+        return true; // Validation failed
+    }
+} else if (fieldName === 'address_line1') {
+    if (!/^[A-Za-z\s]+$/.test(value)) {
+        setBorderColor(elementId, 'red');
+        err(errorField, fieldName);
+        return true; // Validation failed
+    }
+} else if (fieldName === 'Postcode') {
+    if (!/^\d+$/.test(value)) {
+        setBorderColor(elementId, 'red');
+        err(errorField, fieldName);
+        return true; // Validation failed
+    }
+}
+
+setBorderColor(elementId, '');
+return false; // Validation passed
     }
     function clearInputValues() {
         const fields = [
@@ -405,7 +455,7 @@ function trimValue(elementId) {
     function addAddress(userEmail) {
         const fields = [
             { id: 'full-name', name: 'Full Name' },
-            { id: 'address-line1', name: 'Address Line 1' },
+            { id: 'address-line1', name: 'address_line1' },
             { id: 'city', name: 'City' },
             { id: 'state', name: 'State' },
             { id: 'postcode', name: 'Postcode' },
