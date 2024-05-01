@@ -73,6 +73,10 @@ const orderSchema = new Schema(
           type: String,
           default: "placed",
         },
+        isReturnReq: {
+          type: Boolean,
+          default: false
+        },
         statusLevel: {
           type: Number,
           default: 0,

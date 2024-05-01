@@ -38,7 +38,7 @@
     .receipt-main {
       background: #ffffff none repeat scroll 0 0;
       border-bottom: 12px solid #333333;
-      border-top: 12px solid #9f181c;
+      border-top: 12px solid #000000;
       margin-top: 50px;
       margin-bottom: 50px;
       padding: 40px 30px !important;
@@ -130,7 +130,25 @@
             <div class="receipt-header">
               <div class="col-xs-6 col-sm-6 col-md-6">
                 <div class="receipt-left">
-                 
+                  <div style="display: flex;">
+                    <p>Order ID:</p> &nbsp;
+                    <p> <%= order._id %></p>
+                  </div>
+         
+                 <!-- <span><h4>Order Date:</h4><%= order.date %></span> -->
+                 <span>
+                  <h4>Order Date:</h4>
+                  <% 
+                      var orderDate = new Date(order.date);
+                      var formattedDate = orderDate.toLocaleString('default', { month: 'long' }) + ' ' + 
+                                          orderDate.getDate() + ', ' + 
+                                          orderDate.getFullYear();
+                  %>
+                  <%= formattedDate %>
+              </span>
+                 <span style="margin: 0;"><h4>Invoice Date:</h4><%= date.toLocaleDateString('en-US', { year:
+                  'numeric', month: 'short', day: '2-digit'
+                  }).replace(/\//g, '-') %></span>
                 </div>
               </div>
               <div class="col-xs-6 col-sm-6 col-md-6 text-right">
@@ -148,15 +166,23 @@
             <div class="receipt-header receipt-header-mid">
               <div class="col-xs-8 col-sm-8 col-md-8 text-left">
                 <div class="receipt-right">
-                  <h5><%= user.name %></h5>
-                  <p><b>Mobile :</b>+91&nbsp; <%= user.mobile %></p>
-                  <p><b>Email :</b> <%= user.email %></p>
+                  <div style="display: flex;">
+                    <h5>Ship to: </h5>
+                  <h5> &nbsp;<%= user.name %></h5>
+                  </div>
+                
+                  <p><%= order.deliveryAddress.addressline %>,</p>
+                  <div style="display: flex;"><p><%= order.deliveryAddress.pincode %>,</p><p><%= order.deliveryAddress.city %>,</p> <p><%= order.deliveryAddress.state %>,</p></div>
+                 
+                  <p><%= order.deliveryAddress.phone %>,</p>
+                  <!-- <p><b>Mobile :</b>+91&nbsp; <%= user.mobile %></p>
+                  <p><b>Email :</b> <%= user.email %></p> -->
                 <!-- <b>Address :</b> <%= user.add %></p> -->
                 </div>
               </div>
               <div class="col-xs-4 col-sm-4 col-md-4">
                 <div class="receipt-left">
-                  <h4>INVOICE ID #<%= order._id %></h4>
+                  
                 </div>
               </div>
             </div>
@@ -195,7 +221,12 @@
                   </td>
                   <td class="text-left text-danger">
                     <h5>
-                      <strong><i class="fa fa-inr"></i> .00</strong>
+                      <% if(order.couponApplied) { %>
+                        <strong><i class="fa fa-inr"></i><%= order.couponApplied.discountAmount %></strong>
+                      <% } else { %>
+                        <strong><i class="fa fa-inr"></i>00</strong>
+                      <% } %>
+                      
                     </h5>
                   </td>
                 </tr>

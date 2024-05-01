@@ -148,7 +148,7 @@
         height="30"
       />
     </div>
-    <% if( product.statusLevel === 3 ){ %>
+    <% if( product.statusLevel === 3 && product.isReturnReq === false ){ %>
     <button
       onclick="handleReturnProductButtonClick(`<%= product.productId._id %>`)"
       type="button"
@@ -176,6 +176,20 @@
       Product Returned
     </button>
     <% } %>
+    <%  if( product.statusLevel === 3 &&  product.isReturnReq === true   ){ %>
+      <p
+        class="border-0 p-2"
+        style="
+          background-color: rgb(241, 241, 241);
+          border-radius: 1rem;
+          font-weight: bold;
+          color: rgb(204, 9, 9);
+        "
+        
+      >
+        Product Returne req not accpeted contact us for firther info
+      </p>
+      <% } %>
   </div>
   <% }); %>
 
@@ -194,12 +208,17 @@
       <label>Free</label>
     </div>
   </div>
-
+  <% if(orders.couponApplied) { %>
+    <p style="margin: 0; margin-top: 2px;" >Subtotal: ₹<%= (orders.couponApplied.discountAmount + orders.total_amount).toFixed(2) %></p>
+    <p style="margin: 0;" >saved : ₹<%= orders.couponApplied.discountAmount %></p>
+    <% } %>
   <div
-    class="d-flex justify-content-start align-items-center pl-3 py-3 mb-4 border-bottom"
-  >
+   style="margin-top: 0;" class="d-flex justify-content-start align-items-center pl-3 py-3 mb-4 border-bottom"
+  >  
     <div class="text-muted">Total</div>
+    
     <div class="ps-2 ml-auto h5">₹<%= orders.total_amount%></div>
+  
   </div>
   <div class="row border rounded p-1 my-3">
     <div class="col-md-6 py-3">

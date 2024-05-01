@@ -588,6 +588,7 @@ const returnReason = async (req, res) => {
           "products.$.status": "Return Requested",
           "products.$.cancellationReason": reason,
           "products.$.statusLevel": 4,
+          "products.$.isReturnReq": true,
         },
       }
     );
