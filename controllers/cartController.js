@@ -127,6 +127,15 @@ const removeCartItem = async (req, res) => {
           $pull: { products: { productId: proId } },
         }
       );
+      console.log(cartData.products.length, "cartData.products.length");
+      if (cartData.products.length <= 1) {
+        await Cart.findOneAndUpdate(
+          { userid: userId },
+          {
+            $unset: { couponApplied: "" },
+          }
+        );
+      }
 
       console.log("am here too");
       res.json({ success: true });
