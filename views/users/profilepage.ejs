@@ -111,7 +111,9 @@ font-size: .7rem;
     <div class="sidebarrr" id="sidebar">
  
       <div class="user-headerrr">
-        <div class="user-photooo"></div>
+        <div class="user-photooo">
+          <img class="user-photooo" src="/assets/people/bale.jpg" alt="">
+        </div>
         <div class="user-nameee">John Doe</div>
       </div>
 
@@ -139,7 +141,7 @@ font-size: .7rem;
   <div class="modal-dialog">
     <div class="modal-content">
       <div class="modal-header">
-        <h5 class="modal-title" id="exampleModalLabel">Reset Password</h5>
+        <h5 class="modal-title" id="exampleModalLabel">Change Password</h5>
         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
       </div>
       <div class="modal-body">
@@ -164,7 +166,7 @@ font-size: .7rem;
 
          
 
-          <button type="button" onclick="resetPass('<%= locals.user.email  %>')" class="btn btn-dark d-block w-100 my-4">Reset Password</button>
+          <button type="button" onclick="resetPass('<%= locals.user.email  %>')" class="btn btn-dark d-block w-100 my-4">Change Password</button>
         </form>
       </div>
     </div>
@@ -206,8 +208,8 @@ font-size: .7rem;
     </div>
   </form>
   </div>
-  <span class="mobile-text text-muted resettt">wanna reset password<button type="button" class="btn text-danger" data-bs-toggle="modal" data-bs-target="#exampleModal">
-    reset
+  <span class="mobile-text text-muted resettt">change password?<button  type="button" class="btn text-danger"  data-bs-toggle="modal" data-bs-target="#exampleModal">
+    Change
    </button> </span>
 </div>
 

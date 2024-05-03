@@ -75,16 +75,17 @@ const orderSchema = new Schema(
         },
         isReturnReq: {
           type: Boolean,
-          default: false
+          default: false,
         },
         statusLevel: {
           type: Number,
           default: 0,
         },
-        cancellationReason: {
-          type: String,
-          default: "none",
-        },
+        sizes: [
+          {
+            type: Number,
+          },
+        ],
       },
     ],
     deliveryAddress: {

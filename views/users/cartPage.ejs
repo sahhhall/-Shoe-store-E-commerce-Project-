@@ -49,14 +49,14 @@
                           <i
                             style="cursor: pointer; color: black"
                             class="ri-close-line ms-3"
-                            onclick="deleteCartItem('<%= value.productId._id %>')"
+                            onclick="deleteCartItem('<%= value.productId._id %>','<%= value._id %>')"
                             onmouseover="this.style.color='red'"
                             onmouseout="this.style.color='black'"
                           ></i>
                         </h6>
                         <span
-                          class="d-block text-muted fw-bolder text-uppercase fs-9"
-                          >Size: 9 / Qty: <%= value.quantity %></span
+                          class="d-block text-muted fw-bolder text-uppercase fs-9" id="size<%= value._id %>"
+                          >Size: <%= value.sizes %> / Qty: <%= value.quantity %></span
                         >
                         <div class="">
                           <% if (value.quantity <= 1) { %>
@@ -69,9 +69,9 @@
                               background-color: black;
                               color: white;
                             "
-                            onclick="changeQuantity('<%= value.productId._id %>', -1)"
+                            onclick="changeQuantity('<%= value.productId._id %>', -1,'<%= value._id %>')"
                           >
-                            -
+                            - 
                           </button>
                           <% } else { %>
                           <button
@@ -81,7 +81,7 @@
                               background-color: black;
                               color: white;
                             "
-                            onclick="changeQuantity('<%= value.productId._id %>', -1)"
+                            onclick="changeQuantity('<%= value.productId._id %>', -1, '<%= value._id %>')"
                           >
                             -
                           </button>
@@ -105,7 +105,7 @@
                               background-color: black;
                               color: white;
                             "
-                            onclick="changeQuantity('<%= value.productId._id %>', +1)"
+                            onclick="changeQuantity('<%= value.productId._id %>', +1,  '<%= value._id %>')"
                           >
                             +
                           </button>
@@ -145,16 +145,7 @@
           </div>
 
           <!-- <a  class="btn btn-secondary w-100 text-center mt-4"  data-bs-toggle="modal" data-bs-target="#couponModal" role="button">Check available Coupons</a>   -->
-          <div class="py-4">
-            <div class="input-group mb-0">
-              <input
-                type="text"
-                class="form-control"
-                placeholder="Enter coupon code"
-              />
-              <button class="btn btn-secondary btn-sm px-4">Apply</button>
-            </div>
-          </div>
+         
           <a
             href="/check-out"
             class="btn btn-dark w-100 text-center"
@@ -170,7 +161,9 @@
 <!-- / Main Section-->
 
 <script>
-  function deleteCartItem(proId) {
+  function deleteCartItem(proId, id) {
+    const size = document.getElementById(`size${id}`).textContent;
+    const sizeUserSelction =  size.split(':')[1].split('/')[0]
     swal
       .fire({
         title: "Are You Sure?",
@@ -188,6 +181,7 @@
             url: "/removeCartitem",
             data: {
               product: proId,
+              size: sizeUserSelction
             },
             method: "post",
             success: (response) => {
@@ -212,13 +206,16 @@
 </script>
 
 <script>
-  function changeQuantity(productId, count) {
-    console.log("ffffffffffffffffffffff", productId, count);
+  function changeQuantity(productId, count ,id) {
+    const size = document.getElementById(`size${id}`).textContent;
+    const sizeUserSelction =  size.split(':')[1].split('/')[0]
+    console.log("ffffffffffffffffffffff", productId, count, size.split(':')[1].split('/')[0]);
     $.ajax({
       url: "/update-quantity",
       data: {
         product: productId,
         count: count,
+        size: sizeUserSelction
       },
       method: "post",
       success: (response) => {

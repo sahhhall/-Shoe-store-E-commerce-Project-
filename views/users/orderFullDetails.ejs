@@ -138,7 +138,8 @@
   <% orders.products.forEach((product) => { %>
   <div  class="mt-2 border rounded d-flex justify-content-start align-items-center list py-1">
     <div><b> <%= product.productId.name %></b></div>
-    <div><b> : <%= product.quantity %></b></div>
+    <div><b> : <%= product.quantity %></b></div>&nbsp;
+    <div><b> size : <%= product.sizes %></b></div>
     <div class="mx-3">
       <img
         src="/assets/images/productImage/sharped/<%= product.productId.images[0] %>"
@@ -208,18 +209,27 @@
       <label>Free</label>
     </div>
   </div>
-  <% if(orders.couponApplied.discountAmount > 0) { %>
-    <p style="margin: 0; margin-top: 2px;" >Subtotal: ₹<%= (orders.couponApplied.discountAmount + orders.total_amount).toFixed(2) %></p>
-    <p style="margin: 0;" >saved : ₹<%= orders.couponApplied.discountAmount %></p>
+ 
+  <div class="d-flex justify-content-between align-items-center pl-3 py-3 mb-4 border-bottom">
+    <div>
+        <div  style="font-weight: bolder; font-size: 1.3rem; letter-spacing: .3rem;" class="">Grand Total</div>
+        <div class="h5 mt-1">₹<%= orders.total_amount %></div>
+    </div>
+    <% if (orders.couponApplied.discountAmount > 0) { %>
+    <div>
+        <div style="font-weight: bolder; font-size: 1.3rem; letter-spacing: .3rem;">Discount</div>
+        <div class="h5 mt-1">
+            Saved ₹<%= orders.couponApplied.discountAmount %> by <%= orders.couponApplied.couponName %> Coupon
+        </div>
+    </div>
+    <div>
+        <div class="text-muted">Total</div>
+        <div class="h5 mt-1 text-muted">
+            ₹<%= (orders.couponApplied.discountAmount + orders.total_amount).toFixed(2) %>
+        </div>
+    </div>
     <% } %>
-  <div
-   style="margin-top: 0;" class="d-flex justify-content-start align-items-center pl-3 py-3 mb-4 border-bottom"
-  >  
-    <div class="text-muted">Total</div>
-    
-    <div class="ps-2 ml-auto h5">₹<%= orders.total_amount%></div>
-  
-  </div>
+</div>
   <div class="row border rounded p-1 my-3">
     <div class="col-md-6 py-3">
       <div class="d-flex flex-column align-items start statusord">

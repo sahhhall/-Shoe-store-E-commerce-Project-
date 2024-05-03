@@ -147,7 +147,7 @@
             alert('Please select at least one image');
             return false; 
         }
-        if ( storeId <= price ) {
+        if ( storeId < price ) {
           alert('dont same previous and current price')
           return false; 
         }

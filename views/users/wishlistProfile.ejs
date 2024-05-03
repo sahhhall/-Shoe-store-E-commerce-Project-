@@ -131,7 +131,7 @@
                 wishlist.products.forEach((value, index) => { %>
                 <tr class="mx-0 py-4 g-0 border-bottom">
                   <td class="col-2 position-relative">
-                    <picture class="d-block border">
+                    <picture class="d-block border" onclick="window.location.href='http://localhost:4001/productView?id=<%= value._id %>'">
                       <img
                         class="img-fluid"
                         src="/assets/images/productImage/sharped/<%= value.images[0] %>"

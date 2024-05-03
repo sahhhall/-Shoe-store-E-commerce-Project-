@@ -22,22 +22,28 @@
             <div class="form-group">
               <label>Category</label>
               <select class="form-control" id="product-category" name="category">
-                  <% for (let i = 0; i < categories.length; i++) { %>
-                      <option value="<%= categories[i].name %>"><%= categories[i].name %></option>
-                  <% } %>
-              </select>
+                <% for (let i = 0; i < categories.length; i++) { %>
+                    <option value="<%= categories[i].name %>" <%= categories[i].name === productedit.category ? 'selected' : '' %>><%= categories[i].name %></option>
+                <% } %>
+            </select>
+            
           </div>
-            <div class="form-group">
-              <label>Sizes</label>
-              <% for (let i = 5; i <= 9; i++) { %>
-                  <div class="form-check">
-                      <input class="form-check-input" type="checkbox" name="sizes" id="size<%= i %>" value="<%= i %>">
-                      <label class="form-check-label" for="size<%= i %>">
-                          <%= i %>
-                      </label>
-                  </div>
-              <% } %>
-          </div>
+          <div class="form-group">
+            <label>Sizes</label>
+            <% for (let i = 5; i <= 9; i++) { %>
+                <div class="form-check">
+                    <% if (productedit.sizes && productedit.sizes.includes(i)) { %>
+                        <input class="form-check-input" type="checkbox" name="sizes" id="size<%= i %>" value="<%= i %>" checked>
+                    <% } else { %>
+                        <input class="form-check-input" type="checkbox" name="sizes" id="size<%= i %>" value="<%= i %>">
+                    <% } %>
+                    <label class="form-check-label" for="size<%= i %>">
+                        <%= i %>
+                    </label>
+                </div>
+            <% } %>
+        </div>
+        
           
             
             
@@ -128,7 +134,7 @@
       },3000)
       return false;
      }
-     if ( storeId <= price ) {
+     if ( storeId < price ) {
       alert('previous price must be less than the price');
           return false; 
         }
@@ -156,6 +162,10 @@
            alert('Price must be an integer');
            return false;
        }
+       else  if (sizes.length < 2) {
+            alert('Please select at least two size');
+            return false; 
+        }
        else if ( price < 1 ) {
         alert('price must be postive integer')
         document.getElementById('price').style.border = ' 1px solid red';

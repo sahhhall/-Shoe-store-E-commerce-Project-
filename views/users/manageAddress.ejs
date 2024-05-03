@@ -323,7 +323,7 @@
       </div>
      
        <p class="card-text"> <span > <%= address.name%></span> <span style="margin-left: 3%;"><%= address.phone %></span>  </p>
-        <p class="card-text"><span><%= address.addressline %></span><span ><%= address.city %>,</span> <span><%= address.state %>-</span> <span><%= address.pincode %></span> </p>
+        <p class="card-text"><span><%= address.addressline %>,</span>&nbsp;<span ><%= address.city %>,</span> <span><%= address.state %>-</span> <span><%= address.pincode %></span> </p>
     <hr>  </div>
       <% }); %>
       <%  } else  { %>
@@ -402,13 +402,14 @@
             err(errorField, fieldName);
             return true; // Validation failed
         }
-    } else if (fieldName === 'Postcode') {
-        if (!/^\d+$/.test(value)) {
-            setBorderColor(elementId, 'red');
-            err(errorField, fieldName);
-            return true; // Validation failed
-        }
+    }else if (fieldName === 'Postcode') {
+    // Check if value consists of 6 digits and not the same number repeated
+    if (!/^\d{6}$/.test(value) || /^(.)\1+$/.test(value)) {
+        setBorderColor(elementId, 'red');
+        err(errorField, fieldName);
+        return true; // Validation failed
     }
+}
 
     setBorderColor(elementId, '');
     return false; // Validation passed

@@ -124,13 +124,11 @@ const editProductpageLoad = async (req, res) => {
 };
 const editProduct = async (req, res) => {
   try {
-    const id = req.body.id;
-    const newName = req.body.name;
-    const newDescription = req.body.description;
-    const newPrice = req.body.price;
-    const category = req.body.category;
-    const stock = req.body.quantity;
-
+    const { id, newName, newDescription, newPrice, category, stock   } = req.body;
+    let sizes = [];
+    for (i = 0; i < req.body.sizes.length; i++) {
+      sizes[i] = req.body.sizes[i];
+    }
     const existingData = await Product.find({ _id: id });
     await Product.updateMany(
       {
@@ -155,7 +153,7 @@ const editProduct = async (req, res) => {
         },
         {
           $set: {
-            sizes: req.body.sizes,
+            sizes: sizes,
           },
         }
       );

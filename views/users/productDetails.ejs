@@ -124,30 +124,45 @@
             >
             <% } %>
 
-           <div style="display: flex;">
-            <h1 class="mb-1 fs-2 fw-bold"><%= product.name %></h1>
-            <% if (locals.user ){ %> <% if (isWishlist ) { %>
-            <button
-            style="border: none ; background-color: transparent;"
-            onclick="removeFromWishlist('<%= product._id %>')"
-            > <i onmouseover="this.style.color='red'; this.title='Remove from Wishlist';" style="color: red; font-size: 29px;" class="ri-heart-fill"></i></button>
-            <% } else { %>
-            <button  style="border: none ; background-color: transparent; " onclick="addToWishList('<%= product._id %>')">
-             <i style=" font-size: 29px; " onmouseout="this.style.color='black'" onmouseover="this.style.color='red'; this.title='Add to Wishlist';" class="ri-heart-line"></i>
-            </button>
+            <div style="display: flex">
+              <h1 class="mb-1 fs-2 fw-bold"><%= product.name %></h1>
+              <% if (locals.user ){ %> <% if (isWishlist ) { %>
+              <button
+                style="border: none; background-color: transparent"
+                onclick="removeFromWishlist('<%= product._id %>')"
+              >
+                <i
+                  onmouseover="this.style.color='red'; this.title='Remove from Wishlist';"
+                  style="color: red; font-size: 29px"
+                  class="ri-heart-fill"
+                ></i>
+              </button>
+              <% } else { %>
+              <button
+                style="border: none; background-color: transparent"
+                onclick="addToWishList('<%= product._id %>')"
+              >
+                <i
+                  style="font-size: 29px"
+                  onmouseout="this.style.color='black'"
+                  onmouseover="this.style.color='red'; this.title='Add to Wishlist';"
+                  class="ri-heart-line"
+                ></i>
+              </button>
 
-            <% } %> <% } %>
-           </div> 
+              <% } %> <% } %>
+            </div>
             <div class="d-flex justify-content-between align-items-center">
               <p class="mt-2 mb-0 small">
-                <% if (parseInt(product.previous_price) === parseInt(product.price)) { %>
-                  <span style="font-style: bolder;" class="ps-1 fs-4 m-0">₹<%= product.price %></span>
-              <% } else { %>
-                  <s class="text-danger">₹<%= product.previous_price %></s>
-                  <span class="ps-1 fs-4 m-0">₹<%= product.price %></span>
-              <% } %>
-                         
-              
+                <% if (parseInt(product.previous_price) ===
+                parseInt(product.price)) { %>
+                <span style="font-style: bolder" class="ps-1 fs-4 m-0"
+                  >₹<%= product.price %></span
+                >
+                <% } else { %>
+                <s class="text-danger">₹<%= product.previous_price %></s>
+                <span class="ps-1 fs-4 m-0">₹<%= product.price %></span>
+                <% } %>
               </p>
             </div>
 
@@ -174,8 +189,7 @@
                 <% }); %>
               </div>
             </div>
-            <% } %>
-            <% if (product.stockQuantity < 5) { %>
+            <% } %> <% if (product.stockQuantity < 5) { %>
             <p
               style="
                 color: red;
@@ -948,7 +962,20 @@
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <script>
   function addToCart(productId) {
-    const data = { productId: productId };
+    let sizeRadios = document.getElementsByName("product-option-sizes");
+    let checkedValue;
+    sizeRadios.forEach((radio) => {
+      if (radio.checked) {
+        // If checked, store its value
+        checkedValue = radio.value;
+      }
+    });
+    console.log("Checked value:", checkedValue);
+    if (!checkedValue) {
+      alert("set som evlaue");
+      return;
+    }
+    const data = { productId: productId , size: checkedValue};
     $.ajax({
       method: "POST",
       url: "/add-to-cart",
@@ -986,6 +1013,11 @@
                 window.location.href = "/cart";
               }
             });
+        }else if (response.stockQuantityFalse ) {
+          toastr.error(`sorry product out of stock `, {
+            timeOut: 5000,
+            progressBar: true,
+          })
         } else if (response.success) {
           swal
             .fire({
@@ -1070,9 +1102,9 @@
             title: "Item removed from wishlist",
             showConfirmButton: false,
             timer: 1500,
-          }).then(()=> {
-            location.reload()
-          })
+          }).then(() => {
+            location.reload();
+          });
         } else {
           // Handle other non-success cases if needed
         }
@@ -1088,6 +1120,10 @@
           background: "transparent",
         });
       });
-}
-
+  }
 </script>
+<link
+  rel="stylesheet"
+  href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css"
+/>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>

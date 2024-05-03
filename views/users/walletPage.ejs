@@ -101,7 +101,7 @@
 	letter-spacing: 0.5px;
 }
 .card-bottom{
-	background: #3E454D;
+	background: #000000;
 	border-radius: 6px;
 }
 
@@ -115,6 +115,9 @@
 }
 .btn-secondary:focus{
 	box-shadow: none;
+}
+.negative-amount {
+        color: red;
 }
   </style>
 </head>
@@ -186,13 +189,13 @@
                 <%if(walletHistory.length > 0){%>
                   <% walletHistory.forEach((walletHistory)=>{ %>
                     <div class="d-flex justify-content-between transction- " >
-                      <p ><%= walletHistory.date.toLocaleDateString('en-US',
+                      <p style="font-weight: bolder; letter-spacing: .1rem;"><%= walletHistory.date.toLocaleDateString('en-US',
                         { year: 'numeric', month: 'short', day: '2-digit'
                         }) %></p>
-                      <p>
-                        ₹<%=  walletHistory.amount %>
+                        <p style="font-weight: bolder; letter-spacing: .1rem;" class="<%= walletHistory.amount < 0 ? 'negative-amount' : '' %>">
+                          ₹<%=  walletHistory.amount %>
                       </p>
-                      <p>
+                      <p style="font-weight: bolder; letter-spacing: .1rem;">
                         <%= walletHistory.reason %>
                       </p>
                     </div>
@@ -201,7 +204,7 @@
                 
                 <% } %>
                
-                <button class="btn text-white w-100" style="background-color: #3E454D">Add Money</button>
+                <button class="btn text-white w-100" style="background-color: #000000">Add Money</button>
 
                </div>
               </div>

@@ -238,7 +238,7 @@
                                                 <%= value.productId.name %>
                                                 <p class="fw-bolder text-end text-muted m-0">₹<%= value.totalPrice %></p>
                                             </h6>
-                                            <span class="d-block text-muted fw-bolder text-uppercase fs-9">Size: <%= value.size %> / Qty: <%= value.quantity %></span>
+                                            <span class="d-block text-muted fw-bolder text-uppercase fs-9">Size: <%= value.sizes %> / Qty: <%= value.quantity %></span>
                                         </div>
                                         
                                     </div>
@@ -426,7 +426,8 @@ if (fieldName === 'Mobile Number') {
         return true; // Validation failed
     }
 } else if (fieldName === 'Postcode') {
-    if (!/^\d+$/.test(value)) {
+    // Check if value consists of 6 digits and not the same number repeated
+    if (!/^\d{6}$/.test(value) || /^(.)\1+$/.test(value)) {
         setBorderColor(elementId, 'red');
         err(errorField, fieldName);
         return true; // Validation failed
