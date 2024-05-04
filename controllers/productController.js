@@ -3,7 +3,7 @@ const bcrypt = require("bcrypt");
 const Category = require("../models/categoriesModel");
 const Product = require("../models/productSchema");
 const Wishlist = require("../models/wishlist.model");
-
+const Rating = require("../models/rating.schema");
 const sharp = require("sharp");
 const path = require("path");
 const loadProductList = async (req, res) => {
@@ -124,7 +124,7 @@ const editProductpageLoad = async (req, res) => {
 };
 const editProduct = async (req, res) => {
   try {
-    const { id, newName, newDescription, newPrice, category, stock   } = req.body;
+    const { id, newName, newDescription, newPrice, category, stock } = req.body;
     let sizes = [];
     for (i = 0; i < req.body.sizes.length; i++) {
       sizes[i] = req.body.sizes[i];
@@ -383,12 +383,24 @@ const productView = async (req, res) => {
         }
       }
     }
+
+    //reviews loading
+
+    const reviewws = await Rating.find({ productId: queryProduct }).populate(
+      "review.userId"
+    );
+    let reviewss;
+    if (reviewws) {
+      reviewss = reviewws[0]?.review;
+    }
+
     res.render("productDetails", {
       product: viewProduct,
       category: categories,
       daysDifference: daysDifference,
       relatedProducts: relatedProducts,
       isWishlist,
+      reviews: reviewss || [],
     });
   } catch (err) {
     res.render("404notfound");

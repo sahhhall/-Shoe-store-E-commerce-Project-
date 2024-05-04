@@ -104,6 +104,118 @@
   .subscriptions div {
     font-size: 0.9rem;
   }
+  /* Modal styles */
+.modall {
+  display: none;
+  position: fixed;
+  z-index: 1;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
+  overflow: auto;
+}
+
+.modall-content {
+  background-color: #fefefe;
+  margin: 10% auto;
+  padding: 20px;
+  border: 1px solid #888;
+  width: 80%;
+  max-width: 500px;
+}
+
+.closee {
+  color: #aaa;
+  float: right;
+  font-size: 28px;
+  font-weight: bold;
+}
+.star {
+    color: gray; 
+    cursor: pointer;
+  }
+
+.closee:hover,
+.closee:focus {
+  color: black;
+  text-decoration: none;
+  cursor: pointer;
+}
+
+
+.rating-stars {
+  margin-bottom: 10px;
+}
+
+.star {
+  font-size: 30px;
+  cursor: pointer;
+}
+
+.product-container {
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  margin-bottom: 10px;
+  padding: 10px;
+}
+
+.product-details {
+  display: flex;
+  align-items: center;
+}
+
+.product-info {
+  flex: 1;
+}
+
+.product-actions {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  margin-top: 10px;
+}
+
+.product-image {
+  margin-right: 10px;
+}
+
+.return-button {
+  background-color: #333;
+  color: #fff;
+  border: none;
+  border-radius: 5px;
+  padding: 5px 10px;
+  margin-right: 10px;
+}
+
+.return-status {
+  margin-right: 10px;
+}
+
+.returned-status {
+  color: green;
+}
+
+.return-request-status {
+  color: red;
+}
+
+.rating-button {
+  background-color: #ffa500;
+  color: black;
+  border: 1px solid black;
+  border-radius: 5px;
+  padding: 5px 10px;
+}
+
+
+textarea {
+  width: 100%;
+  height: 100px;
+  margin-bottom: 10px;
+}
   @media (max-width: 425px) {
     .wrapper {
       padding: 20px;
@@ -136,63 +248,47 @@
 </div>
 <div class="wrapper bg-white">
   <% orders.products.forEach((product) => { %>
-  <div  class="mt-2 border rounded d-flex justify-content-start align-items-center list py-1">
-    <div><b> <%= product.productId.name %></b></div>
-    <div><b> : <%= product.quantity %></b></div>&nbsp;
-    <div><b> size : <%= product.sizes %></b></div>
-    <div class="mx-3">
-      <img
-        src="/assets/images/productImage/sharped/<%= product.productId.images[0] %>"
-        alt="apple"
-        class="rounded-circle"
-        width="30"
-        height="30"
-      />
+    <div class="product-container">
+      <div class="product-details">
+        <div class="product-info">
+          <div class="product-name"><b><%= product.productId.name %></b></div>
+          <div class="product-quantity"><b>Quantity: <%= product.quantity %></b></div>
+          <div class="product-size"><b>Size: <%= product.sizes %></b></div>
+          <!-- Add more product details as needed -->
+        </div>
+        <div class="product-image">
+          <img src="/assets/images/productImage/sharped/<%= product.productId.images[0] %>" alt="apple" class="rounded-circle" width="30" height="30"/>
+        </div>
+      </div>
+      <div class="product-actions">
+        <% if (product.statusLevel === 3 && product.isReturnReq === false) { %>
+          <button
+          onclick="handleReturnProductButtonClick(`<%= product.productId._id %>`)"
+          type="button"
+          class="border-0 p-2 btn-dark"
+          style="letter-spacing: 0.1rem; font-size: 0.6rem; border-radius: 0.5rem"
+          data-bs-toggle="modal"
+          data-bs-target="#ReturnModal"
+        >
+          Return Product
+        </button>  <% } else if (product.statusLevel === 4) { %>
+        <button class="return-button" style="background-color: ghostwhite; color: black;" disabled>Pending Return</button>
+        <% } %>
+        <div class="return-status">
+          <% if (product.statusLevel === 5) { %>
+          <span class="returned-status">Product Returned</span>
+          <% } else if (product.statusLevel === 3 && product.isReturnReq === true) { %>
+          <span class="return-request-status">Product Return Request Not Accepted. Contact us for further info</span>
+          <% } %>
+        </div>
+        <% if (product.status === 'delivered' && product.isRated === false ) { %>
+        <button onclick="retingModalOpen('<%= product.productId._id %>',)" class="rating-button">Rating</button>
+        <% } %>
+        <input type="hidden" value="<%= orders._id %>" id="orderIdHidden" >
+      </div>
     </div>
-    <% if( product.statusLevel === 3 && product.isReturnReq === false ){ %>
-    <button
-      onclick="handleReturnProductButtonClick(`<%= product.productId._id %>`)"
-      type="button"
-      class="border-0 p-2 btn-dark"
-      style="letter-spacing: 0.1rem; font-size: 0.6rem; border-radius: 0.5rem"
-      data-bs-toggle="modal"
-      data-bs-target="#ReturnModal"
-    >
-      Return Product
-    </button>
-    <% } else if ( product.statusLevel === 4 ) { %>
-    <button class="border-0 p-3" disabled>Pending Return</button>
-
-    <% } %> <% if( product.statusLevel === 5 ){ %>
-    <button
-      class="border-0 p-2"
-      style="
-        background-color: rgb(2, 59, 2);
-        border-radius: 1rem;
-        font-weight: bold;
-        color: white;
-      "
-      disabled
-    >
-      Product Returned
-    </button>
-    <% } %>
-    <%  if( product.statusLevel === 3 &&  product.isReturnReq === true   ){ %>
-      <p
-        class="border-0 p-2"
-        style="
-          background-color: rgb(241, 241, 241);
-          border-radius: 1rem;
-          font-weight: bold;
-          color: rgb(204, 9, 9);
-        "
-        
-      >
-        Product Returne req not accpeted contact us for firther info
-      </p>
-      <% } %>
-  </div>
   <% }); %>
+  
 
   <div class="pt-2 border-bottom mb-3"></div>
   <!-- <div class="d-flex justify-content-start align-items-center pl-3">
@@ -320,6 +416,26 @@
     </div>
   </div>
 
+   <!-- rating modal  -->
+   <div id="ratingModal" class="modall">
+    <div class="modall-content">
+      <h2>Rate this product</h2>
+      <input type="hidden" id="productIdhidden" >
+      <div class="rating-stars">
+        <span class="star" onclick="rateProduct(1)">★</span>
+        <span class="star" onclick="rateProduct(2)">★</span>
+        <span class="star" onclick="rateProduct(3)">★</span>
+        <span class="star" onclick="rateProduct(4)">★</span>
+        <span class="star" onclick="rateProduct(5)">★</span>
+        <p style="color: red; display: none;" id="starsErr"  ></p>
+      </div>
+      <textarea id="commentField" placeholder="Enter your comments"></textarea>
+      <p style="color: red; display: none;" id="commentErr"  ></p>
+      <button onclick="submitRating()">Submit</button>
+      <button onclick="closeRatingModal()">Close</button>
+    </div>
+  </div>
+
   <!-- <% if( orders.statusLevel ===3 ){ %>
         <button  type="button" class="border-0 p-2 btn-dark" data-bs-toggle="modal" data-bs-target="#ReturnModal"> Return Order </button>
         <% } else { %>
@@ -433,6 +549,121 @@
         alert('Something went wrong while downloading the invoice.');
       });
   }
+
+
+  /// ratin g modal 
+
+  
+const retingModalOpen = (productID) => {
+  console.log(productID)
+  let modal = document.getElementById('ratingModal');
+  const hiddenInput = document.getElementById('productIdhidden');
+  hiddenInput.value = productID;
+  modal.style.display = "block";
+}
+function rateProduct(rating) {
+  var stars = document.querySelectorAll('.rating-stars .star');
+  for (var i = 0; i < stars.length; i++) {
+    if (i < rating) {
+      stars[i].style.color = 'gold';
+    } else {
+      stars[i].style.color = 'gray'; 
+    }
+  }
+}
+function submitRating(ratingStar) {
+  let stars = document.querySelectorAll('.rating-stars .star');
+  let starsErr = document.getElementById('starsErr');
+  let commentErr = document.getElementById('commentErr');
+  let commentField = document.getElementById('commentField').value;
+  const hiddenInput = document.getElementById('productIdhidden').value;
+  let orderId =  document.getElementById('orderIdHidden').value;
+  let modal = document.getElementById('ratingModal');
+
+  var selectedRating = 0;
+  for (var i = 0; i < stars.length; i++) {
+    if (stars[i].style.color === 'gray') {
+      selectedRating = i ;
+      break;
+    } else {
+      selectedRating = 5;
+    }
+  }
+  console.log(selectedRating,"selectedRating")
+  if (selectedRating < 1) {
+    starsErr.style.display = 'block';
+    starsErr.innerText = 'Please select at least one star';
+    return true;
+  } else {
+    starsErr.style.display = 'none';
+  }
+
+  if (!/^[a-zA-Z ]{10,}$/.test(commentField)) {
+    commentErr.style.display = 'block';
+    commentErr.innerText = 'Comment must contain only letters and be at least 10 characters long.';
+    return true;
+  } else {
+    commentErr.style.display = 'none';
+  }
+
+  const data = {
+    stars: selectedRating,
+    comment: commentField,
+    productID: hiddenInput,
+    orderId: orderId
+  };
+
+  $.ajax({
+    method: "POST",
+    url: "/add-review",
+    data: JSON.stringify(data),
+    contentType: "application/json",
+    success: function (response) {
+      if (response.message === "Rating added successfully") {
+        modal.style.display = 'none';
+        toastr.success("Rating added successfully!", "", {
+          timeOut: 2000,
+          progressBar: true,
+        });
+        setTimeout(()=>{   
+          clearReviewModalValues()
+          location.reload();
+        },2400)
+         
+      } else if (response.message) {
+        modal.style.display = 'none';
+        toastr.error(`${response.message}`, "", {
+          timeOut: 2000,
+          progressBar: true,
+        });
+         setTimeout(()=>{   
+          clearReviewModalValues()
+        },2400)
+      }
+    },
+    error: function (error) {
+      console.error(error);
+    },
+  });
+}
+function clearReviewModalValues() {
+  let commentField = document.getElementById('commentField');
+  let stars = document.querySelectorAll('.rating-stars .star');
+  commentField.value = '';
+  // here changin all starts color to gray  
+  for (var i = 0; i < stars.length; i++) {
+      stars[i].style.color = 'gray';   
+  }
+}
+function closeRatingModal () {
+  var modal = document.getElementById('ratingModal');
+  modal.style.display = "none";
+}
 </script>
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+<link
+  rel="stylesheet"
+  href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css"
+/>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>

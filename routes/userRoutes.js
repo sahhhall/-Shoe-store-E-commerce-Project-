@@ -8,6 +8,7 @@ const cartController = require('../controllers/cartController')
 const orderController = require('../controllers/orderController')
 const couponController = require('../controllers/couponController')
 const wishlistController = require('../controllers/wishlist.controller')
+const reviewController = require('../controllers/rating.controller')
 const {loadCartMiddleware} = require('../middlewares/cartMiddle')
 const auth = require('../middlewares/userAuth')
 userRouter.use(session({secret:config.sessionSecret,resave:false,
@@ -125,8 +126,14 @@ userRouter.post('/retry-payment',auth.authlogg,orderController.retryPayment);
 
 // ==========================================< wishlist >===================================================== //
 
-userRouter.post('/add-to-wishlist', wishlistController.addToWishList);
-userRouter.post('/remove-wishlist', wishlistController.removeFromWishlist);
+userRouter.post('/add-to-wishlist',auth.authlogg, wishlistController.addToWishList);
+userRouter.post('/remove-wishlist', auth.authlogg, wishlistController.removeFromWishlist);
+// ==========================================<  >===================================================== //
+
+// ==========================================< reviwq >===================================================== //
+
+userRouter.post('/add-review', auth.authlogg, reviewController.addRating );
+
 // ==========================================<  >===================================================== //
 
 userRouter.get('/about-us',userController.aboutUs);

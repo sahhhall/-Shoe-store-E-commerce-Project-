@@ -53,13 +53,13 @@ const placeOrder = async (req, res) => {
       // Check if the array is not empty
       return res.json({ quantity: true });
     }
-    const addressUser = await User.findById(userId)
-    console.log(selectedAddress)
-    const addressUserSelected = addressUser.addresses.find(address => address._id.toString() === selectedAddress);
+    const addressUser = await User.findById(userId);
+    console.log(selectedAddress);
+    const addressUserSelected = addressUser.addresses.find(
+      (address) => address._id.toString() === selectedAddress
+    );
     console.log("user selected", addressUserSelected);
-    console.log("user selceted", addressUserSelected)
-
-    
+    console.log("user selceted", addressUserSelected);
 
     const total = subTotalValue;
     const userData = await User.findOne({ _id: userId });
@@ -77,7 +77,7 @@ const placeOrder = async (req, res) => {
         day: "2-digit",
       })
       .replace(/\//g, "-");
-    
+
     const newOrder = new Order({
       userId: userId,
       delivery_address: selectedAddress,
@@ -94,9 +94,10 @@ const placeOrder = async (req, res) => {
       "deliveryAddress.name": addressUserSelected.name,
       "deliveryAddress.addressline": addressUserSelected.addressline,
       "deliveryAddress.city": addressUserSelected.city,
-      "deliveryAddress.state":  addressUserSelected.state,
-      "deliveryAddress.pincode":  addressUserSelected.pincode,
+      "deliveryAddress.state": addressUserSelected.state,
+      "deliveryAddress.pincode": addressUserSelected.pincode,
       "deliveryAddress.phone": addressUserSelected.phone,
+      "products.$[].status": status,
     });
 
     let orderDetailsData = await newOrder.save();
@@ -344,8 +345,6 @@ const loadOrder = async (req, res) => {
     if (next > totalPages) {
       next = totalPages;
     }
-
-    console.log("here my all orders", orders);
     // Extract product details from orders
     const orderData = orders.map((order) => ({
       _id: order._id,
@@ -388,12 +387,12 @@ const userOderDetails = async (req, res) => {
   try {
     const userId = req.session.user._id;
     const id = req.query.id;
-    const orderedProduct = await Order.findOne({userId: userId, _id: id }).populate(
-      "products.productId"
-    );
-    if (! orderedProduct) {
-      return res.render('404notfound')
-      
+    const orderedProduct = await Order.findOne({
+      userId: userId,
+      _id: id,
+    }).populate("products.productId");
+    if (!orderedProduct) {
+      return res.render("404notfound");
     }
 
     // Define arrays for day and month names
@@ -433,7 +432,7 @@ const userOderDetails = async (req, res) => {
       formattedDate: formattedDate,
     });
   } catch (err) {
-    res.render('404notfound')
+    res.render("404notfound");
     console.log(err.message);
   }
 };
@@ -709,7 +708,6 @@ const orderDetailedview = async (req, res) => {
     // const addressId = ordersData.delivery_address;
 
     // here am doing get first documetn in array of address
-    
 
     const userData = await User.findById(userId);
 

@@ -67,7 +67,6 @@
   background-color: #f0f0f0;
   border-radius: 5px;
 }
-
     @media screen and (max-width: 600px) {
         .menu-itemmm a {
      color: black;
@@ -210,7 +209,7 @@
                                     Delivery with in : <%= order.expected_delivery %>
                                   </span>
                                 <% } %>
-                             
+                              
                                 
                               
                                  <!-- <p class="fw-bolder  text-muted m-0"> Total: ₹<%= order.total_amount %></p> -->
@@ -223,7 +222,7 @@
                             </td>
                             <td>
                               <a href="/viewOrderDetails?id=<%= order._id %>" type="button" class="btn btnedtx   btn-dark btn-sm "> Details</a>
-
+          
                               <% if ( order.statusLevel === 1 ) { %>
                                 <a onclick="cancelOrder('<%= order._id %>')" type="button" class="btn btn-dark btnedtx  btn-sm mt-1 ">Cancel</a>
                               <% } else { %>
@@ -421,7 +420,6 @@
       },
     });
   }
-
 </script>
 <script>
 // filter orders 

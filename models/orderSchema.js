@@ -81,11 +81,18 @@ const orderSchema = new Schema(
           type: Number,
           default: 0,
         },
+        cancellationReason: {
+          type: String,
+        },
         sizes: [
           {
             type: Number,
           },
         ],
+        isRated: {
+          type: Boolean,
+          default: false,
+        },
       },
     ],
     deliveryAddress: {
