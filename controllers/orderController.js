@@ -675,6 +675,17 @@ const returnConf = async (req, res) => {
           },
         }
       );
+
+      // await Order.updateOne(
+      //   {
+      //     _id: orderId,
+      //   },
+      //   {
+      //     $pull: {
+      //       products: { _id: productId },
+      //     },
+      //   }
+      // );
     } else if (btndata == "reject") {
       await Order.updateOne(
         {

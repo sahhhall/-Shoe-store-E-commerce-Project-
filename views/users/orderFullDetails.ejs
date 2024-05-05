@@ -248,16 +248,19 @@ textarea {
 </div>
 <div class="wrapper bg-white">
   <% orders.products.forEach((product) => { %>
-    <div class="product-container">
+    <div class="product-container mt-3">
       <div class="product-details">
         <div class="product-info">
-          <div class="product-name"><b><%= product.productId.name %></b></div>
-          <div class="product-quantity"><b>Quantity: <%= product.quantity %></b></div>
-          <div class="product-size"><b>Size: <%= product.sizes %></b></div>
+          <div class="product-name"><b style="font-weight: bold; letter-spacing: .2rem;"><%= product.productId.name %></b></div>
+          <div class="product-quantity"><b style="letter-spacing: .2rem; font-size: .77rem;">Quantity: <%= product.quantity %></b></div>
+          <div class="product-size"><b style="letter-spacing: .2rem; font-size: .77rem;">Size: <%= product.sizes %></b></div>
+          <% if (product.statusLevel !== 5) { %>
+          <div class="product-size"><b style="letter-spacing: .2rem; font-size: .77rem;">Price: <%= product.productPrice %></b></div>
+          <% } %>
           <!-- Add more product details as needed -->
         </div>
         <div class="product-image">
-          <img src="/assets/images/productImage/sharped/<%= product.productId.images[0] %>" alt="apple" class="rounded-circle" width="30" height="30"/>
+          <img src="/assets/images/productImage/sharped/<%= product.productId.images[0] %>" alt="product" class="rounded-circle" width="80" height="70"/>
         </div>
       </div>
       <div class="product-actions">
@@ -300,7 +303,7 @@ textarea {
         </div>
     </div> -->
   <div class="d-flex justify-content-start align-items-center border-bottom py-1 pl-3">
-    <div class="text-muted">Shipping</div>
+    <div class="text-muted" style="letter-spacing: .2rem; font-size: 1rem; font-weight: bolder;">Shipping</div>
     <div class="ps-3 ml-auto">
       <label>Free</label>
     </div>
@@ -313,7 +316,7 @@ textarea {
     </div>
     <% if (orders.couponApplied.discountAmount > 0) { %>
     <div>
-        <div style="font-weight: bolder; font-size: 1.3rem; letter-spacing: .3rem;">Discount</div>
+        <div style="font-weight: bolder; font-size: 1.5rem; letter-spacing: .3rem; font-weight: bold;">Discount</div>
         <div class="h5 mt-1">
             Saved ₹<%= orders.couponApplied.discountAmount %> by <%= orders.couponApplied.couponName %> Coupon
         </div>
@@ -329,9 +332,9 @@ textarea {
   <div class="row border rounded p-1 my-3">
     <div class="col-md-6 py-3">
       <div class="d-flex flex-column align-items start statusord">
-        <b>Shipping Address</b>
-        <p class="text-justify pt-2"><%= orders.deliveryAddress.name %>(H)</p>
-        <p class="text-justify">
+        <b style="letter-spacing: .2rem; font-size: 1rem; font-weight: bolder;">Shipping Address</b>
+        <p class="text-justify pt-2" style="letter-spacing: .2rem; font-size: .77rem;"><%= orders.deliveryAddress.name %>(H)</p>
+        <p class="text-justify" style="letter-spacing: .2rem; font-size: .77rem;">
           <%= orders.deliveryAddress.city %>,<%= orders.deliveryAddress.pincode %>,<%=
           orders.deliveryAddress.state %>
         </p>

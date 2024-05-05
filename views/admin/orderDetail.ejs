@@ -106,6 +106,54 @@ button.btn:hover{
 .subscriptions div{
     font-size: 0.9rem;
 }
+
+.product-container {
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  margin-bottom: 10px;
+  padding: 10px;
+}
+
+.product-details {
+  display: flex;
+  align-items: center;
+}
+
+.product-info {
+  flex: 1;
+}
+
+.product-actions {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  margin-top: 10px;
+}
+
+.product-image {
+  margin-right: 10px;
+}
+
+.return-button {
+  background-color: #333;
+  color: #fff;
+  border: none;
+  border-radius: 5px;
+  padding: 5px 10px;
+  margin-right: 10px;
+}
+
+.return-status {
+  margin-right: 10px;
+}
+
+.returned-status {
+  color: green;
+}
+
+.return-request-status {
+  color: red;
+}
 @media(max-width: 425px){
     .wrapper{
         padding: 20px;
@@ -151,7 +199,34 @@ button.btn:hover{
      
     </div>
     <!-- end user order details  -->
-    <% orders.products.forEach((pro)=>{ %>
+    <% orders.products.forEach((product) => { %>
+        <div class="product-container mt-3">
+          <div class="product-details">
+            <div class="product-info">
+              <div class="product-name"><b style="font-weight: bold; letter-spacing: .2rem;"><%= product.productId.name %></b></div>
+              <div class="product-quantity"><b style="letter-spacing: .2rem; font-size: .77rem;">Quantity: <%= product.quantity %></b></div>
+              <div class="product-size"><b style="letter-spacing: .2rem; font-size: .77rem;">Size: <%= product.sizes %></b></div>
+              <% if (product.statusLevel !== 5) { %>
+              <div class="product-size"><b style="letter-spacing: .2rem; font-size: .77rem;">Price: <%= product.productPrice %></b></div>
+              <% } %>
+              <% if (product.statusLevel === 5) { %>
+              <div class="product-size"><p style="letter-spacing: .2rem; font-size: .77rem; color:red">product returned</p></div>
+              <% } %>
+              <!-- Add more product details as needed -->
+            </div>
+            <div class="product-image">
+              <img src="/assets/images/productImage/sharped/<%= product.productId.images[0] %>" alt="product" class="rounded-circle" width="80" height="70"/>
+            </div>
+          </div>
+          <div class="product-actions">
+            <% if(product.statusLevel == 4 ){ %>
+                <button class="btn btn-dark" onclick="returnModal('<%= product.cancellationReason%>','<%= product._id %>','<%= orders._id %>')">return req</button>
+    
+            <% } %>
+          </div>
+        </div>
+      <% }); %>
+    <!-- <% orders.products.forEach((pro)=>{ %>
     <div class="d-flex justify-content-start align-items-center list py-1">
         <div><b style="font-weight: bolder;">Quantity: <%= pro.quantity %></b></div> &nbsp; &nbsp;
         <div><b style="font-weight: bolder;">Size: <%= pro.sizes %></b></div>
@@ -166,7 +241,7 @@ button.btn:hover{
         <% } %>
         </td> 
     </div>
-  <% }) %>
+  <% }) %> -->
     <div class="pt-2 border-bottom mb-3"></div>
     <div class="d-flex justify-content-start align-items-center pl-3">
         <div class="text-muted">Payment Method</div>

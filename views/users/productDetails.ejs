@@ -187,8 +187,9 @@
                 </div>
                 <% }); %>
               </div>
+              <p id="sizeErrP" style="color: red; font-weight: 400;font-size: x-small; letter-spacing: .1rem; display: none;">please select atleast one size</p>
             </div>
-            <% } %> <% if (product.stockQuantity < 5) { %>
+            <% } %> <% if (product.stockQuantity < 5 && product.stockQuantity !== 0 ) { %>
             <p
               style="
                 color: red;
@@ -842,7 +843,10 @@
     });
     console.log("Checked value:", checkedValue);
     if (!checkedValue) {
-      alert("set som evlaue");
+      document.getElementById('sizeErrP').style.display = 'block';
+      setTimeout(()=> {
+        document.getElementById('sizeErrP').style.display = 'none';
+      },3000)
       return;
     }
     const data = { productId: productId , size: checkedValue};
