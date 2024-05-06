@@ -588,8 +588,11 @@ return false; // Validation passed
           }
         });
       } else {
-   
-        alert('Please select both an address and a shipping method before placing the order.');
+        Swal.fire({
+                    icon: 'error',
+                  
+                    text: 'Please select both an address and a shipping method before placing the order.',
+              })
       }
     });
   });

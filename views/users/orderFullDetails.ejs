@@ -549,7 +549,12 @@ textarea {
       })
       .catch(err => {
         console.error('Error downloading invoice:', err);
-        alert('Something went wrong while downloading the invoice.');
+        Swal.fire({
+                    icon: 'error',
+                  
+                    text: 'Something went wrong while downloading the invoice.',
+              })
+      
       });
   }
 
