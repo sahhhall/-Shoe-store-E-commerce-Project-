@@ -179,7 +179,7 @@ button.btn:hover{
     <div class="h4"><%= new Date(orders.date).toLocaleString('en-US', { year: 'numeric', month: 'short', day: 'numeric', hour: 'numeric', minute: 'numeric', second: 'numeric', hour12: true }) %>
     </div>
     <div class="pt-1">
-        <p>Order #<%= orders._id %> is currently<b class="text-dark"> <%= orders.status %></b></p>
+        <p>Order #<%= orders.orderId %> is currently<b class="text-dark"> <%= orders.status %></b></p>
     </div>
  
 </div>
@@ -287,7 +287,7 @@ button.btn:hover{
     <div class="pl-3 font-weight-bold">Order details</div>
     <div class="d-sm-flex justify-content-between rounded my-3 subscriptions">
         <div>
-            <b>#<%= orders._id %></b>
+            <b>#<%= orders.orderId %></b>
         </div>
         <div><%=  new Date(orders.date).toLocaleString('en-US', { year: 'numeric', month: 'short', day: 'numeric', })   %></div>
         <div>Status: <%= orders.status %></div>

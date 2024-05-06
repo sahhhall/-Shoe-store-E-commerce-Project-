@@ -16,6 +16,7 @@ const path = require("path");
 const ejs = require("ejs");
 const fs = require("fs");
 const Razorpay = require("razorpay");
+const stringGenerator = require('../utils/randomStringGenerator')
 dotenv.config();
 
 // ================================RAZORPAY INSTANCE========================================
@@ -77,8 +78,9 @@ const placeOrder = async (req, res) => {
         day: "2-digit",
       })
       .replace(/\//g, "-");
-
+    let stringGenerated  = stringGenerator.randomGen('ORD');
     const newOrder = new Order({
+      orderId: stringGenerated,
       userId: userId,
       delivery_address: selectedAddress,
       user_name: name,
