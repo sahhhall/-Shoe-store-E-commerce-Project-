@@ -124,7 +124,7 @@ const editProductpageLoad = async (req, res) => {
 };
 const editProduct = async (req, res) => {
   try {
-    const { id, newName, newDescription, newPrice, category, stock } = req.body;
+    const { id, newName, newDescription, newPrice, category, quantity } = req.body;
     let sizes = [];
     for (i = 0; i < req.body.sizes.length; i++) {
       sizes[i] = req.body.sizes[i];
@@ -140,7 +140,7 @@ const editProduct = async (req, res) => {
           description: newDescription,
           price: newPrice,
           category: category,
-          stockQuantity: stock,
+          stockQuantity: quantity,
           previous_price: req.body.previous_price,
         },
       }

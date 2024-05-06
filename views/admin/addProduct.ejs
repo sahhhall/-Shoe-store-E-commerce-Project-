@@ -10,11 +10,13 @@
             <div class="form-group">
               <label for="product_title">Product Name</label>
               <input type="text" class="form-control" id="product_title" name="name" placeholder="Type here">
+              <p id="productNameErr" style="color: red; display: none;"></p>
             </div>
   
             <div class="form-group">
               <label for="quantity">Quantity</label>
               <input type="number" class="form-control" id="quantity" name="quantity" placeholder="Type here">
+              <p id="quantityErr" style="color: red; display: none;"></p>
             </div>
   
           
@@ -36,6 +38,7 @@
                       </label>
                   </div>
               <% } %>
+              <p id="sizeErr" style="color: red; display: none;"></p>
           </div>
           
             
@@ -43,11 +46,13 @@
             <div class="form-group">
               <label>Price</label>
               <input type="text" class="form-control" name="price" placeholder="Type here" id="price">
+              <p id="priceErr" style="color: red; display: none;"></p>
             </div>
             
             <div class="form-group">
               <label>previous price</label>
               <input type="text" class="form-control" name="previous_price" placeholder="Type here" id="store_id">
+              <p id="previousErr" style="color: red; display: none;"></p> 
             </div>
           
   
@@ -56,6 +61,7 @@
             <div class="form-group">
               <label>Description</label>
               <textarea class="form-control" rows="4" name="description" placeholder="Type here" id="description"></textarea>
+              <p id="descErr" style="color: red; display: none;"></p>
             </div>
   
             
@@ -73,6 +79,7 @@
                     </div>
                   <% } %>
                 </div>
+                <p id="imagesErr" style="color: red; display: none;"></p>
               </div>
               
   
@@ -91,69 +98,117 @@
 
 <%- include('../layouts/admin/footer.ejs') -%>
 <script>
-    function validateForm() {
-       
-        let productName = document.getElementById('product_title').value;
-        let quantity = document.getElementById('quantity').value;
-        let category = document.getElementById('product-category').value;
-        let price = document.getElementById('price').value;
-        let storeId = document.getElementById('store_id').value;
-        let description = document.getElementById('description').value;
-        let images = document.querySelectorAll('[name="images"]');
-        let validImages = Array.from(images).some(img => img.value.trim() !== '');
-        let sizes = document.querySelectorAll('[name="sizes"]:checked');
-        let lettersAndNumbersRegex = /^[A-Za-z0-9 ]+$/;
-        if (!productName || !quantity || !category || !price || !storeId || !description  ) {
-            alert('Please fill out all fields');
-            return false;
-        }
-      else if( productName.trim()==="" || quantity.trim()==="" || storeId.trim() ==="" || description.trim()===""){
-        alert("please fillproperly remove blank names");
-        return false
-      }
-      else if (!lettersAndNumbersRegex.test(productName)) {
-        alert('Product name should contain only letters');
+   function validateForm() {
+
+let productName = document.getElementById('product_title').value.trim();
+let quantity = document.getElementById('quantity').value.trim();
+let category = document.getElementById('product-category').value.trim();
+let price = document.getElementById('price').value.trim();
+let storeId = document.getElementById('store_id').value.trim();
+let description = document.getElementById('description').value.trim();
+let images = document.querySelectorAll('[name="images"]');
+let validImages = Array.from(images).some(img => img.value.trim() !== '');
+let sizes = document.querySelectorAll('[name="sizes"]:checked');
+let lettersAndNumbersRegex = /^[A-Za-z0-9 ]+$/;
+let  numberRegex = /^[0-9]+$/;
+
+// Get the error paragraph elements
+let productNameErr = document.getElementById('productNameErr');
+let quantityErr = document.getElementById('quantityErr');
+let sizeErr = document.getElementById('sizeErr');
+let priceErr = document.getElementById('priceErr');
+let previousErr = document.getElementById('previousErr');
+let descErr = document.getElementById('descErr');
+let imagesErr = document.getElementById('imagesErr');
+let lettersRegex = /^[A-Za-z ]+$/;
+let  sameLettersRegex = /^(?!([a-zA-Z])\1+$)[a-zA-Z]+$/;
+if (!productName || !quantity || !category || !price || !storeId || !description) {
+  Swal.fire({
+          icon: 'error',
+          text: 'Please fill out all fields'
+        })
+    return false;
+}
+
+if (productName.trim() === "" || quantity.trim() === "" || storeId.trim() === "" || description.trim() === "") {
+    Swal.fire({
+          icon: 'error',
+          text: 'Please fill properly and remove blank fields'
+        })
+    return false;
+}
+
+if (!lettersAndNumbersRegex.test(productName) || !sameLettersRegex.test(productName)) {
+    productNameErr.innerText = "Product name should contain only letters & not consisit same letter";
+    productNameErr.style.display = "block";
+    return false;
+} else {
+    productNameErr.style.display = "none";
+}
+
+if (description.length <= 20 || !lettersRegex.test(description) || !sameLettersRegex.test(description) ) {
+    descErr.innerText = "Description must be at least 20 characters long";
+    descErr.style.display = "block";
+    return false;
+} else {
+    descErr.style.display = "none";
+}
+
+if (!Number.isInteger(Number(quantity)) || quantity < 0) {
+    quantityErr.innerText = "Quantity must be an number and not a negative number";
+    quantityErr.style.display = "block";
+    return false;
+} else {
+    quantityErr.style.display = "none";
+}
+
+if (!Number.isInteger(Number(storeId)) || storeId < 100|| storeId > 25000) {
+    previousErr.innerText = "Previous Price must be an integer and minimum 100 within 25000";
+    previousErr.style.display = "block";
+    return false;
+} else {
+    previousErr.style.display = "none";
+}
+
+
+if (!Number.isInteger(Number(price)) || price < 100 || price > 25000) {
+    priceErr.innerText = "Price must be an integer and minimum 100 and within 25000";
+    priceErr.style.display = "block";
+    return false;
+} else {
+    priceErr.style.display = "none";
+}
+if (price >= storeId) {
+        previousErr.innerText = "Previous price should be equal or more than the current price";
+        previousErr.style.display = "block";
+        setTimeout(() => {
+            previousErr.style.display = "none";
+        }, 5000);
         return false;
     }
-      else if(  description.length <= 20  ){
-        alert("please fill desc more than 20 letters");
-        return false
-      }
-      
-      
-       else if (!Number.isInteger(Number(quantity))) {
-            alert('Quantity must be an integer');
-            return false; 
-        }
 
-      else  if (!Number.isInteger(Number(storeId))) {
-            alert('Store ID must be an integer');
-            return false; 
-        }
+if (sizes.length < 2) {
+    sizeErr.innerText = "Please select at least two size";
+    sizeErr.style.display = "block";
+    return false;
+} else {
+    sizeErr.style.display = "none";
+}
 
-      
-       else if (!Number.isInteger(Number(price))) {
-            alert('Price must be an integer');
-            return false;
-        }
-       
-      else  if (sizes.length === 0) {
-            alert('Please select at least one size');
-            return false; 
-        }
+if (!validImages) {
+    imagesErr.innerText = "Please select at least one image";
+    imagesErr.style.display = "block";
+    return false;
+} else {
+    imagesErr.style.display = "none";
+} if ( images.length < 4) {
+  imagesErr.innerText = "Please select at least 4 image";
+    imagesErr.style.display = "block";
+    return false;
+}
 
-    
-      else  if (!validImages) {
-            alert('Please select at least one image');
-            return false; 
-        }
-        // if ( storeId < price ) {
-        //   alert('dont same previous and current price')
-        //   return false; 
-        // }
-
-        return true; 
-    }
+return true;
+}
 
 
 
@@ -174,3 +229,5 @@
         }
     }
 </script>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>

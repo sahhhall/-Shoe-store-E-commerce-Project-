@@ -11,11 +11,13 @@
             <div class="form-group">
               <label for="product_title">Product Name</label>
               <input type="text" class="form-control" id="product_title" name="name" value="<%= productedit.name  %>" >
+              <p id="productNameErr" style="color: red; display: none;"></p>
             </div>
   
             <div class="form-group">
               <label for="quantity">Quantity</label>
               <input  type="number" class="form-control" id="quantity" name="quantity" value="<%= productedit.stockQuantity  %>" >
+              <p id="quantityErr" style="color: red; display: none;"></p>
             </div>
   
           
@@ -42,6 +44,7 @@
                     </label>
                 </div>
             <% } %>
+            <p id="sizeErr" style="color: red; display: none;"></p>
         </div>
         
           
@@ -50,11 +53,13 @@
             <div class="form-group">
               <label>Price</label>
               <input type="text" class="form-control" id="price" name="price" value="<%= productedit.price  %>" >
+              <p id="priceErr" style="color: red; display: none;"></p>
             </div>
             
             <div class="form-group">
               <label>previous price</label>
               <input type="text" class="form-control" id="store_id" name="previous_price" value="<%= productedit.previous_price  %>" >
+              <p id="previousErr" style="color: red; display: none;"></p>
             </div>
           
   
@@ -63,6 +68,7 @@
             <div class="form-group">
               <label>Description</label>
               <input type="text" class="form-control" rows="4" id="description" name="description" value="<%= productedit.description  %>" ></input>
+              <p id="descErr" style="color: red; display: none;"></p>
             </div>
   
             
@@ -97,94 +103,112 @@
 
 <%- include('../layouts/admin/footer.ejs') -%>
 <script>
-  function validateForm() {
-       
-       let productName = document.getElementById('product_title').value;
-       let quantity = document.getElementById('quantity').value;
-       let category = document.getElementById('product-category').value;
-       let price = document.getElementById('price').value;
-       let storeId = document.getElementById('store_id').value;
-       let description = document.getElementById('description').value;
-       let images = document.querySelectorAll('[name="images"]');
-       let validImages = Array.from(images).some(img => img.value.trim() !== '');
-       let sizes = document.querySelectorAll('[name="sizes"]:checked');
-       let lettersAndNumbersRegex = /^[A-Za-z0-9 ]+$/;
-       if (!productName || !quantity || !category || !price || !storeId || !description  ) {
-           alert('Please fill out all fields');
-           return false;
-       }
-     else if( productName.trim()==="" || quantity.trim()==="" || storeId.trim() ==="" || description.trim()===""){
-       alert("please fillproperly remove blank names");
-       return false
-     }
-     else if (!lettersAndNumbersRegex.test(productName)) {
-       alert('Product name should contain only letters');
-       return false;
-   }
-     else if(  description.length <= 20  ){
-       alert("please fill desc more than 20 letters");
-       return false
-     }
-     else if ( quantity < 1 ) {
-      alert('minimum 1 product stock need');
-   
-      document.getElementById('quantity').style.border = ' 1px solid red';
-      setTimeout(()=> {
-        document.getElementById('quantity').style.border = '';
-      },3000)
-      return false;
-     }
-     if ( storeId < price ) {
-      alert('previous price must be less than the price');
-          return false; 
-        }
-     
-     
-      else if (!Number.isInteger(Number(quantity))) {
-           alert('Quantity must be an integer');
-           return false; 
-       }
+function validateForm() {
+    let productName = document.getElementById('product_title').value.trim();
+    let quantity = parseInt(document.getElementById('quantity').value.trim(), 10);
+    let category = document.getElementById('product-category').value.trim();
+    let price = parseInt(document.getElementById('price').value.trim(), 10);
+    let storeId = parseInt(document.getElementById('store_id').value.trim(), 10);
+    let description = document.getElementById('description').value.trim();
+    let images = document.querySelectorAll('[name="images"]');
+    let validImages = Array.from(images).some(img => img.value.trim() !== '');
+    let sizes = document.querySelectorAll('[name="sizes"]:checked');
+    let lettersRegex = /^[A-Za-z ]+$/;
+    let  sameLettersRegex = /^(?!([a-zA-Z])\1+$)[a-zA-Z]+$/;
+    let  numberRegex = /^[0-9]+$/;
 
-     else  if (!Number.isInteger(Number(storeId))) {
-           alert(' previous price must be an integer');
-           return false; 
-       }
+    // Get the error paragraph elements
+    let productNameErr = document.getElementById('productNameErr');
+    let quantityErr = document.getElementById('quantityErr');
+    let sizeErr = document.getElementById('sizeErr');
+    let priceErr = document.getElementById('priceErr');
+    let previousErr = document.getElementById('previousErr');
+    let descErr = document.getElementById('descErr');
 
-     else if (  storeId < 1 ) {
-      alert('previous price must be postive integer')
-        document.getElementById('store_id').style.border = ' 1px solid red';
-      setTimeout(()=> {
-        document.getElementById('store_id').style.border = '';
-      },3000)
+    if (!productName  || !category || !price || !storeId || !description) {
+        Swal.fire({
+          icon: 'error',
+          text: 'Please fill out all fields'
+        })
         return false;
-     }
-      else if (!Number.isInteger(Number(price))) {
-           alert('Price must be an integer');
-           return false;
-       }
-       else  if (sizes.length < 2) {
-            alert('Please select at least two size');
-            return false; 
-        }
-       else if ( price < 1 ) {
-        alert('price must be postive integer')
-        document.getElementById('price').style.border = ' 1px solid red';
-      setTimeout(()=> {
-        document.getElementById('price').style.border = '';
-      },3000)
+    }
+
+    if (!lettersRegex.test(productName) ||  !sameLettersRegex.test(productName)) {
+        productNameErr.innerText = "Product name should contain only letters";
+        productNameErr.style.display = "block";
+        setTimeout(() => {
+            productNameErr.style.display = "none";
+        }, 5000);
         return false;
-       }
+    }
+
+    if (description.length <= 20 || !sameLettersRegex.test(description)) {
+        descErr.innerText = "Please fill description with more than 20 letters";
+        descErr.style.display = "block";
+        setTimeout(() => {
+            descErr.style.display = "none";
+        }, 5000);
+        return false;
+    }
+
+    if (quantity < 1) {
+        quantityErr.innerText = "Minimum 1 product stock needed";
+        quantityErr.style.display = "block";
+        setTimeout(() => {
+            quantityErr.style.display = "none";
+        }, 5000);
+        return false;
+    }
+
+    if (isNaN(quantity) || isNaN(price) || isNaN(storeId)) {
+        Swal.fire({
+          icon: 'error',
+          text: 'Quantity, Price, and previous Price must be integers'
+        })
+        return false;
+    }
+
+    if (storeId < 100 || storeId > 25000 ||  price < 100 ||  price > 25000 || numberRegex.test(storeId) || numberRegex.test(price)) {
+      if ( storeId < 100 ||  storeId > 25000 || !numberRegex.test(storeId)) {
+        previousErr.innerText = "Previous price should be equal or more than 100 within 25000";
+        previousErr.style.display = "block";
+        setTimeout(() => {
+            previousErr.style.display = "none";
+        }, 5000);
+        return false;
+      } if ( price < 100 ||  price > 25000 || !numberRegex.test(price)) {
+        priceErr.innerText = "Previous price should be equal or more than 100 within 25000";
+        priceErr.style.display = "block";
+        setTimeout(() => {
+          priceErr.style.display = "none";
+        }, 5000);
+        return false;
+      }
       
-    //  else  if (sizes.length === 0) {
-    //        alert('Please select at least one size');
-    //        return false; 
-    //    }
+    }
 
-   
-   
+    if ( price >= storeId) {
+        previousErr.innerText = "Previous price should be equal or more than the current price";
+        previousErr.style.display = "block";
+        setTimeout(() => {
+            previousErr.style.display = "none";
+        }, 5000);
+        return false;
+    }
 
-       return true; 
-   }
+    if (sizes.length < 2) {
+        sizeErr.innerText = "Please select at least two sizes";
+        sizeErr.style.display = "block";
+        setTimeout(() => {
+            sizeErr.style.display = "none";
+        }, 5000);
+        return false;
+    }
+    
+    return true;
+}
+
+       
 //end
     function previewImage(input, imageId) {
         const preview = document.getElementById(imageId);
@@ -203,3 +227,5 @@
         }
     }
 </script>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
