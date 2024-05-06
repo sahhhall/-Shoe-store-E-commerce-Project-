@@ -1,266 +1,146 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Order Invoice</title>
-    <!-- Latest compiled and minified CSS -->
-    <link
-      rel="stylesheet"
-      href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css"
-      integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u"
-      crossorigin="anonymous"
-    />
-
-    <!-- Optional theme -->
-    <link
-      rel="stylesheet"
-      href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap-theme.min.css"
-      integrity="sha384-rHyoN1iRsVXV4nD0JutlnGaslCJuC7uwjduW9SVrLvRYooPp2bWYgmgJQIXwl/Sp"
-      crossorigin="anonymous"
-    />
-
-    <!-- Latest compiled and minified JavaScript -->
-    <script
-      src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"
-      integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa"
-      crossorigin="anonymous"
-    ></script>
-  </head>
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Order Invoice</title>
+  <!-- Latest compiled and minified CSS -->
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+  <!-- Optional theme -->
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap-theme.min.css" integrity="sha384-rHyoN1iRsVXV4nD0JutlnGaslCJuC7uwjduW9SVrLvRYooPp2bWYgmgJQIXwl/Sp" crossorigin="anonymous">
+  <!-- Latest compiled and minified JavaScript -->
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
   <style>
     body {
-      background: #eee;
-      margin-top: 20px;
+      font-family: Arial, sans-serif;
+      background-color: #f2f2f2;
+      padding: 20px;
     }
-    .text-danger strong {
-      color: #9f181c;
+    .invoice {
+      background-color: #fff;
+      border: 1px solid #ddd;
+      border-radius: 5px;
+      padding: 20px;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
     }
-    .receipt-main {
-      background: #ffffff none repeat scroll 0 0;
-      border-bottom: 12px solid #333333;
-      border-top: 12px solid #000000;
-      margin-top: 50px;
-      margin-bottom: 50px;
-      padding: 40px 30px !important;
-      position: relative;
-      box-shadow: 0 1px 21px #acacac;
-      color: #333333;
-      font-family: open sans;
+    .invoice-header {
+      border-bottom: 1px solid #ddd;
+      padding-bottom: 20px;
+      margin-bottom: 20px;
     }
-    .receipt-main p {
-      color: #333333;
-      font-family: open sans;
-      line-height: 1.42857;
+    .invoice-header h1 {
+      font-size: 24px;
+      margin: 0;
+      color: #333;
     }
-    .receipt-footer h1 {
-      font-size: 15px;
-      font-weight: 400 !important;
-      margin: 0 !important;
+    .invoice-header p {
+      margin: 5px 0;
+      color: #777;
     }
-    .receipt-main::after {
-      background: #414143 none repeat scroll 0 0;
-      content: "";
-      height: 5px;
-      left: 0;
-      position: absolute;
-      right: 0;
-      top: -13px;
+    .invoice-details {
+      margin-bottom: 20px;
     }
-    .receipt-main thead {
-      background: #414143 none repeat scroll 0 0;
+    .invoice-details h2 {
+      font-size: 18px;
+      margin-bottom: 10px;
+      color: #333;
     }
-    .receipt-main thead th {
-      color: #fff;
+    .invoice-details p {
+      margin: 5px 0;
+      color: #777;
     }
-    .receipt-right h5 {
-      font-size: 16px;
-      font-weight: bold;
-      margin: 0 0 7px 0;
+    .invoice-table {
+      margin-bottom: 20px;
     }
-    .receipt-right p {
-      font-size: 12px;
-      margin: 0px;
-    }
-    .receipt-right p i {
+    .invoice-table th,
+    .invoice-table td {
       text-align: center;
-      width: 18px;
     }
-    .receipt-main td {
-      padding: 9px 20px !important;
+    .invoice-table th {
+      background-color: #f9f9f9;
     }
-    .receipt-main th {
-      padding: 13px 20px !important;
+    .invoice-table td {
+      border-top: 1px solid #ddd;
+      padding: 10px;
     }
-    .receipt-main td {
-      font-size: 13px;
-      font-weight: initial !important;
-    }
-    .receipt-main td p:last-child {
-      margin: 0;
-      padding: 0;
-    }
-    .receipt-main td h2 {
-      font-size: 20px;
-      font-weight: 900;
-      margin: 0;
-      text-transform: uppercase;
-    }
-    .receipt-header-mid .receipt-left h1 {
-      font-weight: 100;
-      margin: 34px 0 0;
-      text-align: right;
-      text-transform: uppercase;
-    }
-    .receipt-header-mid {
-      margin: 24px 0;
-      overflow: hidden;
-    }
-
-    #container {
-      background-color: #dcdcdc;
+    .invoice-footer p {
+      margin: 5px 0;
+      color: #777;
     }
   </style>
-  <body>
-    <div class="col-md-12">
-      <div class="row">
-        <div
-          class="receipt-main col-xs-10 col-sm-10 col-md-6 col-xs-offset-1 col-sm-offset-1 col-md-offset-3"
-        >
-          <div class="row">
-            <div class="receipt-header">
-              <div class="col-xs-6 col-sm-6 col-md-6">
-                <div class="receipt-left">
-                  <div style="display: flex;">
-                    <p>Order ID:</p> &nbsp;
-                    <p> <%= order._id %></p>
-                  </div>
-         
-                 <!-- <span><h4>Order Date:</h4><%= order.date %></span> -->
-                 <span>
-                  <h4>Order Date:</h4>
-                  <% 
-                      var orderDate = new Date(order.date);
-                      var formattedDate = orderDate.toLocaleString('default', { month: 'long' }) + ' ' + 
-                                          orderDate.getDate() + ', ' + 
-                                          orderDate.getFullYear();
-                  %>
-                  <%= formattedDate %>
-              </span>
-                 <span style="margin: 0;"><h4>Invoice Date:</h4><%= date.toLocaleDateString('en-US', { year:
-                  'numeric', month: 'short', day: '2-digit'
-                  }).replace(/\//g, '-') %></span>
-                </div>
-              </div>
-              <div class="col-xs-6 col-sm-6 col-md-6 text-right">
-                <div class="receipt-right">
-                  <h5>SACollective Pvt. Ltd.</h5>
-                  <p>+91 124-234 <i class="fa fa-phone"></i></p>
-                  <p>SACollective@gmail.com <i class="fa fa-envelope-o"></i></p>
-                  <p>Calicut Kerala <i class="fa fa-location-arrow"></i></p>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          <div class="row">
-            <div class="receipt-header receipt-header-mid">
-              <div class="col-xs-8 col-sm-8 col-md-8 text-left">
-                <div class="receipt-right">
-                  <div style="display: flex;">
-                    <h5>Ship to: </h5>
-                  <h5> &nbsp;<%= user.name %></h5>
-                  </div>
-                
-                  <p><%= order.deliveryAddress.addressline %>,</p>
-                  <div style="display: flex;"><p><%= order.deliveryAddress.pincode %>,</p><p><%= order.deliveryAddress.city %>,</p> <p><%= order.deliveryAddress.state %>,</p></div>
-                 
-                  <p><%= order.deliveryAddress.phone %>,</p>
-                  <!-- <p><b>Mobile :</b>+91&nbsp; <%= user.mobile %></p>
-                  <p><b>Email :</b> <%= user.email %></p> -->
-                <!-- <b>Address :</b> <%= user.add %></p> -->
-                </div>
-              </div>
-              <div class="col-xs-4 col-sm-4 col-md-4">
-                <div class="receipt-left">
-                  
-                </div>
-              </div>
-            </div>
-          </div>
-
-          <div>
-            <table class="table table-bordered">
-              <thead>
+</head>
+<body>
+  <div class="container">
+    <div class="invoice">
+      <div class="invoice-header">
+        <h1>Order Invoice</h1>
+        <p>Thank you for your purchase!</p>
+      </div>
+      <div class="invoice-details">
+        <h2>Order Details</h2>
+        <p><strong>Order ID:</strong> <%= order._id %></p>
+        <p><strong>Order Date:</strong>  <% 
+          var orderDate = new Date(order.date);
+          var formattedDate = orderDate.toLocaleString('default', { month: 'long' }) + ' ' + 
+                              orderDate.getDate() + ', ' + 
+                              orderDate.getFullYear();
+      %>
+      <%= formattedDate %></p>
+        <p><strong>Invoice Date:</strong> <%= date.toLocaleDateString('en-US', { year:
+          'numeric', month: 'short', day: '2-digit'
+          }).replace(/\//g, '-') %></p>
+      </div>
+      <div class="invoice-details">
+        <h2>Shipping Details</h2>
+        <p><strong>Customer Name:</strong> <%= user.name %></p>
+        <p><strong>Address:</strong> <%= order.deliveryAddress.addressline %>, <%= order.deliveryAddress.city %>, <%= order.deliveryAddress.state %>, <%= order.deliveryAddress.pincode %></p>
+        <p><strong>Phone:</strong> <%= order.deliveryAddress.phone %></p>
+      </div>
+      <div class="invoice-table">
+        <h2>Order Summary</h2>
+        <table class="table">
+          <thead>
+            <tr>
+              <th>No.</th>
+              <th>Product Name</th>
+              <th>Size</th>
+              <th>Quantity</th>
+              <th>Price</th>
+              <th>Total</th>
+              <th>Returned</th>
+            </tr>
+          </thead>
+          <tbody>
+            <% if (order.products.length > 0) {
+              order.products.forEach((product, index) => { %>
                 <tr>
-                  <th>No.</th>
-                  <th>Product Name</th>
-                  <th>Quantity</th>
-                  <th>Price</th>
-                  
-                  <th>Total</th>
+                  <td><%= index + 1 %></td>
+                  <td><%= product.productId.name %></td>
+                  <td><%= product.sizes %></td>
+                  <td><%= product.quantity %></td>
+                  <td>₹ <%= product.productPrice %>.00</td>
+                  <td>₹ <%= product.totalPrice %>.00</td>
+                  <td><%= product.status === "returned" ? "Yes" : "No" %></td>
                 </tr>
-              </thead>
-              <tbody>
-                <% if (order.products.length > 0) {
-								order.products.forEach((orders,i) => { %>
-                <tr>
-                  
-                  <td class="col-md-9"><%= i+1 %></td>
-                  <td class="col-md-9"><%= orders.productId.name %></td>
-                  <td class="col-md-9"><%= orders.quantity %></td>
-                  <td class="col-md-9"><%= orders.productPrice %>.00</td>
-                  
-                  <td class="col-md-9">₹ <%= orders.totalPrice %>.00</td>
-                </tr>
-                <% } ) %>
-                <% } %>
-                <tr>
-                  <td><td><td></td></td></td>
-                  <td class="text-right">
-                    <h5><strong>Discount: </strong></h5>
-                  </td>
-                  <td class="text-left text-danger">
-                    <h5>
-                      <% if(order.couponApplied) { %>
-                        <strong><i class="fa fa-inr"></i><%= order.couponApplied.discountAmount %></strong>
-                      <% } else { %>
-                        <strong><i class="fa fa-inr"></i>00</strong>
-                      <% } %>
-                      
-                    </h5>
-                  </td>
-                </tr>
-                <tr>
-                  <td><td><td></td></td></td>
-                  <td class="text-right">
-                    <h2><strong>Total: </strong></h2>
-                  </td>
-                  <td class="text-left text-danger">
-                    <h2>
-                      <strong><i class="fa fa-inr"></i> <%= order.total_amount %>.00</strong>
-                    </h2>
-                  </td>
-                </tr>
-              </tbody>
-            </table>
-          </div>
-
-          <div class="row">
-            <div class="receipt-header receipt-header-mid receipt-footer">
-              <div class="col-xs-8 col-sm-8 col-md-8 text-left">
-                <div class="receipt-right">
-                  <p><b>Date :&nbsp;&nbsp;</b><%= date.toLocaleDateString('en-US', { year:
-                    'numeric', month: 'short', day: '2-digit'
-                    }).replace(/\//g, '-') %></p>
-                  <h5 style="color: rgb(140, 140, 140)">
-                    Thanks for shopping.!
-                  </h5>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
+            <% }) } %>
+            <tr>
+              <td colspan="6" class="text-right"><strong>Discount:</strong></td>
+              <td class="text-danger">₹ <% if(order.couponApplied) { %><%= order.couponApplied.discountAmount %><% } else { %>00<% } %></td>
+            </tr>
+            <tr>
+              <td colspan="6" class="text-right"><strong>Total:</strong></td>
+              <td class="text-danger">₹ <%= order.total_amount %>.00</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="invoice-footer">
+        <p><strong>Date:</strong> <%= date.toLocaleDateString('en-US', { year:
+          'numeric', month: 'short', day: '2-digit'
+          }).replace(/\//g, '-') %></p>
+        <p>Thanks for shopping with us!</p>
       </div>
     </div>
-  </body>
+  </div>
+</body>
 </html>

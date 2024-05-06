@@ -226,9 +226,17 @@ const quantityUpdationCart = async (req, res) => {
 
 const loadCheckOut = async (req, res) => {
   try {
-    const coupons = await Coupon.find({ status: true });
-    console.log("here all coupons", coupons);
     const userId = req.session.user._id;
+    const coupons = await Coupon.find({ status: true });
+
+    const filteredAvailableCoupons = coupons.filter((coupon) => {
+      const isUserNotUsed = !coupon.usedUsers.includes(userId); // Check if userId is not in usedUsers
+      const isExpired = coupon.expiryDate && coupon.expiryDate < new Date(); // Check if coupon is expired
+      const userLimitReach = coupon.usersLimit > coupon.usedUsers.length; // check limit
+      console.log(userLimitReach, "mohdmishal18@gmail.com", coupon.usersLimit , coupon.usedUsers.length)
+      return isUserNotUsed && !isExpired && userLimitReach; // Return coupons that meet both conditions
+    });
+
     const user = await User.findById(userId);
     const addresses = user.addresses;
     const cartDetails = await Cart.findOne({ userid: userId }).populate({
@@ -263,7 +271,7 @@ const loadCheckOut = async (req, res) => {
         subTotal: initialAmount,
         addresses: addresses,
         walletAmount: walletAmount,
-        couponView: coupons,
+        couponView: filteredAvailableCoupons,
         couponCode,
         discountAmount,
         couponName,

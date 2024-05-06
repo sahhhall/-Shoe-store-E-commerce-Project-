@@ -334,7 +334,7 @@
               <table class="table align-middle">
                   <tbody class="border-0 " style="background-color: rgba(209, 209, 209, 0.973);">
                       <!-- Cart Item-->
-                      <% if (couponView ) { %>
+                      <% if (couponView.length > 0) { %>
                           <% couponView.forEach((value, index) => { %>
                               <tr class="mx-0 py-4 g-0 border-bottom">
                                   <!-- <td class="col-2 position-relative">
@@ -360,7 +360,7 @@
                           <% }) %>
                       <% } else { %>
                           <tr>
-                              <td colspan="2">No products available</td>
+                              <td colspan="2">No Coupons available</td>
                           </tr>
                       <% } %>
                       <!-- / Cart Item-->
