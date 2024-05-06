@@ -313,9 +313,7 @@ const loadOrder = async (req, res) => {
     let next = page + 1;
 
     const sortOption = req.query.sortbyorder;
-    console.log("hi ame", sortOption);
     const userId = req.session.user._id;
-    console.log(userId, "its myyyy");
     // this is not thath url query
     let query = { userId: userId, status: "placed" };
 
@@ -348,31 +346,31 @@ const loadOrder = async (req, res) => {
       next = totalPages;
     }
     // Extract product details from orders
-    const orderData = orders.map((order) => ({
-      _id: order._id,
-      user_name: order.user_name,
-      date: new Date(order.date).toLocaleDateString("en-US", {
-        year: "numeric",
-        month: "long",
-        day: "numeric",
-        hour: "numeric",
-        minute: "numeric",
+    // const orderData = orders.map((order) => ({
+    //   _id: order._id,
+    //   user_name: order.user_name,
+    //   date: new Date(order.date).toLocaleDateString("en-US", {
+    //     year: "numeric",
+    //     month: "long",
+    //     day: "numeric",
+    //     hour: "numeric",
+    //     minute: "numeric",
 
-        hour12: true,
-      }),
-      total_amount: order.total_amount,
-      payment: order.payment,
-      status: order.status,
-      statusLevel: order.statusLevel,
-      expected_delivery: order.expected_delivery,
-      products: order.products.map((product) => ({
-        productId: product.productId,
-        proquantity: product.quantity,
-      })),
-    }));
+    //     hour12: true,
+    //   }),
+    //   total_amount: order.total_amount,
+    //   payment: order.payment,
+    //   status: order.status,
+    //   statusLevel: order.statusLevel,
+    //   expected_delivery: order.expected_delivery,
+    //   products: order.products.map((product) => ({
+    //     productId: product.productId,
+    //     proquantity: product.quantity,
+    //   })),
+    // }));
 
     res.render("ordersUserPage", {
-      orderData,
+      orderData: orders,
       totalPages: totalPages,
       next: next,
       previous: previous,

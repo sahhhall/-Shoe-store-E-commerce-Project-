@@ -141,27 +141,21 @@
                   <!-- Cart Item--><% if (orderData && orderData.length > 0) { %>
                     <% orderData.forEach((order, orderIndex) => { %>
                       <% if (order.products && order.products.length > 0) { %>
-                        <% order.products.forEach((product, index) => { %>
                           <tr class="mx-0 py-4 g-0 border-bottom">
-                            <td class="col-2 position-relative">
-                              <picture class="d-block border">
-                                <!-- Use the product image from product.productId.images -->
-                                <img class="img-fluid" src="/assets/images/productImage/sharped/<%= product.productId.images[0] %>" alt="hihi">
-                              </picture>
                             </td>
                             <td class="col-9 offset-1">
                               <div col="6">
                                 
                                 <h6 class="justify-content-between d-flex align-items-start mb-2">
                                 
-                                  <%= product.productId.name %>
+                                  <%= order.orderId %>
                           
                                 </h6>
                                 <span class="orderrr d-block text-muted fw-bolder text-uppercase fs-9">
                                   Order ID: <%= order._id %>  <br> Date: <%= order.date %>
                                 </span>
-                                <span class="d-block fw-bolder text-uppercase fs-9">
-                                  Q:<%= product.proquantity %>
+                                <span class="d-block fw-bolder fs-9 font-weight-bold">
+                                  Products:<%= order.products.length %>
                                  </span>
                                 <span class="d-block fw-bolder fs-9">
                                   <span class="fw-bold" >Payment method : </span><%= order.payment %>
@@ -233,7 +227,7 @@
                             
                           </td>
                           </tr>
-                        <% }) %>
+                     
                       <% } else { %>
                         <tr>
                           <td colspan="2">No orders available</td>
