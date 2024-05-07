@@ -16,7 +16,7 @@ const path = require("path");
 const ejs = require("ejs");
 const fs = require("fs");
 const Razorpay = require("razorpay");
-const stringGenerator = require('../utils/randomStringGenerator')
+const stringGenerator = require("../utils/randomStringGenerator");
 dotenv.config();
 
 // ================================RAZORPAY INSTANCE========================================
@@ -78,7 +78,7 @@ const placeOrder = async (req, res) => {
         day: "2-digit",
       })
       .replace(/\//g, "-");
-    let stringGenerated  = stringGenerator.randomGen('ORD');
+    let stringGenerated = stringGenerator.randomGen("ORD");
     const newOrder = new Order({
       orderId: stringGenerated,
       userId: userId,
@@ -440,11 +440,36 @@ const userOderDetails = async (req, res) => {
 // =================================SHOW ORDERS LIST IN ADMIN SIDE==================================================//
 const loadOrderlist = async (req, res) => {
   try {
+    let page = 1;
+    if (req.query.page) {
+      page = +req.query.page;
+    }
+
+    const limit = 1;
+
     const ordersData = await Order.find()
       .populate("products.productId")
-      .sort({ date: -1 });
+      .sort({ date: -1 })
+      .limit(limit * 1)
+      .skip((page - 1) * limit)
+      .exec();
 
-    res.render("orderPage", { orders: ordersData });
+    const count = await Order.countDocuments();
+
+    const totalPages = Math.ceil(count / limit);
+    let previous = page > 1 ? page - 1 : 1;
+    let next = page + 1;
+    if (next > totalPages) {
+      next = totalPages;
+    }
+  
+    res.render("orderPage", {
+      orders: ordersData,
+      totalPages: totalPages,
+      currentPage: page,
+      previous: previous,
+      next: next,
+    });
   } catch (err) {
     console.log(err.message);
   }

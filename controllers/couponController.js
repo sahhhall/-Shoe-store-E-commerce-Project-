@@ -4,8 +4,32 @@ const Coupon = require("../models/couponnModel");
 
 const loadCouponPage = async (req, res) => {
   try {
-    const coupons = await Coupon.find();
-    res.render("couponsPage", { coupons: coupons });
+    let page = 1;
+    if (req.query.page) {
+      page = +req.query.page;
+    }
+    const limit = 5;
+    const coupons = await Coupon.find()
+      .sort({ date: -1 })
+      .limit(limit * 1)
+      .skip((page - 1) * limit)
+      .exec();
+
+    const count = await Coupon.countDocuments();
+
+    const totalPages = Math.ceil(count / limit);
+    let previous = page > 1 ? page - 1 : 1;
+    let next = page + 1;
+    if (next > totalPages) {
+      next = totalPages;
+    }
+    res.render("couponsPage", {
+      coupons: coupons,
+      totalPages: totalPages,
+      currentPage: page,
+      previous: previous,
+      next: next,
+    });
   } catch (err) {
     console.log(err.message);
   }

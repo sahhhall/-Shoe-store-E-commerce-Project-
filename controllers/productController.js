@@ -8,8 +8,32 @@ const sharp = require("sharp");
 const path = require("path");
 const loadProductList = async (req, res) => {
   try {
-    const products = await Product.find({});
-    res.render("products", { products: products });
+    let page = 1;
+    if (req.query.page) {
+      page = +req.query.page;
+    }
+    const limit = 5;
+    const products = await Product.find({})
+      .sort({ date: -1 })
+      .limit(limit * 1)
+      .skip((page - 1) * limit)
+      .exec();
+
+    const count = await Product.countDocuments();
+
+    const totalPages = Math.ceil(count / limit);
+    let previous = page > 1 ? page - 1 : 1;
+    let next = page + 1;
+    if (next > totalPages) {
+      next = totalPages;
+    }
+    res.render("products", {
+      products: products,
+      totalPages: totalPages,
+      currentPage: page,
+      previous: previous,
+      next: next,
+    });
   } catch (err) {
     res.status(400).send("internal server error");
   }
@@ -124,7 +148,8 @@ const editProductpageLoad = async (req, res) => {
 };
 const editProduct = async (req, res) => {
   try {
-    const { id, newName, newDescription, newPrice, category, quantity } = req.body;
+    const { id, newName, newDescription, newPrice, category, quantity } =
+      req.body;
     let sizes = [];
     for (i = 0; i < req.body.sizes.length; i++) {
       sizes[i] = req.body.sizes[i];

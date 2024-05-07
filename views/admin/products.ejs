@@ -80,6 +80,33 @@
         </table>
         <!-- table-responsive.// -->
     </div>
+    <ul class="pagination" id="paginationHi">
+        <% if (totalPages > 1) { %>
+    
+          <% if (currentPage <= 1) { %>
+            <li class="page-item"><a class="page-link" aria-disabled="true">Previous</a></li>
+          <% } else { %>
+            <li class="page-item"><a class="page-link" href="?page=<%= previous %>">Previous</a></li>
+          <% } %>
+    
+          <% for (let j = 1; j <= totalPages; j++) { %>
+            <li class="page-item"><a class="page-link" href="?page=<%= j %>"><%= j %></a></li>
+          <% } %>
+    
+          <% if (currentPage < totalPages) { %>
+            <li class="page-item"><a class="page-link" href="?page=<%= next %>">Next</a></li>
+          <% } else { %>
+           
+          <% } %>
+    
+        <% } else { %>
+    
+          <li class="page-item"><a class="page-link" aria-disabled="true">Previous</a></li>
+          <li class="page-item"><a class="page-link" aria-disabled="true">1</a></li>
+          <li class="page-item"><a class="page-link" aria-disabled="true">Next</a></li>
+    
+        <% } %>
+      </ul>
 </div>
 
 </div>
