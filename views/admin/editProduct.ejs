@@ -124,7 +124,6 @@ function validateForm() {
     let priceErr = document.getElementById('priceErr');
     let previousErr = document.getElementById('previousErr');
     let descErr = document.getElementById('descErr');
-
     if (!productName  || !category || !price || !storeId || !description) {
         Swal.fire({
           icon: 'error',
@@ -134,7 +133,7 @@ function validateForm() {
     }
 
     if (!lettersRegex.test(productName) ||  !sameLettersRegex.test(productName)) {
-        productNameErr.innerText = "Product name should contain only letters";
+        productNameErr.innerText = "Product name should contain only letters & not consisit same letter";
         productNameErr.style.display = "block";
         setTimeout(() => {
             productNameErr.style.display = "none";

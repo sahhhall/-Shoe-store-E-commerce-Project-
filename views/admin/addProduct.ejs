@@ -150,28 +150,21 @@ if (description.length <= 20 || !lettersRegex.test(description) || !sameLettersR
     descErr.innerText = "Description must be at least 20 characters long";
     descErr.style.display = "block";
     return false;
-} else {
-    descErr.style.display = "none";
 }
 
-if (!Number.isInteger(Number(quantity)) || quantity < 0) {
+if ( !numberRegex.test(quantity)|| quantity < 0) {
     quantityErr.innerText = "Quantity must be an number and not a negative number";
     quantityErr.style.display = "block";
     return false;
-} else {
-    quantityErr.style.display = "none";
-}
-
-if (!Number.isInteger(Number(storeId)) || storeId < 100|| storeId > 25000) {
+} 
+if ( !numberRegex.test(storeId) || storeId < 100|| storeId > 25000) {
     previousErr.innerText = "Previous Price must be an integer and minimum 100 within 25000";
     previousErr.style.display = "block";
     return false;
-} else {
-    previousErr.style.display = "none";
 }
 
 
-if (!Number.isInteger(Number(price)) || price < 100 || price > 25000) {
+if ( !numberRegex.test(price) || price < 100 || price > 25000) {
     priceErr.innerText = "Price must be an integer and minimum 100 and within 25000";
     priceErr.style.display = "block";
     return false;
