@@ -107,7 +107,7 @@ const addProduct = async (req, res) => {
         await sharp(req.files[i].path).resize(500, 500).toFile(outputPath);
       }
     }
-
+    const getCategoryId = await Category.findOne({ name: req.body.category });
     const product = new Product({
       previous_price: req.body.previous_price,
       name: req.body.name,
@@ -118,6 +118,7 @@ const addProduct = async (req, res) => {
       stockQuantity: req.body.quantity,
       is_Listed: true,
       images: arrimages,
+      categorys: getCategoryId._id,
     });
 
     await product.save();
@@ -359,14 +360,6 @@ const loadShop = async (req, res) => {
   }
 };
 
-// const productDetails = async(req,res)=>{
-//     try{
-//         const categories = await Category.find({ is_listed: 1 });
-//         res.render('productDetails',{ category: categories });
-//     }catch(err){
-//         console.log(err.message)
-//     }
-// }
 
 const productView = async (req, res) => {
   try {

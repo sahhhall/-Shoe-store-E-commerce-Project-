@@ -132,7 +132,7 @@ function validateForm() {
         return false;
     }
 
-    if (!lettersRegex.test(productName) ||  !sameLettersRegex.test(productName)) {
+    if (!lettersRegex.test(productName) ) {
         productNameErr.innerText = "Product name should contain only letters & not consisit same letter";
         productNameErr.style.display = "block";
         setTimeout(() => {
@@ -141,7 +141,7 @@ function validateForm() {
         return false;
     }
 
-    if (description.length <= 20 || !sameLettersRegex.test(description)) {
+    if (description.length <= 20 ) {
         descErr.innerText = "Please fill description with more than 20 letters";
         descErr.style.display = "block";
         setTimeout(() => {

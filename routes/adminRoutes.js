@@ -149,4 +149,12 @@ adminRoute.post(
   bannerController.listUnlistBanner
 );
 
+// =========================================< dashboard  >=================================================
+adminRoute.post("/fetch-data", dashboardController.fetchTopSelledCateogry);
+
+adminRoute.post(
+  "/fetch-month-year-chart",
+  dashboardController.filterYearlyMonthly
+);
+
 module.exports = adminRoute;

@@ -26,9 +26,13 @@ const productSchema = mongoose.Schema({
     type: String,
     required: true,
   },
+  categorys: {
+    type: mongoose.Types.ObjectId,
+    required: true,
+    ref: "categories",
+  },
   images: {
     type: Array,
-
     validate: [arrayLimit, "you can pass only 4 images"],
   },
   stockQuantity: {

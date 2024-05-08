@@ -138,7 +138,7 @@ if (productName.trim() === "" || quantity.trim() === "" || storeId.trim() === ""
     return false;
 }
 
-if (!lettersAndNumbersRegex.test(productName) || !sameLettersRegex.test(productName)) {
+if (!lettersRegex.test(productName)) {
     productNameErr.innerText = "Product name should contain only letters & not consisit same letter";
     productNameErr.style.display = "block";
     return false;
@@ -146,7 +146,7 @@ if (!lettersAndNumbersRegex.test(productName) || !sameLettersRegex.test(productN
     productNameErr.style.display = "none";
 }
 
-if (description.length <= 20 || !lettersRegex.test(description) || !sameLettersRegex.test(description) ) {
+if (description.length <= 20 || !lettersRegex.test(description) ) {
     descErr.innerText = "Description must be at least 20 characters long";
     descErr.style.display = "block";
     return false;
@@ -171,7 +171,7 @@ if ( !numberRegex.test(price) || price < 100 || price > 25000) {
 } else {
     priceErr.style.display = "none";
 }
-if (price >= storeId) {
+if (+price >= +storeId) {
         previousErr.innerText = "Previous price should be equal or more than the current price";
         previousErr.style.display = "block";
         setTimeout(() => {

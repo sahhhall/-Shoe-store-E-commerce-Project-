@@ -104,7 +104,7 @@
                         <span class="icon icon-sm rounded-circle bg-primary-light"><i class="text-primary material-icons md-monetization_on"></i></span>
                         <div class="text">
                             <h6 class="mb-1 card-title">Revenue</h6>
-                            <span>$13,456.5</span>
+                            <span>₹<%= totalRevenue%></span>
                             <span class="text-sm"> Shipping fees are not included </span>
                         </div>
                     </article>
@@ -116,7 +116,7 @@
                         <span class="icon icon-sm rounded-circle bg-success-light"><i class="text-success material-icons md-local_shipping"></i></span>
                         <div class="text">
                             <h6 class="mb-1 card-title">Orders</h6>
-                            <span>53.668</span>
+                            <span><%= totalOrders%></span>
                             <span class="text-sm"> Excluding orders in transit </span>
                         </div>
                     </article>
@@ -128,8 +128,8 @@
                         <span class="icon icon-sm rounded-circle bg-warning-light"><i class="text-warning material-icons md-qr_code"></i></span>
                         <div class="text">
                             <h6 class="mb-1 card-title">Products</h6>
-                            <span>9.856</span>
-                            <span class="text-sm"> In 19 Categories </span>
+                            <span><%= totalProduct %></span>
+                            <span class="text-sm"> In <%= totalCategories %> Categories </span>
                         </div>
                     </article>
                 </div>
@@ -139,147 +139,27 @@
                     <article class="icontext">
                         <span class="icon icon-sm rounded-circle bg-info-light"><i class="text-info material-icons md-shopping_basket"></i></span>
                         <div class="text">
-                            <h6 class="mb-1 card-title">Monthly Earning</h6>
-                            <span>$6,982</span>
+                            <h6 class="mb-1 card-title">total customers</h6>
+                            <span><%= totalUsers%></span>
                             <span class="text-sm"> Based in your local time. </span>
                         </div>
                     </article>
                 </div>
             </div>
         </div>
-        <div class="row">
-            <div class="col-xl-8 col-lg-12">
+        <div class="row" id="chart" data-visted-users="<%= JSON.stringify(monthBaseUser) %>" data-montlyRevenue="<%= JSON.stringify(monthBaseRevenue)%>">
+            <div class="col-xl-12 col-lg-12">
+                <div class="col-md-2 col-6">
+                    <input   type="month" onchange="filterWithMonthYear(this.value)" style="background-color: white;" class="form-control" /> 
+                </div>
                 <div class="card mb-4">
                     <article class="card-body">
                         <h5 class="card-title">Sale statistics</h5>
                         <canvas id="myChart" height="120px"></canvas>
                     </article>
                 </div>
-                <div class="row">
-                    <div class="col-lg-5">
-                        <div class="card mb-4">
-                            <article class="card-body">
-                                <h5 class="card-title">New Members</h5>
-                                <div class="new-member-list">
-                                    <div class="d-flex align-items-center justify-content-between mb-4">
-                                        <div class="d-flex align-items-center">
-                                            <img src="/assets/people/avatar-4.png" alt="" class="avatar" />
-                                            <div>
-                                                <h6>Patric Adams</h6>
-                                                <p class="text-muted font-xs">Sanfrancisco</p>
-                                            </div>
-                                        </div>
-                                        <a href="#" class="btn btn-xs"><i class="material-icons md-add"></i> Add</a>
-                                    </div>
-                                    <div class="d-flex align-items-center justify-content-between mb-4">
-                                        <div class="d-flex align-items-center">
-                                            <img src="/assets/people/avatar-2.png" alt="" class="avatar" />
-                                            <div>
-                                                <h6>Dilan Specter</h6>
-                                                <p class="text-muted font-xs">Sanfrancisco</p>
-                                            </div>
-                                        </div>
-                                        <a href="#" class="btn btn-xs"><i class="material-icons md-add"></i> Add</a>
-                                    </div>
-                                    <div class="d-flex align-items-center justify-content-between mb-4">
-                                        <div class="d-flex align-items-center">
-                                            <img src="/assets/people/avatar-3.png" alt="" class="avatar" />
-                                            <div>
-                                                <h6>Tomas Baker</h6>
-                                                <p class="text-muted font-xs">Sanfrancisco</p>
-                                            </div>
-                                        </div>
-                                        <a href="#" class="btn btn-xs"><i class="material-icons md-add"></i> Add</a>
-                                    </div>
-                                </div>
-                            </article>
-                        </div>
-                    </div>
-                    <div class="col-lg-7">
-                        <div class="card mb-4">
-                            <article class="card-body">
-                                <h5 class="card-title">Recent activities</h5>
-                                <ul class="verti-timeline list-unstyled font-sm">
-                                    <li class="event-list">
-                                        <div class="event-timeline-dot">
-                                            <i class="material-icons md-play_circle_outline font-xxl"></i>
-                                        </div>
-                                        <div class="media">
-                                            <div class="me-3">
-                                                <h6><span>Today</span> <i class="material-icons md-trending_flat text-brand ml-15 d-inline-block"></i></h6>
-                                            </div>
-                                            <div class="media-body">
-                                                <div>Lorem ipsum dolor sit amet consectetur</div>
-                                            </div>
-                                        </div>
-                                    </li>
-                                    <li class="event-list active">
-                                        <div class="event-timeline-dot">
-                                            <i class="material-icons md-play_circle_outline font-xxl animation-fade-right"></i>
-                                        </div>
-                                        <div class="media">
-                                            <div class="me-3">
-                                                <h6><span>17 May</span> <i class="material-icons md-trending_flat text-brand ml-15 d-inline-block"></i></h6>
-                                            </div>
-                                            <div class="media-body">
-                                                <div>Debitis nesciunt voluptatum dicta reprehenderit</div>
-                                            </div>
-                                        </div>
-                                    </li>
-                                    <li class="event-list">
-                                        <div class="event-timeline-dot">
-                                            <i class="material-icons md-play_circle_outline font-xxl"></i>
-                                        </div>
-                                        <div class="media">
-                                            <div class="me-3">
-                                                <h6><span>13 May</span> <i class="material-icons md-trending_flat text-brand ml-15 d-inline-block"></i></h6>
-                                            </div>
-                                            <div class="media-body">
-                                                <div>Accusamus voluptatibus voluptas.</div>
-                                            </div>
-                                        </div>
-                                    </li>
-                                    <li class="event-list">
-                                        <div class="event-timeline-dot">
-                                            <i class="material-icons md-play_circle_outline font-xxl"></i>
-                                        </div>
-                                        <div class="media">
-                                            <div class="me-3">
-                                                <h6><span>05 April</span> <i class="material-icons md-trending_flat text-brand ml-15 d-inline-block"></i></h6>
-                                            </div>
-                                            <div class="media-body">
-                                                <div>At vero eos et accusamus et iusto odio dignissi</div>
-                                            </div>
-                                        </div>
-                                    </li>
-                                    <li class="event-list">
-                                        <div class="event-timeline-dot">
-                                            <i class="material-icons md-play_circle_outline font-xxl"></i>
-                                        </div>
-                                        <div class="media">
-                                            <div class="me-3">
-                                                <h6><span>26 Mar</span> <i class="material-icons md-trending_flat text-brand ml-15 d-inline-block"></i></h6>
-                                            </div>
-                                            <div class="media-body">
-                                                <div>Responded to need “Volunteer Activities</div>
-                                            </div>
-                                        </div>
-                                    </li>
-                                </ul>
-                            </article>
-                        </div>
-                    </div>
-                </div>
             </div>
-            <div class="col-xl-4 col-lg-12">
-                <div class="card mb-4">
-                    <article class="card-body">
-                        <h5 class="card-title">Revenue Base on Area</h5>
-                        <canvas id="myChart2" height="217"></canvas>
-                    </article>
-                </div>
-           
-            </div>
+         
         </div>
         <div class="card mb-4">
             <header class="card-header">
@@ -287,173 +167,44 @@
                 <div class="row align-items-center">
                     <div class="col-md-3 col-12 me-auto mb-md-0 mb-3">
                         <div class="custom_select">
-                            <select class="form-select select-nice">
-                                <option selected>All Categories</option>
-                                <option>Women's Clothing</option>
-                                <option>Men's Clothing</option>
-                                <option>Cellphones</option>
-                                <option>Computer & Office</option>
-                                <option>Consumer Electronics</option>
-                                <option>Jewelry & Accessories</option>
-                                <option>Home & Garden</option>
-                                <option>Luggage & Bags</option>
-                                <option>Shoes</option>
-                                <option>Mother & Kids</option>
-                            </select>
-                        </div>
-                    </div>
-                    <div class="col-md-2 col-6">
-                        <input type="date" value="02.05.2021" class="form-control" />
-                    </div>
-                    <div class="col-md-2 col-6">
-                        <div class="custom_select">
-                            <select class="form-select select-nice">
-                                <option selected>Status</option>
-                                <option>All</option>
-                                <option>Paid</option>
-                                <option>Chargeback</option>
-                                <option>Refund</option>
-                            </select>
+                            <select class="form-select select-nice" onchange="fetchData(this.value)">
+                                <option value="product" selected>Best selling product (top 5)</option>
+                                <option value="category">Best selling category (top 5)</option>
+                            </select>                            
                         </div>
                     </div>
                 </div>
             </header>
             <div class="card-body">
-                <div class="table-responsive">
+                <div class="table-responsive" id="replaceTop10">
                     <div class="table-responsive">
                         <table class="table align-middle table-nowrap mb-0">
                             <thead class="table-light">
                                 <tr>
-                                    <th scope="col" class="text-center">
-                                        <div class="form-check align-middle">
-                                            <input class="form-check-input" type="checkbox" id="transactionCheck01" />
-                                            <label class="form-check-label" for="transactionCheck01"></label>
-                                        </div>
-                                    </th>
-                                    <th class="align-middle" scope="col">Order ID</th>
-                                    <th class="align-middle" scope="col">Billing Name</th>
-                                    <th class="align-middle" scope="col">Date</th>
-                                    <th class="align-middle" scope="col">Total</th>
-                                    <th class="align-middle" scope="col">Payment Status</th>
-                                    <th class="align-middle" scope="col">Payment Method</th>
+                                    <th class="align-middle" scope="col">Product Image</th>
+                                    <th class="align-middle" scope="col">Product Name</th>
+                                    <th class="align-middle" scope="col">Total Orders</th>
+                                    <th class="align-middle" scope="col">Total Revenue</th>
+                                    <th class="align-middle" scope="col">Category</th>
                                     <th class="align-middle" scope="col">View Details</th>
                                 </tr>
                             </thead>
                             <tbody>
-                                <tr>
-                                    <td class="text-center">
-                                        <div class="form-check">
-                                            <input class="form-check-input" type="checkbox" id="transactionCheck02" />
-                                            <label class="form-check-label" for="transactionCheck02"></label>
-                                        </div>
-                                    </td>
-                                    <td><a href="#" class="fw-bold">#SK2540</a></td>
-                                    <td>Neal Matthews</td>
-                                    <td>07 Oct, 2021</td>
-                                    <td>$400</td>
-                                    <td>
-                                        <span class="badge badge-pill badge-soft-success">Paid</span>
-                                    </td>
-                                    <td><i class="material-icons md-payment font-xxl text-muted mr-5"></i> Mastercard</td>
-                                    <td>
-                                        <a href="#" class="btn btn-xs"> View details</a>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td class="text-center">
-                                        <div class="form-check">
-                                            <input class="form-check-input" type="checkbox" id="transactionCheck03" />
-                                            <label class="form-check-label" for="transactionCheck03"></label>
-                                        </div>
-                                    </td>
-                                    <td><a href="#" class="fw-bold">#SK2541</a></td>
-                                    <td>Jamal Burnett</td>
-                                    <td>07 Oct, 2021</td>
-                                    <td>$380</td>
-                                    <td>
-                                        <span class="badge badge-pill badge-soft-danger">Chargeback</span>
-                                    </td>
-                                    <td><i class="material-icons md-payment font-xxl text-muted mr-5"></i> Visa</td>
-                                    <td>
-                                        <a href="#" class="btn btn-xs"> View details</a>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td class="text-center">
-                                        <div class="form-check">
-                                            <input class="form-check-input" type="checkbox" id="transactionCheck04" />
-                                            <label class="form-check-label" for="transactionCheck04"></label>
-                                        </div>
-                                    </td>
-                                    <td><a href="#" class="fw-bold">#SK2542</a></td>
-                                    <td>Juan Mitchell</td>
-                                    <td>06 Oct, 2021</td>
-                                    <td>$384</td>
-                                    <td>
-                                        <span class="badge badge-pill badge-soft-success">Paid</span>
-                                    </td>
-                                    <td><i class="material-icons md-payment font-xxl text-muted mr-5"></i> Paypal</td>
-                                    <td>
-                                        <a href="#" class="btn btn-xs"> View details</a>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td class="text-center">
-                                        <div class="form-check">
-                                            <input class="form-check-input" type="checkbox" id="transactionCheck05" />
-                                            <label class="form-check-label" for="transactionCheck05"></label>
-                                        </div>
-                                    </td>
-                                    <td><a href="#" class="fw-bold">#SK2543</a></td>
-                                    <td>Barry Dick</td>
-                                    <td>05 Oct, 2021</td>
-                                    <td>$412</td>
-                                    <td>
-                                        <span class="badge badge-pill badge-soft-success">Paid</span>
-                                    </td>
-                                    <td><i class="material-icons md-payment font-xxl text-muted mr-5"></i> Mastercard</td>
-                                    <td>
-                                        <a href="#" class="btn btn-xs"> View details</a>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td class="text-center">
-                                        <div class="form-check">
-                                            <input class="form-check-input" type="checkbox" id="transactionCheck06" />
-                                            <label class="form-check-label" for="transactionCheck06"></label>
-                                        </div>
-                                    </td>
-                                    <td><a href="#" class="fw-bold">#SK2544</a></td>
-                                    <td>Ronald Taylor</td>
-                                    <td>04 Oct, 2021</td>
-                                    <td>$404</td>
-                                    <td>
-                                        <span class="badge badge-pill badge-soft-warning">Refund</span>
-                                    </td>
-                                    <td><i class="material-icons md-payment font-xxl text-muted mr-5"></i> Visa</td>
-                                    <td>
-                                        <a href="#" class="btn btn-xs"> View details</a>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td class="text-center">
-                                        <div class="form-check">
-                                            <input class="form-check-input" type="checkbox" id="transactionCheck07" />
-                                            <label class="form-check-label" for="transactionCheck07"></label>
-                                        </div>
-                                    </td>
-                                    <td><a href="#" class="fw-bold">#SK2545</a></td>
-                                    <td>Jacob Hunter</td>
-                                    <td>04 Oct, 2021</td>
-                                    <td>$392</td>
-                                    <td>
-                                        <span class="badge badge-pill badge-soft-success">Paid</span>
-                                    </td>
-                                    <td><i class="material-icons md-payment font-xxl text-muted mr-5"></i> Paypal</td>
-                                    <td>
-                                        <a href="#" class="btn btn-xs"> View details</a>
-                                    </td>
-                                </tr>
+                                <% productSorted.map((val, index) => { %>
+                                    <tr>
+                                        <td>
+                                            <img src="/assets/images/productImage/<%= val.productDetails[0].images[0] %> " alt="Product Image" style="width: 50px; height: 50px; border-radius: 50%;">
+                                        </td>
+                                        <td><%= val.productDetails[0].name %></td>
+                                        <td><%= val.productOrders %></td>
+                                        <td><%= val.totalRevenue %></td>
+                                        <td><%= val.productDetails[0].category %></td>                                   
+                                        <td>
+                                            <a href="/admin/edit-product?id=<%= val.productDetails[0]._id %>" class="btn btn-xs">View details</a>
+                                        </td>
+                                    </tr>
+                                <% }) %>
+                                
                             </tbody>
                         </table>
                     </div>
@@ -461,34 +212,173 @@
                 <!-- table-responsive end// -->
             </div>
         </div>
-        <div class="pagination-area mt-30 mb-50">
-            <nav aria-label="Page navigation example">
-                <ul class="pagination justify-content-start">
-                    <li class="page-item active"><a class="page-link" href="#">01</a></li>
-                    <li class="page-item"><a class="page-link" href="#">02</a></li>
-                    <li class="page-item"><a class="page-link" href="#">03</a></li>
-                    <li class="page-item"><a class="page-link dot" href="#">...</a></li>
-                    <li class="page-item"><a class="page-link" href="#">16</a></li>
-                    <li class="page-item">
-                        <a class="page-link" href="#"><i class="material-icons md-chevron_right"></i></a>
-                    </li>
-                </ul>
-            </nav>
-        </div>
     </section>
     <!-- content-main end// -->
-    <footer class="main-footer font-xs">
-        <div class="row pb-30 pt-15">
-            <div class="col-sm-6">
-                <script>
-                    document.write(new Date().getFullYear());
-                </script>
-                &copy; Nest - HTML Ecommerce Template .
-            </div>
-            <div class="col-sm-6">
-                <div class="text-sm-end">All rights reserved</div>
-            </div>
-        </div>
-    </footer>
-
 <%- include('../layouts/admin/footer.ejs') -%>
+<script>
+   const fetchData = (selection) => {
+    let replaceTop10 = document.getElementById('replaceTop10');
+    const data = { selection }; 
+    fetch('/admin/fetch-data', {
+        method: 'POST', 
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(data)
+    })
+    .then(response => response.json())
+    .then(data => {
+        console.log('Response:', data.filtered);
+        if (selection === 'category') {
+            replaceTop10.innerHTML = `
+    <div class="table-responsive">
+        <table class="table align-middle table-nowrap mb-0">
+            <thead class="table-light">
+                <tr>
+                    
+                    <th class="align-middle" scope="col">Category Name</th>
+                    <th class="align-middle" scope="col">Total Orders</th>
+               
+                </tr>
+            </thead>
+            <tbody>
+                ${data.filtered.map((val, index) => `
+                    <tr>
+                       
+                        <td>${val._id}</td>
+                        <td>${val.totalOrders}</td>                                
+                       
+                    </tr>
+                `).join('')}
+            </tbody>
+        </table>
+    </div>
+`;
+        } else {
+            replaceTop10.innerHTML = `
+    <div class="table-responsive">
+        <table class="table align-middle table-nowrap mb-0">
+            <thead class="table-light">
+                <tr>
+                    <th class="align-middle" scope="col">Product Image</th>
+                    <th class="align-middle" scope="col">Product Name</th>
+                    <th class="align-middle" scope="col">Total Orders</th>
+                    <th class="align-middle" scope="col">Total Revenue</th>
+                    <th class="align-middle" scope="col">Category</th>
+                    <th class="align-middle" scope="col">View Details</th>
+                </tr>
+            </thead>
+            <tbody>
+                ${data.filtered.map((val, index) => `
+                    <tr>
+                        <td>
+                            <img src="/assets/images/productImage/${val.productDetails[0].images[0]}" alt="Product Image" style="width: 50px; height: 50px; border-radius: 50%;">
+                        </td>
+                        <td>${val.productDetails[0].name}</td>
+                        <td>${val.productOrders}</td>
+                        <td>${val.totalRevenue}</td>
+                        <td>${val.productDetails[0].category}</td>                                   
+                        <td>
+                            <a href="/admin/edit-product?id=${val.productDetails[0]._id}" class="btn btn-xs">View details</a>
+                        </td>
+                    </tr>
+                `).join('')}
+            </tbody>
+        </table>
+    </div>
+`;
+        }
+       
+    })
+    .catch(error => {
+        console.error('Error:', error);
+    });
+};
+
+
+const filterWithMonthYear = (monthYear) => {
+    console.log(monthYear);
+    if (!monthYear) {
+        window.location.reload()
+    }
+    const data = { monthYear };
+
+    fetch('/admin/fetch-month-year-chart', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(data)
+    })
+    .then(response => {
+        return response.json();
+    })
+    .then(data => {
+        updateChart(data.dayBaseUser, data.dayBaseRevenue, data.daysArr);
+    })
+    .catch(error => {
+        console.error('Error fetching data:', error);
+    });
+}
+
+/// chart js
+var charttt; 
+document.addEventListener("DOMContentLoaded", function () {
+    
+    var myChartElement = document.getElementById('myChart');
+    var chartFromEJS = document.getElementById('chart');
+    var dataMonthlyRevenue = JSON.parse(chartFromEJS.getAttribute('data-montlyRevenue'));
+    var dataVisitedUsers = JSON.parse(chartFromEJS.getAttribute('data-visted-users'));
+
+    if (myChartElement) {
+        var ctx = myChartElement.getContext('2d');
+        charttt = new Chart(ctx, { 
+            type: 'line',
+            data: {
+                labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'],
+                datasets: [{
+                    label: 'Revenue',
+                    fill: false,
+                    borderColor: 'rgb(75, 192, 192)',
+                    tension: 0.1,
+                    data: dataMonthlyRevenue
+                },
+                {
+                    label: 'Visitors',
+                    fill: false,
+                    borderColor: 'rgb(75, 192, 192)',
+                    tension: 0.1,
+                    data: dataVisitedUsers
+                }]
+            },
+            options: {
+            plugins: {
+                legend: {
+                    labels: {
+                        usePointStyle: true,
+                    },
+                }
+            },
+            scales: {
+                y: {
+                    min: 0,
+                   
+                }
+            }
+        }
+     });
+    }
+});
+function updateChart (userVisitCountByDay, revenueByday, monthDay)  {
+    console.log(userVisitCountByDay, revenueByday, monthDay);
+    if (charttt) {
+        charttt.data.labels = monthDay;
+        charttt.data.datasets[0].data = revenueByday;
+        charttt.data.datasets[1].data = userVisitCountByDay;
+        charttt.update();
+    } else {
+        alert("Something went wrong");
+    }
+};
+
+</script>
