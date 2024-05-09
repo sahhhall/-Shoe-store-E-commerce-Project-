@@ -2,7 +2,11 @@ const Order = require("../models/orderSchema");
 const User = require("../models/userModel");
 const Category = require("../models/categoriesModel");
 const Product = require("../models/productSchema");
-
+const puppeteer = require("puppeteer");
+const path = require("path");
+const ejs = require("ejs");
+const fs = require("fs");
+const { setMaxListeners } = require("stream");
 const loadDashboard = async (req, res) => {
   try {
     let totalRevenue;
@@ -332,8 +336,107 @@ const filterYearlyMonthly = async (req, res) => {
   }
 };
 
+const salesReport = async (req, res) => {
+  try {
+    const { startingDate, endDate } = req.body;
+    const startDate = new Date(startingDate);
+    const toDate = new Date(endDate);
+
+    const pipeline = [
+      {
+        $match: {
+          $and: [
+            { createdAt: { $gte: startDate } },
+            { createdAt: { $lte: toDate } },
+          ],
+        },
+      },
+      {
+        $unwind: "$products",
+      },
+      {
+        $match: {
+          "products.status": { $in: ["delivered", "placed", "shipping"] },
+        },
+      },
+      {
+        $group: {
+          _id: "$products.productId",
+          QuantitySold: { $sum: "$products.quantity" },
+          totalRevenue: {
+            $sum: {
+              $multiply: ["$products.quantity", "$products.productPrice"],
+            },
+          },
+          unitPrice: { $first: "$products.productPrice" },
+        },
+      },
+      {
+        $lookup: {
+          from: "products",
+          localField: "_id",
+          foreignField: "_id",
+          as: "productInfo",
+        },
+      },
+      {
+        $addFields: {
+          productName: { $arrayElemAt: ["$productInfo.name", 0] },
+        },
+      },
+      {
+        $project: {
+          _id: 0,
+          productName: 1,
+          QuantitySold: 1,
+          totalRevenue: 1,
+          unitPrice: 1,
+        },
+      },
+    ];
+
+    const orderCount = await Order.countDocuments({
+      createdAt: { $gte: startDate, $lte: toDate },
+    });
+
+    const salesReportData = await Order.aggregate(pipeline);
+    const revenueAllOverProduct = salesReportData.reduce((acc, pro) => {
+      acc = acc + pro.totalRevenue;
+      return acc;
+    }, 0);
+
+    data = {
+      salesDetails: salesReportData,
+      orderCount,
+      revenueAllOverProduct,
+      startDate,
+      toDate,
+    };
+    const filepathName = path.resolve(
+      __dirname,
+      "../views/users/salesReport.ejs"
+    );
+    const html = fs.readFileSync(filepathName).toString();
+    const ejsData = ejs.render(html, data);
+    const browser = await puppeteer.launch({ headless: "new" });
+    const page = await browser.newPage();
+    await page.setContent(ejsData, { waitUntil: "networkidle0" });
+    const pdfBytes = await page.pdf({ format: "letter" });
+    await browser.close();
+    res.setHeader("Content-Type", "application/pdf");
+    res.setHeader(
+      "Content-Disposition",
+      "attachment; filename= order invoice.pdf"
+    );
+    res.send(pdfBytes);
+  } catch (error) {
+    console.log(error);
+  }
+};
+
 module.exports = {
   loadDashboard,
   fetchTopSelledCateogry,
   filterYearlyMonthly,
+  salesReport,
 };

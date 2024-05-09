@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sales Report</title>
+   <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f7f7f7;
+            color: #333;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #fff;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            border-radius: 8px;
+        }
+
+        header {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin-bottom: 30px;
+            border-bottom: 1px solid #ddd;
+            
+        }
+
+        .logo {
+            width: 80px;
+           
+        }
+
+
+        .section {
+            margin-bottom: 40px;
+            padding-bottom: 20px;
+            border-bottom: 1px solid #ddd;
+        }
+
+        h1, h2, h3 {
+            color: #000000;
+            margin-top: 0;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+
+        th, td {
+            border: 1px solid #ddd;
+            padding: 10px;
+            text-align: left;
+        }
+
+        th {
+            background-color: #f2f2f2;
+            font-weight: bold;
+        }
+
+        ul {
+            margin: 0;
+            padding-left: 20px;
+        }
+
+        footer {
+            margin-top: 40px;
+            text-align: center;
+            color: #888;
+            font-size: 14px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+          <div class="header-text" style="margin-top: 0;">
+                <h1>Sales Report</h1> 
+            </div>
+        </header>
+        <div id="time-period" class="section">
+            <div class="time-period-content">
+                <div class="time-period-item">
+                    <label for="start-date">Start Date:</label>
+                    <p><%= startDate.toLocaleDateString('en-GB', { day: '2-digit', month: '2-digit', year: 'numeric' }) %></p>
+                </div>
+                <div class="time-period-item">
+                    <label for="end-date">End Date:</label>
+                    <p><%= toDate.toLocaleDateString('en-GB', { day: '2-digit', month: '2-digit', year: 'numeric' }) %></p>
+                </div>
+            </div>
+        </div>
+        
+
+        <section id="summary" class="section">
+            <h2>Summary</h2>
+            <div class="summary-content">
+                <div class="summary-item">
+                    <h3>Total Orders</h3>
+                    <p><%= orderCount %></p>
+                </div>
+                <div class="summary-item">
+                    <h3>Total Revenue</h3>
+                    <p><%= revenueAllOverProduct %></p>
+                </div>
+            </div>
+        </section>
+
+        <section id="detailed-data" class="section">
+            <h2>Detailed Sales Data</h2>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Product Name</th>
+                        <th>Quantity Sold</th>
+                        <th>Unit Price</th>
+                        <th>Total Revenue</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <!-- Populate with sales data -->
+                    <% if (salesDetails.length > 0) {
+                        salesDetails.forEach((data, index) => { %>
+                    <tr>
+                        <td><%= data.productName %></td>
+                        <td><%= data.QuantitySold %></td>
+                        <td>₹<%= data.unitPrice %></td>
+                        <td>₹<%= data.totalRevenue %></td>
+                    </tr>
+                    <% }) } %>
+                </tbody>
+            </table>
+        </section>
+
+        <footer>
+            <p>For any inquiries, contact: abc@example.com</p>
+        </footer>
+    </div>
+</body>
+</html>

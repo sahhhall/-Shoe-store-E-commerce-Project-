@@ -1,5 +1,39 @@
 <%- include('../layouts/admin/header.ejs') -%>
+<style>
+    /* Styles for modal and modal-content */
+/* The Modal (background) */
+.modal {
+  display: none;
+  position: fixed;
+  z-index: 1;
+  left: 50%;
+  top: 70%;
+  transform: translate(-50%, -50%);
+  width: 40%; /* Adjust the width as needed */
+  border-radius: 8px;
+}
+.modal-content {
+  background-color: #fefefe;
+  margin: 15% auto;
+  text-align: center;
+}
 
+.modal-footer {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  margin-top: 10px;
+}
+.modal-head {
+    margin-top: 1%;
+}
+.modal-head p {
+   font-weight: bolder;
+   font-size: 1rem;
+}
+
+
+</style>
 <div class="screen-overlay"></div>
 <aside class="navbar-aside" id="offcanvas_aside">
     <div class="aside-top">
@@ -94,7 +128,7 @@
                 <p>Whole data about your business here</p>
             </div>
             <div>
-                <a href="#" class="btn btn-primary"><i class="text-muted material-icons md-post_add"></i>Create report</a>
+                <button id="openModalBtn" class="btn btn-primary" onclick="openSalesModal()" ><i class="text-muted material-icons md-post_add"></i>Create report</button>
             </div>
         </div>
         <div class="row">
@@ -210,8 +244,33 @@
                     </div>
                 </div>
                 <!-- table-responsive end// -->
+           
             </div>
         </div>
+          <div id="modalForSales" class="modal">
+            <div class="modal-content">
+                <div class="modal-head">
+                    <p>select the date</p>
+                </div>
+                <hr>
+                <div class="modal-body">
+                  <div>
+                    <p>start date</p>
+                    <input type="date"  id="startingDate">
+                    <p id="startingDateErr" style="display: none; color: red;" >  </p>
+                  </div>
+                  <div>
+                    <p>start date</p>
+                    <input type="date"  id="endDate">
+                    <p id="endDateErr" style="display: none; color: red;" >  </p>
+                  </div>
+                </div>
+                <div class="modal-footer">
+                  <a class="btn btn-danger" onclick="closeSalesModal()">Cancel</a>
+                  <a class="btn btn-primary " id="dowenload-btn" onclick="dowenloadSalesReport()">Download</a>
+                </div>
+              </div>
+          </div>
     </section>
     <!-- content-main end// -->
 <%- include('../layouts/admin/footer.ejs') -%>
@@ -380,5 +439,89 @@ function updateChart (userVisitCountByDay, revenueByday, monthDay)  {
         alert("Something went wrong");
     }
 };
+
+
+
+// sales reportt area modal and download
+function openSalesModal() {
+  const modal = document.getElementById("modalForSales");
+  modal.style.display = "block";
+}
+
+
+function closeSalesModal() {
+  var modal = document.getElementById("modalForSales");
+  modal.style.display = "none";
+}
+
+function dowenloadSalesReport () {
+    const startingDate = document.getElementById('startingDate').value;
+    const endDate = document.getElementById('endDate').value;
+    const endDateErr = document.getElementById('endDateErr');
+    const startingDateErr = document.getElementById('startingDateErr');
+    const downloadButton = document.getElementById('dowenload-btn');
+    let validateErr = false;
+    if ( !startingDate ) {
+        startingDateErr.style.display = 'block';
+        startingDateErr.innerText = "you have to select startinf date";
+        setTimeout(()=> {
+            startingDateErr.style.display = 'none';
+            startingDateErr.innerText = "";
+        },5000)  
+        validateErr = true
+    }
+    if ( !endDate ) {
+        endDateErr.style.display = 'block';
+            endDateErr.innerText = "you have to select end date";
+        setTimeout(()=> {
+            endDateErr.style.display = 'none';
+            endDateErr.innerText = "";
+        },5000)  
+        validateErr = true
+    }
+    if ( validateErr ) {
+        return
+    }
+    if ( startingDate > endDate ) {
+        endDateErr.style.display = 'block';
+            endDateErr.innerText = "please select properly";
+        setTimeout(()=> {
+            endDateErr.style.display = 'none';
+            endDateErr.innerText = "";
+        },5000)  
+        validateErr = true
+    }
+    if ( validateErr ) {
+        return
+    }
+
+    const data = { startingDate, endDate }
+    downloadButton.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Downloading...';
+    fetch('/admin/fetch-sales-report',{
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(data)
+    }).then(response => response.blob())
+      .then( blob => {
+        const linkElem = document.createElement('a');
+        linkElem.href = window.URL.createObjectURL(blob);
+        linkElem.download = `salesReport.pdf`;
+        document.body.appendChild(linkElem);
+        linkElem.click();
+
+        // after clicking i have to removethis because after that dont need of this element a 
+        document.body.removeChild(linkElem);
+
+        document.getElementById('startingDate').value = '';
+        document.getElementById('endDate').value = '';
+        downloadButton.innerHTML = 'Download';
+        closeSalesModal()
+    })
+    .catch(error => {
+        console.error('Error fetching data:', error);
+    });
+}
 
 </script>

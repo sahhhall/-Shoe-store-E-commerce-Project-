@@ -1,11 +1,51 @@
 <%- include('../layouts/user/header.ejs') -%>
 
+ <style>
+    .chat-button {
+  position: fixed;
+  bottom: 20px; 
+  right: 20px; 
+  z-index: 0;
+  background-color: #ffffff; 
+  
+  border-radius: 50%;
+  width: 50px; 
+  height: 50px; 
+  cursor: pointer;
+  box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.1); 
+  border: none;
+  animation: shake 0.9s infinite;
+}
+.chat-button .chat-icon {
+  max-width: 100%; 
+  max-height: 100%; 
+  display: block;
+  margin: auto; 
+  cursor: pointer;
  
+}
+@keyframes shake {
+  0% { transform: translateX(0); }
+  20% { transform: translateX(-5px); }
+  40% { transform: translateX(5px); }
+  60% { transform: translateX(-5px); }
+  80% { transform: translateX(5px); }
+  100% { transform: translateX(0); }
+}
+
+
+
+
+
+ </style>
 
     <!-- Main Section-->
     <section class="mt-0 overflow-hidden ">
         <!-- Page Content Goes Here -->
-
+        <button id="chatButton" class="chat-button ">
+            <img class="chat-icon  " src="/assets/icons/customer_icon.png" alt="">
+          </button>
+          
         <!-- / Top banner -->
         <section class="vh-75 vh-lg-60 container-fluid rounded overflow-hidden" data-aos="fade-in">
             <!-- Swiper Info -->

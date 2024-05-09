@@ -78,7 +78,7 @@
       </div>
       <div class="invoice-details">
         <h2>Order Details</h2>
-        <p><strong>Order ID:</strong> <%= order._id %></p>
+        <p><strong>Order ID:</strong> <%= order.orderId %></p>
         <p><strong>Order Date:</strong>  <% 
           var orderDate = new Date(order.date);
           var formattedDate = orderDate.toLocaleString('default', { month: 'long' }) + ' ' + 
@@ -125,7 +125,7 @@
             <% }) } %>
             <tr>
               <td colspan="6" class="text-right"><strong>Discount:</strong></td>
-              <td class="text-danger">₹ <% if(order.couponApplied) { %><%= order.couponApplied.discountAmount %><% } else { %>00<% } %></td>
+              <td class="text-danger">₹ <% if(order.couponApplied) { %><%= order.couponApplied.discountAmount %><% } else { %>0.00<% } %></td>
             </tr>
             <tr>
               <td colspan="6" class="text-right"><strong>Total:</strong></td>

@@ -156,5 +156,10 @@ adminRoute.post(
   "/fetch-month-year-chart",
   dashboardController.filterYearlyMonthly
 );
+adminRoute.post(
+  "/fetch-sales-report",
+  dashboardController.salesReport
+);
+
 
 module.exports = adminRoute;
