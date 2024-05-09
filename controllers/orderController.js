@@ -50,7 +50,13 @@ const placeOrder = async (req, res) => {
       }
     });
 
-    if (quantityLessProducts.length > 0) {
+    const isListed = cartProducts.filter((product)=> {
+         if (product.productId.is_Listed !== true ) {
+          return
+         }
+    })
+
+    if (quantityLessProducts.length > 0 || isListed ) {
       // Check if the array is not empty
       return res.json({ quantity: true });
     }
