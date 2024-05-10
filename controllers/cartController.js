@@ -233,7 +233,6 @@ const loadCheckOut = async (req, res) => {
       const isUserNotUsed = !coupon.usedUsers.includes(userId); // Check if userId is not in usedUsers
       const isExpired = coupon.expiryDate && coupon.expiryDate < new Date(); // Check if coupon is expired
       const userLimitReach = coupon.usersLimit > coupon.usedUsers.length; // check limit
-      console.log(userLimitReach, "mohdmishal18@gmail.com", coupon.usersLimit , coupon.usedUsers.length)
       return isUserNotUsed && !isExpired && userLimitReach; // Return coupons that meet both conditions
     });
 
