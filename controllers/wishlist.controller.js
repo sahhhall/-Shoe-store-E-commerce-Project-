@@ -3,9 +3,7 @@ const Wishlist = require("../models/wishlist.model");
 const loadWishlistPage = async (req, res) => {
   try {
     const userId = req.session.user._id;
-    console.log(userId)
     const wishlist = await Wishlist.findOne({ userId: userId }).populate("products").exec();
-    console.log("its whishlisst", wishlist)
     const wishlistCount = wishlist?.products?.length;
 
     res.render("wishlistProfile", {

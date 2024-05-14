@@ -10,7 +10,6 @@ const Product = require('../models/productSchema')
 const loadCategory = async(req,res)=>{
     try{
         const categories = await Category.find({});
-        console.log(categories)
        res.render('categories',{categories:categories});
     }catch(err){
         console.log(err.message)
@@ -31,9 +30,7 @@ const loadaAddCategory = async(req,res)=>{
 
 const insertCategory = async(req,res)=>{
     try{
-            console.log(req.body);
-                const {description,name} = req.body;
-
+                const { description,name } = req.body;
                 const existingCategory = await Category.findOne({ name });
                 if(existingCategory){
                         req.flash('error','already exists a category with this name')
@@ -61,7 +58,6 @@ const insertCategory = async(req,res)=>{
 const deleteCategory = async(req,res)=>{
     try{
             const id = req.body.user;
-            console.log("amheresdr",id);
             await Category.deleteOne({_id:id});
             res.json({list:true});
     }catch(err){
@@ -91,8 +87,6 @@ const editCategorypageLoad = async(req,res)=>{
             const id=req.query.id;
             const category=await Category.findById({_id:id});
             
-            console.log("hifrom edit load",category.name);
-            console.log("hifrom edit load",category.description);
             if(category){
                 res.render('editCategory',{categoryedit :category});
             }
@@ -110,16 +104,10 @@ const editCategory = async (req, res) => {
         
     const { _id,name,description } = req.body.id;
     
-      console.log("hifrom edit page")
       const newName = req.body.editname;
       const newDescription = req.body.editdisc;
-      console.log("hifrom edit page",newName,newDescription)
       const existingCategory = await Category.findOne({ name: req.body.editname });
-      console.log(existingCategory)
       if(existingCategory){
-      
-        console.log("am here flash mesage")
-       
         req.flash('error','error! alredy exixst a category with this name')
         res.redirect('/admin/categories');
       }else{

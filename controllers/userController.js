@@ -9,7 +9,6 @@ const dotenv = require('dotenv');
 const Product = require('../models/productSchema');
 const Order = require('../models/orderSchema');
 const Banner = require("../models/bannerModel");
-const {profile, log} = require('console');
 dotenv.config();
 
 
@@ -31,7 +30,6 @@ const loadHome = async (req, res) => {
         const categories = await Category.find({is_listed: 1});
         const products = await Product.find({is_Listed: 1})
         const banners = await Banner.find({status:true});
-        console.log(banners);
         res.render('homepage', {
             category: categories,
             product: products,
@@ -69,7 +67,6 @@ const loadSignup = async (req, res) => {
 
 const insertUser = async (req, res) => {
     try {
-        console.log(req.body);
         const email = req.body.email;
         const namee = req.body.name;
         const finduser = await User.findOne({email: email});
@@ -97,13 +94,6 @@ const insertUser = async (req, res) => {
             await user.save()
 
             sendOTPverificationEmail(user, res);
-
-            // if (userData) {
-            //     req.session.user = userData.name;
-            //     res.render("signup");
-            // } else {
-            //     res.render("signup");
-            // }}
         }
     } catch (error) {
         console.log(error.message)
@@ -121,8 +111,8 @@ const sendOTPverificationEmail = async ({
             port: 465,
             secure: true,
             auth: {
-                user: 'sahalvavoor313@gmail.com',
-                pass: 'gudy lrvd rmpd vpkp'
+                user: process.env.email_admin,
+                pass: process.env.smtp_password
             }
         });
 
@@ -132,7 +122,7 @@ const sendOTPverificationEmail = async ({
 
         // mail options
         const mailOptions = {
-            from: 'sahalvavoor313@gmail.com',
+            from: process.env.email_admin,
             to: email,
             subject: "Verify Your email",
             html: `Your OTP is: ${otp}`
@@ -143,7 +133,6 @@ const sendOTPverificationEmail = async ({
         const hashedOTP = await bcrypt.hash(otp, saltRounds);
 
         const newOtpVerification = await new userOtpVerification({email: email, otp: hashedOTP});
-        console.log(newOtpVerification)
         // save otp record
         await newOtpVerification.save();
         await transporter.sendMail(mailOptions);
@@ -158,10 +147,6 @@ const sendOTPverificationEmail = async ({
 const loadOtp = async (req, res) => {
     try {
         const email = req.query.email;
-
-
-        console.log(email)
-
         res.render('otpVerification', {email: email});
 
     } catch (error) {
@@ -173,15 +158,11 @@ const loadOtp = async (req, res) => {
 const verifyOtp = async (req, res) => {
     try {
         const email = req.body.email;
-
-        console.log('email', req.body.email);
         const otp = req.body.digit1 + req.body.digit2 + req.body.digit3 + req.body.digit4;
 
         const userVerification = await userOtpVerification.findOne({email: email});
-        console.log('userVerification:', userVerification);
 
         if (! userVerification) {
-            console.log("otp expired")
             req.flash('error', 'otp expired');
             res.redirect('/signin')
 
@@ -189,9 +170,7 @@ const verifyOtp = async (req, res) => {
         }
 
         const {otp: hashedOtp} = userVerification;
-
         const validOtp = await bcrypt.compare(otp, hashedOtp);
-        console.log(validOtp);
 
 
         if (validOtp) {
@@ -218,13 +197,8 @@ const verifyOtp = async (req, res) => {
                         name: user.name
 
                     };
-                    console.log(user.name);
-
                     res.redirect('/');
                 } else {
-                    console.log("user blocked from this site");
-
-
                     req.flash('error', 'you are blocked from this contact with admin');
                     res.redirect('/signin')
 
@@ -232,8 +206,6 @@ const verifyOtp = async (req, res) => {
 
             }
         } else {
-            console.log("whyyy")
-
             req.flash('error', 'otp is incorrect you have to verifey again login to get otp');
             res.redirect('/signin')
 
@@ -251,16 +223,11 @@ const resendOtp = async (req, res) => {
 
         const userEmail = req.query.email;
         await userOtpVerification.deleteMany({email: userEmail});
-        console.log(userOtpVerification)
-        console.log("User Email:", userEmail);
         if (userEmail) {
             sendOTPverificationEmail({
                 email: userEmail
             }, res);
         } else {
-
-            console.log("User email not provided in the query");
-
         }
 
     } catch (error) {
@@ -276,10 +243,7 @@ const verifyLogin = async (req, res) => {
     try {
 
         const {email, password} = req.body
-        console.log(email)
         const user = await User.findOne({email: email})
-        console.log('user:', user);
-
         if (user) {
             const passwordMatch = await bcrypt.compare(password, user.password)
             if (passwordMatch) {
@@ -291,19 +255,14 @@ const verifyLogin = async (req, res) => {
                             name: user.name,
                             phone: user.mobile
                         };
-                        console.log(user.name);
-                        console.log(user.phone);
                         res.redirect('/');
                     } else {
-                        console.log("user blocked from this site");
-
                         req.flash('error', 'you are bloocked from this contact with admin');
                         res.redirect('/signin')
 
                     }
 
                 } else {
-                    console.log("sd")
                     sendOTPverificationEmail(user, res);
 
                 }
@@ -329,7 +288,6 @@ const verifyLogin = async (req, res) => {
 const userLogout = async (req, res) => {
     try {
         req.session.user = false
-
         res.redirect('/')
 
     } catch (err) {
@@ -352,12 +310,8 @@ const sendResetPass = async (email, res) => {
     try {
         email = email
         const user = await User.findOne({email: email});
-        console.log("this what usrsend reset pass", user);
         if (! user) 
-            return res.status(400).send("user with given email doesn't exist");
-        
-
-
+        return res.status(400).send("user with given email doesn't exist");
         let token = await Token.findOne({userId: user._id});
         if (! token) {
             token = await new Token({userId: user._id, token: crypto.randomBytes(32).toString("hex")}).save();
@@ -369,8 +323,8 @@ const sendResetPass = async (email, res) => {
             port: 465,
             secure: true,
             auth: {
-                user: 'sahalvavoor313@gmail.com',
-                pass: 'gudy lrvd rmpd vpkp'
+                user: process.env.email_admin,
+                pass: process.env.smtp_password
             }
         });
 
@@ -381,7 +335,7 @@ const sendResetPass = async (email, res) => {
         }`;
 
         const mailOptions = {
-            from: 'sahalvavoor313@gmail.com',
+            from: process.env.email_admin,
             to: email,
             subject: "Verify Your email",
             html: `Your link here to reset pass ${resetpage}`
@@ -398,7 +352,6 @@ const sendResetPass = async (email, res) => {
 const sentResetpass = async (req, res) => {
     try {
         const email = req.body.mail;
-        // console.log("mail",mail);
         await sendResetPass(email, res);
         req.flash('success', 'we sented a reset password link');
         res.redirect('/signin')
@@ -414,7 +367,6 @@ const resetPage = async (req, res) => {
     try {
         const userId = req.params.userId;
         const token = req.params.token;
-        console.log("this what i want", userId, token);
         const categories = await Category.find({is_listed: 1});
         res.render('resetPassword', {
             category: categories,
@@ -428,13 +380,9 @@ const resetPage = async (req, res) => {
 const resetPassword = async (req, res) => {
     try {
         const user = req.body.userId;
-        console.log("it is my user", user);
         const userId = await User.findById(req.body.userId);
-        const {email} = userId;
-
+        const { email } = userId;
         const token = req.body.token;
-
-        console.log(userId);
 
         if (! userId) {
             return res.status(400).send("Invalid link or expired");
@@ -444,15 +392,11 @@ const resetPassword = async (req, res) => {
             token: token
         });
 
-        console.log("Working a bit", token);
-
         if (! tokenDoc) {
             return res.status(400).send("Invalid link or expired");
         }
         let password = req.body.confirmpassword;
         const securePass = await securePassword(password);
-        console.log("this is the last steo if secs", securePass);
-
         await User.updateOne({
             email: email
         }, {
@@ -460,8 +404,6 @@ const resetPassword = async (req, res) => {
                 password: securePass
             }
         });
-
-
         req.flash('success', 'successfully setted new passwird');
         res.redirect('/signin')
 
@@ -495,7 +437,6 @@ const loadProfile = async (req, res) => {
     try {
         const userid = req.session.user._id;
         const user = await User.findById(userid)
-        // console.log("user",user)
         res.render('profilePage', {user: user})
 
     } catch (err) {
@@ -505,10 +446,8 @@ const loadProfile = async (req, res) => {
 const loadAddressManage = async (req, res) => {
     try {
         const userid = req.session.user._id;
-
         const user = await User.findById(userid);
         const addresses = user.addresses;
-        //    console.log("here i getted your  address",addresses)
         res.render('manageAddress', {addresses: addresses});
     } catch (err) {
         console.log(err.message)
@@ -525,7 +464,7 @@ const editProfile = async (req, res) => {
     
         if (findUsernameExist.length > 0 && !sameUser ) {
             res.json({edited: false});
-        } else { // console.log("Here I find a username that exists:", findUsernameExist);
+        } else { 
 
             const user = await User.findOneAndUpdate({
                 email: email
@@ -536,7 +475,6 @@ const editProfile = async (req, res) => {
                 }
             }, {new: true});
 
-            // console.log("Updated User:", user);
             res.json({edited: true, user: user});
         }
     } catch (err) {
@@ -573,7 +511,6 @@ const resetPasswithOld = async (req, res) => {
                         password: securePass
                     }
                 })
-                // console.log("amhere");
                 res.json({reseted: true});
 
             }
@@ -612,10 +549,6 @@ const addAddress = async (req, res) => {
                 }
             }
         });
-
-        // console.log("hihi am hte you usr ",user);
-        //     console.log("am here how can i help you")
-        //     console.log("here your all data",fullName,addressLine,city,state);
         res.json({added: true})
     } catch (err) {
         console.log(err.message)
@@ -651,8 +584,6 @@ const editAddress = async (req, res) => {
             }
         }, {new: true} // Return the updated document
         );
-
-        console.log(updatedUser, "here is your updated user");
         res.json({edited: true})
 
     } catch (err) {
@@ -662,11 +593,8 @@ const editAddress = async (req, res) => {
 
 const deleteAddress = async (req, res) => {
     try {
-        console.log("hihi")
         const userId = req.session.user._id;
         const {Addid} = req.body;
-        console.log(Addid, "here we aere")
-
         await User.updateOne({
             _id: userId
         }, {
@@ -728,7 +656,6 @@ module.exports = {
     contactPage,
     loadProfile,
     loadAddressManage,
-    // loadOrder,
     editProfile,
     resetPasswithOld,
     addAddress,

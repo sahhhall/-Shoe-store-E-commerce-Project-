@@ -75,15 +75,12 @@ const addCoupon = async (req, res) => {
 const deactivateCoupon = async (req, res) => {
   try {
     const { couponId } = req.body;
-    console.log("am herererere");
-
     const couponData = await Coupon.findById(couponId);
     await Coupon.findByIdAndUpdate(couponId, {
       $set: {
         status: !couponData.status,
       },
     });
-    console.log(couponData);
     res.json({ block: true, status: couponData.status });
   } catch (err) {
     console.log(err.message);
@@ -110,9 +107,6 @@ const editCoupon = async (req, res) => {
       req.body;
     const existingName = await Coupon.findOne({ couponName: couponName });
     const sameCoupon = existingName._id.toString() === id;
-    console.log("sameCoupon", existingName._id, id);
-    console.log("here", existingName);
-    console.log("hi am from server");
     if (existingName && sameCoupon === false) {
       req.flash("conflicts", "Coupon name already exists");
       return res.redirect(`/admin/edit-coupon?id=${id}`);

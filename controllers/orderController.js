@@ -57,12 +57,9 @@ const placeOrder = async (req, res) => {
       return res.json({ quantity: true });
     }
     const addressUser = await User.findById(userId);
-    console.log(selectedAddress);
     const addressUserSelected = addressUser.addresses.find(
       (address) => address._id.toString() === selectedAddress
     );
-    console.log("user selected", addressUserSelected);
-    console.log("user selceted", addressUserSelected);
 
     const total = subTotalValue;
     const userData = await User.findOne({ _id: userId });
@@ -219,7 +216,6 @@ const paymentVerfication = async (req, res) => {
     const cartData = await Cart.findOne({ userid: req.session.user._id });
     const products = cartData.products;
     const details = req.body;
-    console.log("hey am here", details.order);
     const hmac = crypto.createHmac("sha256", process.env.RazorKey);
     hmac.update(
       details.payment.razorpay_order_id +
@@ -247,7 +243,6 @@ const paymentVerfication = async (req, res) => {
           }
         );
       }
-      console.log("how", details.order.receipt);
       await Order.findByIdAndUpdate(
         {
           _id: details.order.receipt,
@@ -274,7 +269,6 @@ const paymentVerfication = async (req, res) => {
       const orderid = details.order.receipt;
       const couponCode = details.couponCode; // Assuming details is defined and contains couponCode
       if (couponCode) {
-        console.log("here wqeerewrwerewrwer", couponCode);
         const appliedCoupon = await Coupon.findOne({
           couponCode: { $regex: new RegExp(couponCode, "i") },
         });
@@ -347,29 +341,6 @@ const loadOrder = async (req, res) => {
     if (next > totalPages) {
       next = totalPages;
     }
-    // Extract product details from orders
-    // const orderData = orders.map((order) => ({
-    //   _id: order._id,
-    //   user_name: order.user_name,
-    //   date: new Date(order.date).toLocaleDateString("en-US", {
-    //     year: "numeric",
-    //     month: "long",
-    //     day: "numeric",
-    //     hour: "numeric",
-    //     minute: "numeric",
-
-    //     hour12: true,
-    //   }),
-    //   total_amount: order.total_amount,
-    //   payment: order.payment,
-    //   status: order.status,
-    //   statusLevel: order.statusLevel,
-    //   expected_delivery: order.expected_delivery,
-    //   products: order.products.map((product) => ({
-    //     productId: product.productId,
-    //     proquantity: product.quantity,
-    //   })),
-    // }));
 
     res.render("ordersUserPage", {
       orderData: orders,
@@ -428,7 +399,6 @@ const userOderDetails = async (req, res) => {
     const formattedDate =
       day + ", " + month + " " + currentDate.getDate() + ", " + year;
 
-    console.log(orderedProduct);
     res.render("orderFullDetails", {
       orders: orderedProduct,
       formattedDate: formattedDate,
@@ -554,7 +524,6 @@ const cancelOrder = async (req, res) => {
     const orderData = await Order.findOne({ _id: orderId });
     const products = orderData.products;
     const userId = req.session.user._id;
-    // console.log("am hereee guys")
     await Order.updateOne(
       {
         _id: orderId,
@@ -621,7 +590,6 @@ const returnReason = async (req, res) => {
         },
       }
     );
-    console.log(o);
 
     res.json({ reason: true });
   } catch (err) {
@@ -634,9 +602,7 @@ const returnReason = async (req, res) => {
 
 const returnConf = async (req, res) => {
   try {
-    console.log("I am here for confirmation");
     const { productId, btndata, orderId } = req.body;
-    console.log(productId, orderId);
     const orderDet = await Order.findOne({
       _id: orderId,
       "products._id": productId,
@@ -669,7 +635,6 @@ const returnConf = async (req, res) => {
       );
 
       let count = specificProduct.quantity;
-      console.log(count);
 
       const updated = await Product.updateOne(
         {
@@ -703,16 +668,6 @@ const returnConf = async (req, res) => {
         }
       );
 
-      // await Order.updateOne(
-      //   {
-      //     _id: orderId,
-      //   },
-      //   {
-      //     $pull: {
-      //       products: { _id: productId },
-      //     },
-      //   }
-      // );
     } else if (btndata == "reject") {
       await Order.updateOne(
         {
@@ -742,9 +697,6 @@ const orderDetailedview = async (req, res) => {
       "products.productId"
     );
     const userId = ordersData.userId;
-    // Extract the delivery address ObjectId
-    // const addressId = ordersData.delivery_address;
-
     // here am doing get first documetn in array of address
 
     const userData = await User.findById(userId);
@@ -761,15 +713,12 @@ const orderDetailedview = async (req, res) => {
 const retryPayment = async (req, res) => {
   try {
     const { orderId, totalAmount } = req.body;
-    console.log("both of two ", orderId, totalAmount);
     var options = {
       amount: totalAmount * 100,
       currency: "INR",
       receipt: "" + orderId, // /we want here objectid t o strung
     };
-    console.log(options.amount);
     instance.orders.create(options, function (err, order) {
-      console.log("here i syourt oerdaer", order);
       res.json({ payment: true, order });
     });
   } catch (err) {

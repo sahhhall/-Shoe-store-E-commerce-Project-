@@ -212,7 +212,6 @@ const editProduct = async (req, res) => {
       await sharp(req.files[i].path).resize(500, 500).toFile(outputPath);
       arrimages.push(req.files[i].filename);
     }
-    console.log("hiii", arrimages);
     if (arrimages) {
       const image1 = arrimages[0] || existingData[0].images[0];
       const image2 = arrimages[1] || existingData[0].images[1];
@@ -264,27 +263,6 @@ const searchProduct = async (req, res) => {
   }
 };
 
-// const searchProduct = async (req, res) => {
-//     try {
-//         const name = req.query.q;
-//         const regex = new RegExp(`^${name}`, 'i');
-
-//         const categories = await Category.find({ is_listed: true });
-//         const listedCategoryNames = categories.map((category) => category.name);
-
-//         const products = await Product.find({ name: { $regex: regex }, is_Listed: true });
-
-//         res.render("shop", {
-//             category: categories,
-//             name: req.session.name,
-//             products: products,
-//             totalPages: 0,
-//         });
-//     } catch (error) {
-//         console.log(error.message);
-//         res.status(500).json({ error: 'Internal server error' });
-//     }
-// };
 
 // //////////////////////////////////shop ui//////////////////
 const loadShop = async (req, res) => {
@@ -388,14 +366,11 @@ const productView = async (req, res) => {
       const existInWishlist = await Wishlist.findOne({
         userId: req.session.user._id,
       });
-      console.log(existInWishlist, "f");
       if (existInWishlist) {
-        console.log(existInWishlist, "d", queryProduct);
         const productExistInWishlist = await Wishlist.findOne({
           userId: userId,
           products: { $in: [queryProduct] },
         });
-        console.log("productExistInWishlist", productExistInWishlist);
         if (productExistInWishlist) {
           isWishlist = true;
         }
@@ -435,6 +410,5 @@ module.exports = {
   editProduct,
   loadShop,
   searchProduct,
-  //    productDetails,
   productView,
 };

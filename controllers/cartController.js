@@ -36,7 +36,6 @@ const loadCart = async (req, res) => {
 // =============================================PRODUCT ADDING TO CART==================================================//
 const addtoCart = async (req, res) => {
   try {
-    // console.log(productData+"quantuty is"+productquantity);
     if (!req.session.user || !req.session.user._id) {
       return res.json({
         login: true,
@@ -44,9 +43,7 @@ const addtoCart = async (req, res) => {
       });
     } else {
       const userId = req.session.user._id;
-      // const userData = await User.findOne({_id: userId});
       const { productId, size } = req.body;
-      console.log("size is", size);
       const productData = await Product.findOne({ _id: productId });
       const cart = await Cart.findOne({ userid: userId });
       let existingInCart = false;
@@ -70,22 +67,6 @@ const addtoCart = async (req, res) => {
         });
 
         if (existProduct && sizeExist) {
-          // await Cart.findOneAndUpdate(
-          //   {
-          //     userid: userId,
-          //     "products.productId": productId,
-          //   },
-          //   {
-          //     $inc: {
-          //       "products.$.quantity": productquantity,
-          //       "products.$.totalPrice":
-          //         productquantity * existProduct.productPrice,
-          //     },
-          //   }
-          // );
-          console.log(
-            "Product with same ID and size already exists in the cart"
-          );
           existingInCart = true;
         } else if (sameproductCountinCart >= productData.stockQuantity) {
           stockQuantityFalse = true;
@@ -193,7 +174,6 @@ const quantityUpdationCart = async (req, res) => {
       },
       0
     );
-    console.log(sameproductCountinCart, productDetails.stockQuantity);
     if (
       previousProduct.quantity + count > 5 ||
       productDetails.stockQuantity < previousProduct.quantity + count ||
@@ -250,7 +230,6 @@ const loadCheckOut = async (req, res) => {
       couponName = cartDetails.couponApplied.couponName;
     }
     if (cartDetails.products.length <= 0) {
-      console.log("ddddd");
       res.redirect("/cart");
     } else {
       const walletAmount = user.wallet;
@@ -284,14 +263,11 @@ const loadCheckOut = async (req, res) => {
 const applyCoupon = async (req, res) => {
   try {
     const { couponCode, total, cartId } = req.body;
-    console.log("hioiii", couponCode);
     const appliedCoupon = await Coupon.findOne({
       couponCode: { $regex: new RegExp(couponCode, "i") },
     });
 
-    console.log(appliedCoupon);
     if (!appliedCoupon) {
-      console.log("Coupon not found");
       return res.json({ no: true });
     }
 
@@ -316,7 +292,6 @@ const applyCoupon = async (req, res) => {
     // Add the user to the usedUsers array
     const discountValue = Math.floor((discountAmount / 100) * total);
     const totalUpdated = total - discountValue;
-    console.log(discountValue, "discounttttttttttttt");
     // appliedCoupon.usedUsers.push(currUserId);
     await Cart.updateOne(
       { _id: cartId },

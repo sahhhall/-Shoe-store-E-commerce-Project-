@@ -15,10 +15,6 @@ const loadDashboard = async (req, res) => {
     let totalCategories;
     let totalUsers;
 
-    // const filterOption = req.query.filter;
-    // this is not thath url query
-    // let query = {  status: "placed" };
-
     const thisYear = new Date().getFullYear();
 
     // Construct a valid date object for the start of the current year (January 1st)
@@ -44,9 +40,7 @@ const loadDashboard = async (req, res) => {
       },
     ]);
 
-    // const previousYear = new Date().getFullYear()-1;
-    // const startOfPreviousYear = new Date(previousYear, 0, 1);
-    // const endOfPreviousYear = new Date(previousYear, 11, 31);
+
     let monthBaseUser = new Array(12).fill(0);
     const user = await User.aggregate([
       {
@@ -62,14 +56,6 @@ const loadDashboard = async (req, res) => {
       },
     ]);
 
-    // top 10 sellling product
-    // if ( filterOption === "product" ) {
-
-    // } else if ( filterOption === "category" ) {
-
-    // } else {
-
-    // }
     const productSorted = await Order.aggregate([
       {
         $unwind: "$products",

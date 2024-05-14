@@ -12,7 +12,6 @@ const securePassword = async (password) => {
 }
 
 const loadLogin = async (req, res) => {
-
     try {
         res.render('adminLogin');
     } catch (error) {
@@ -23,7 +22,6 @@ const loadLogin = async (req, res) => {
 const verifyLogin = async (req, res) => {
     try {
         const {email, password} = req.body;
-        console.log(email);
         const admin = await User.findOne({email: email});
 
         if (admin) {

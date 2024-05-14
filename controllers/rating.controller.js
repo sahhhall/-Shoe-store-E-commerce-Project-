@@ -10,15 +10,6 @@ const addRating = async (req, res) => {
     if (!user) {
       // for redirect to sign in page
     }
-    // const existingReview = await Rating.findOne({
-    //   productId: productID,
-    //   "review.userId": user,
-    // });
-    // if (existingReview) {
-    //   return res
-    //     .status(200)
-    //     .json({ message: "you already reviewd this product" });
-    // }
     const existProduct = await Rating.findOne({ productId: productID });
     if (existProduct) {
       await Rating.findOneAndUpdate(
@@ -61,18 +52,6 @@ const addRating = async (req, res) => {
         arrayFilters: [{ "elem.productId": productID }],
       }
     );
-    // const averageRating = await Rating.aggregate([
-    //     { $match: { productId: productID } },
-    //     { $unwind: "$review" },
-    //     { $group: {
-    //       _id: "$productID",
-    //       averageRating: { $avg: "$review.rating" }
-    //     } },
-    //     { $project: {
-    //       _id: 0,
-    //       averageRating: 1
-    //     } }
-    //   ]);
     const averageRating = await Rating.aggregate([
       // Aggregation pipeline
       { $unwind: "$review" },
