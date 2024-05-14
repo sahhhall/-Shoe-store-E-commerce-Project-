@@ -14,7 +14,7 @@
   cursor: pointer;
   box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.1); 
   border: none;
-  animation: shake 0.9s infinite;
+  /* animation: shake 0.9s infinite; */
 }
 .chat-button .chat-icon {
   max-width: 100%; 
@@ -35,15 +35,91 @@
 
 
 
+.modal {
+  display: none;
+  position: fixed;
+  z-index: 1;
+  left: 50%;
+  top: 70%;
+  transform: translate(-50%, -50%);
+  width: 40%; 
+  border-radius: 1rem;
+}
 
+.modal-content {
+    background-color: #fefefe;
+    margin: 15% auto;
+    padding: 20px;
+    border: 1px solid #888;
+    width: 80%;
+    max-width: 600px;
+    border-radius: 8px;
+}
+
+.modal-header, .modal-footer {
+    padding: 10px 0;
+    border-bottom: 1px solid #ddd;
+    text-align: center;
+}
+
+.modal-body {
+    padding: 10px 0;
+    overflow-y: auto;
+    max-height: 300px;
+}
+
+.messages-container {
+    overflow-y: auto;
+}
+.message.sender .message-text {
+    background-color: #DCF8C6;
+    margin-left: 10px;
+}
+
+
+.message.receiver .message-text {
+    background-color: #E5E5EA;
+    margin-right: 10px;
+}
+
+
+.message {
+    margin-bottom: 10px;
+    padding: 5px;
+    border-radius: 8px;
+    display: inline-block;
+    max-width: 70%;
+}
+
+
+.modal-footer input[type="text"] {
+
+    padding: 10px;
+    border-radius: 5px;
+    border: 1px solid #ccc;
+}
+
+.modal-footer button {
+    width: 70px;
+    padding: 10px;
+    border: none;
+    background-color: #4CAF50;
+    color: white;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.modal-footer button:hover {
+    background-color: #45a049;
+}
 
  </style>
 
     <!-- Main Section-->
     <section class="mt-0 overflow-hidden ">
         <!-- Page Content Goes Here -->
-        <button id="chatButton" class="chat-button ">
-            <img class="chat-icon  " src="/assets/icons/customer_icon.png" alt="">
+        <button id="chatButton" class="chat-button " onclick="openChatModal()">
+            <img onclick="openChatModal()" class="chat-icon " src="/assets/icons/customer_icon.png" alt="">
           </button>
           
         <!-- / Top banner -->
@@ -467,13 +543,35 @@
             
           
 
-          
-
+        <div id="modalForChat" class="modal">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h2>Chat </h2>
+                </div>
+                <div class="modal-body">
+                    <div class="messages-container">
+                        <div class="message sender" style="margin-left: 50%;">
+                            <div class="message-text">This is a message from the sender.</div>
+                        </div>
+                        <div class="message receiver" >
+                            <div class="message-text">This is a message from the receiver.</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer" style="width: 100%;">
+                    <input style="width: 80%;" type="text" id="newMessage" placeholder="Type your message...">
+                    <button onclick="sendMessage()">Send</button>
+                </div>
+            </div>
+        </div>
+        
+        
+        
     
 
         
     </section>
-
+    <script src="/socket.io/socket.io.js"></script>
 <script>
   
     var swiper = new Swiper('.swiper-container', {
@@ -499,6 +597,37 @@
         },
       },
     });
+
+
+
+function openChatModal() {
+    console.log("hihiihhihihiihhhhhhiihihihiihi")
+  const modal = document.getElementById("modalForChat");
+  modal.style.display = "block";
+}
+
+
+function closeChatModal() {
+  var modal = document.getElementById("modalForChat");
+  modal.style.display = "none";
+}
+const socket = io();
+socket.on('connect', () => {
+        console.log('Connected to server');
+});
+const sendMessage = () => {
+    let messageInput = document.getElementById('newMessage').value;
+    socket.emit('message',messageInput);
+    messageInput =  '';
+}
+// Listen for 'message' event from the server
+socket.on('message', (message) => {
+    const senderMessageElement = document.querySelector('.message.sender .message-text');
+    senderMessageElement.textContent = message;
+});
+
+
+
   </script>
 
 <%- include('../layouts/user/footer.ejs') -%>

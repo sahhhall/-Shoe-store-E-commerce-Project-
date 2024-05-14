@@ -104,7 +104,7 @@
   .subscriptions div {
     font-size: 0.9rem;
   }
-  /* Modal styles */
+  /* reating Modal styles */
 .modall {
   display: none;
   position: fixed;
@@ -119,11 +119,13 @@
 
 .modall-content {
   background-color: #fefefe;
-  margin: 10% auto;
-  padding: 20px;
-  border: 1px solid #888;
-  width: 80%;
-  max-width: 500px;
+    margin: 15% auto;
+    padding: 20px;
+    border: 1px solid #888;
+    width: 70%;
+    max-width: 500px;
+    border-radius: 10px;
+    position: relative;
 }
 
 .closee {
@@ -202,6 +204,7 @@
   color: red;
 }
 
+
 .rating-button {
   background-color: #ffa500;
   color: black;
@@ -212,9 +215,42 @@
 
 
 textarea {
-  width: 100%;
-  height: 100px;
-  margin-bottom: 10px;
+    width: 100%;
+    padding: 10px;
+    margin-top: 10px;
+    margin-bottom: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    box-sizing: border-box;
+    font-size: 14px;
+    line-height: 1.5;
+}
+
+textarea:focus {
+    border-color: #007bff;
+    outline: none; 
+}
+.submit-btn {
+    background-color: #4CAF50;
+    color: white;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    margin-right: 10px;
+}
+.close-btn{
+  background-color: #ffffff;
+    color: black;
+    padding: 10px 20px;
+    border: 1px solid #ccc; 
+    border-radius: 5px;
+    cursor: pointer;
+    margin-right: 10px;
+}
+
+.submit-btn:hover{
+    background-color: #45a049;
 }
   @media (max-width: 425px) {
     .wrapper {
@@ -434,8 +470,8 @@ textarea {
       </div>
       <textarea id="commentField" placeholder="Enter your comments"></textarea>
       <p style="color: red; display: none;" id="commentErr"  ></p>
-      <button onclick="submitRating()">Submit</button>
-      <button onclick="closeRatingModal()">Close</button>
+      <button class="submit-btn" onclick="submitRating()">Submit</button>
+      <button class="close-btn" onclick="closeRatingModal()">Close</button>
     </div>
   </div>
 
@@ -528,7 +564,7 @@ textarea {
   async function downloadInvoice(orderId) {
     const data = { orderId };
     const downloadButton = document.getElementById('download');
-    downloadButton.innerHTML = '<i class="fas btn  fa-spinner fa-spin"></i> Downloading...';
+    downloadButton.textContent = 'Downloading...';
     fetch('/invoice-download', {
       method: 'POST',
       headers: {
@@ -548,7 +584,7 @@ textarea {
         link.click();
         // Remove the link from the DOM
         document.body.removeChild(link);
-        downloadButton.innerHTML = 'Download Invoice';
+        downloadButton.textContent = 'Download Invoice';
       })
       .catch(err => {
         console.error('Error downloading invoice:', err);

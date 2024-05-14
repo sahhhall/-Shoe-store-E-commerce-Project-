@@ -154,13 +154,13 @@
           <label class="form-check-label" for="checkoutShippingMethodCashOnDelivery">
               <span class="d-flex justify-content-between align-items-start">
                   <span>
-                      <span class="mb-0 fw-bolder d-block" <% if (( subTotal > 1500)) { %>class="text-muted"<% } %>>Cash on Delivery</span>
-                      <small class="fw-bolder" <% if ((subTotal > 1500)) { %>class="text-muted"<% } %>>Pay when your order is delivered</small>
+                      <span class="mb-0 fw-bolder d-block" <% if (( subTotal > 1000)) { %>class="text-muted"<% } %>>Cash on Delivery</span>
+                      <small class="fw-bolder" <% if ((subTotal > 1000)) { %>class="text-muted"<% } %>>Pay when your order is delivered</small>
                   </span>
-                  <% if (( subTotal < 1500)) { %>
+                  <% if (( subTotal < 1000)) { %>
                     <span class="small fw-bolder text-uppercase">Free</span>
                   <% } %>
-                  <% if (( subTotal > 1500)) { %>
+                  <% if (( subTotal > 1000)) { %>
                     <span style=" color: red   !important;" >maximum 1500</span>
                   
                   <% } %>
@@ -229,7 +229,7 @@
                                     <div class="col-2 position-relative">
                                         <span class="checkout-item-qty"><%= value.quantity %></span>
                                         <picture class="d-block border">
-                                            <img class="img-fluid" src=" /assets/images/productImage/sharped/<%= value.productId.images[2] %>" alt="<%= value.productId.name %>">
+                                            <img class="img-fluid" src=" /assets/images/productImage/sharped/<%= value.productId.images[0] %>" alt="<%= value.productId.name %>">
                                         </picture>
                                     </div>
                                     <div class="col-9 offset-1">

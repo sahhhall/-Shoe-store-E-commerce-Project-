@@ -171,7 +171,7 @@ if ( !numberRegex.test(price) || price < 100 || price > 25000) {
 } else {
     priceErr.style.display = "none";
 }
-if (+price >= +storeId) {
+if (+price > +storeId) {
         previousErr.innerText = "Previous price should be equal or more than the current price";
         previousErr.style.display = "block";
         setTimeout(() => {
@@ -188,18 +188,13 @@ if (sizes.length < 2) {
     sizeErr.style.display = "none";
 }
 
-if (!validImages) {
-    imagesErr.innerText = "Please select at least one image";
+if (!validImages || validImages.length < 4) {
+    imagesErr.innerText = "Please select at least 3 image";
     imagesErr.style.display = "block";
     return false;
 } else {
     imagesErr.style.display = "none";
-} if ( images.length < 4) {
-  imagesErr.innerText = "Please select at least 4 image";
-    imagesErr.style.display = "block";
-    return false;
-}
-
+} 
 return true;
 }
 

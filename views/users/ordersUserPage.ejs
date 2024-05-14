@@ -152,8 +152,9 @@
                           
                                 </h6>
                                 <span class="orderrr d-block text-muted fw-bolder text-uppercase fs-9">
-                                  Order ID: <%= order._id %>  <br> Date: <%= order.date %>
-                                </span>
+                                  Order ID: <%= order._id %> <br> Date: <%= new Date(order.date).toLocaleString('en-US', { year: 'numeric', month: 'short', day: 'numeric', hour: 'numeric', minute: 'numeric', second: 'numeric' }) %>
+                              </span>
+                              
                                 <span class="d-block fw-bolder fs-9 font-weight-bold">
                                   Products:<%= order.products.length %>
                                  </span>

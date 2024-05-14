@@ -10,6 +10,7 @@ const orderController = require("../controllers/orderController");
 const couponController = require("../controllers/couponController");
 const bannerController = require("../controllers/bannerController");
 const dashboardController = require("../controllers/dashboard.controller");
+const messageController = require('../controllers/message.controller');
 const auth = require("../middlewares/adminAuth");
 const multer = require("../middlewares/multerConfig");
 const multerBanner = require("../middlewares/multerBanner");
@@ -161,5 +162,10 @@ adminRoute.post(
   dashboardController.salesReport
 );
 
+
+adminRoute.get(
+  "/messages",
+  messageController.loadMessageAdmin
+);
 
 module.exports = adminRoute;

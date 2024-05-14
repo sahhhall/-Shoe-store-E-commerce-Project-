@@ -447,7 +447,7 @@ const loadOrderlist = async (req, res) => {
       page = +req.query.page;
     }
 
-    const limit = 1;
+    const limit = 10;
 
     const ordersData = await Order.find()
       .populate("products.productId")

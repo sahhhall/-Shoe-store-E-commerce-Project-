@@ -176,7 +176,7 @@ function validateForm() {
         }, 5000);
         return false;
       } if ( price < 100 ||  price > 25000 || !numberRegex.test(price)) {
-        priceErr.innerText = "Previous price should be equal or more than 100 within 25000";
+        priceErr.innerText = "price should be equal or more than 100 within 25000";
         priceErr.style.display = "block";
         setTimeout(() => {
           priceErr.style.display = "none";
@@ -186,7 +186,7 @@ function validateForm() {
       
     }
 
-    if ( price >= storeId) {
+    if ( +price > +storeId ) {
         previousErr.innerText = "Previous price should be equal or more than the current price";
         previousErr.style.display = "block";
         setTimeout(() => {

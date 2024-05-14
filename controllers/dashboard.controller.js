@@ -137,7 +137,7 @@ const loadDashboard = async (req, res) => {
     totalOrders = ordersCount;
     totalProduct = productsCount;
     totalCategories = categoryCount;
-    totalRevenue = revenue[0].total_revenue;
+    totalRevenue = revenue[0]?.total_revenue || 0;
 
     monthBaseRev.forEach((item) => {
       monthBaseRevenue[item._id - 1] = item.totalRevenue;

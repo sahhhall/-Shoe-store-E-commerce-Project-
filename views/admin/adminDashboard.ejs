@@ -1,7 +1,6 @@
 <%- include('../layouts/admin/header.ejs') -%>
 <style>
-    /* Styles for modal and modal-content */
-/* The Modal (background) */
+
 .modal {
   display: none;
   position: fixed;
@@ -9,7 +8,7 @@
   left: 50%;
   top: 70%;
   transform: translate(-50%, -50%);
-  width: 40%; /* Adjust the width as needed */
+  width: 40%; 
   border-radius: 8px;
 }
 .modal-content {
@@ -89,6 +88,13 @@
             <li class="menu-item ">
                 <a class="menu-link" href="/admin/banners"> <i class="icon material-icons md-monetization_on"></i>
                     <span class="text">Banners</span>
+                </a>
+            
+            </li>
+        
+            <li class="menu-item ">
+                <a class="menu-link" href="/admin/messages">  <i class="icon material-icons md-message"></i>
+                    <span class="text">Messages</span>
                 </a>
             
             </li>
@@ -524,4 +530,9 @@ function dowenloadSalesReport () {
     });
 }
 
+</script>
+<script src="/socket.io/socket.io.js"></script>
+<script type="module">
+    const socket = io()
+    
 </script>

@@ -603,9 +603,9 @@ $.ajax({
 }
 
 // Validation for Address
-if (!address.match(lettersOnlyRegex)) {
+if (!address.trim()) {
     addresseditError.style.display = "block";
-    addresseditError.innerText = "Address should contain letters only.";
+    addresseditError.innerText = "Address should be filled.";
     isValid = false;
 } else {
     addresseditError.style.display = "none";
