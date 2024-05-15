@@ -192,7 +192,7 @@
                     <small class="fw-bolder" <% if (!(walletAmount > subTotal)) { %>class="text-muted"<% } %>>Pay securely online</small>
                     
                   </span>
-                  <% if (!(walletAmount > subTotal)) { %>
+                  <% if (!(walletAmount >= subTotal)) { %>
                     <span style=" color: red   !important;" >insufficent balance</span>
                   
                   <% } %>
