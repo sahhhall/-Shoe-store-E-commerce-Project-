@@ -856,7 +856,7 @@
       data: JSON.stringify(data),
       contentType: "application/json",
       success: function (response) {
-        if (response.login == "success") {
+        if (response.login === true) {
           swal
             .fire({
               icon: "warning",

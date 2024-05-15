@@ -6,7 +6,6 @@ const puppeteer = require("puppeteer");
 const path = require("path");
 const ejs = require("ejs");
 const fs = require("fs");
-const { setMaxListeners } = require("stream");
 const loadDashboard = async (req, res) => {
   try {
     let totalRevenue;
