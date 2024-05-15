@@ -328,7 +328,7 @@ const sendResetPass = async (email, res) => {
             }
         });
 
-        const resetpage = `http://localhost:4001/resetpassword/${
+        const resetpage = `https://sacollective.store/resetpassword/${
             user._id
         }/${
             token.token
@@ -437,7 +437,7 @@ const loadProfile = async (req, res) => {
     try {
         const userid = req.session.user._id;
         const user = await User.findById(userid)
-        res.render('profilePage', {user: user})
+        res.render('profilepage', {user: user})
 
     } catch (err) {
         console.log(err.message)
