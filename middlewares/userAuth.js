@@ -1,4 +1,4 @@
-let c =require('../utils/blockChecking.js');
+let blockCheckUtil =require('../utils/blockChecking.js');
 const isLogin = async (req, res, next) => {
   try {
     if (req.session.user) {
