@@ -3,6 +3,7 @@ const path = require("path");
 
 const storage = multer.diskStorage({
   destination: function (req, file, cb) {
+    console.log("am here mulete")
     cb(
       null,
       path.join(__dirname, "../public/assets/images/productImage"),
