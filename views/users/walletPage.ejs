@@ -180,30 +180,26 @@
             </div>
             <div class="new-div">
               <div class="car"  >
-               <div class="card-body">
-                <h4 class="card-title text-center">Transaction History</h4>
-                <hr>
-                <%if(walletHistory.length > 0){%>
-                  <% walletHistory.forEach((walletHistory)=>{ %>
-                    <div class="d-flex justify-content-between transction- " >
-                      <p style="font-weight: bolder; letter-spacing: .1rem;"><%= walletHistory.date.toLocaleDateString('en-US',
-                        { year: 'numeric', month: 'short', day: '2-digit'
-                        }) %></p>
-                        <p style="font-weight: bolder; letter-spacing: .1rem;" class="<%= walletHistory.amount < 0 ? 'negative-amount' : '' %>">
-                          ₹<%=  walletHistory.amount %>
-                      </p>
-                      <p style="font-weight: bolder; letter-spacing: .1rem;">
-                        <%= walletHistory.reason %>
-                      </p>
-                    </div>
-                  
-                    <%})%>
-                
-                <% } %>
-               
-                <button class="btn text-white w-100" style="background-color: #000000">Add Money</button>
-
-               </div>
+                <div class="card-body">
+                  <h4 class="card-title text-center">Transaction History</h4>
+                  <hr>
+                  <% if(walletHistory.length > 0){ %>
+                      <% walletHistory.forEach((walletHistory) => { %>
+                          <div class="d-flex justify-content-between transaction">
+                              <p class="small m-0" style="font-weight: bolder; letter-spacing: .1rem;">
+                                  <%= walletHistory.date.toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: '2-digit' }) %>
+                              </p>
+                              <p class="m-0 <%= walletHistory.amount < 0 ? 'negative-amount' : '' %>">
+                                  ₹<%= walletHistory.amount %>
+                              </p>
+                              <p class="m-0" style="font-weight: bolder; letter-spacing: .1rem;">
+                                  <%= walletHistory.reason %>
+                              </p>
+                          </div>
+                      <% }) %>
+                  <% } %>
+                  <button class="btn text-white w-100 mt-3" style="background-color: #000000">Add Money</button>
+              </div>
               </div>
               
               <!-- Add your content here -->

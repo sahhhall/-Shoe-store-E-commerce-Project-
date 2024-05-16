@@ -81,6 +81,13 @@
     background-color: #E5E5EA;
     margin-right: 10px;
 }
+@media only screen and (max-width: 768px) {
+    .swiper-slide {
+        width: calc(100% / 2);
+        max-width: calc(100vw / 2);
+    }
+}
+
 
 
 .message {
@@ -379,7 +386,7 @@
         <div class="container-fluid">
 
             <!-- Featured Categories-->
-            <div class="main-text container my-7 text-center animated">
+            <div class="main-text container my-7 text-center animated ">
                 <h3 class="fw-light h4 mb-3">More simple, More Details</h2>
                 <p class="small text-muted history">
                   In 2023, a group of boys with different cultural backgrounds met in Calicut. <br>The love of vintage clothes
@@ -388,51 +395,7 @@
                 </p>
               </div>
 
-              <div class="row">
-                    <div class="col-sm-6 col-lg-4">
-                        <div class="banner banner-display banner-link-anim">
-                            <a href="#">
-                                <img src="/assets/models/misobysonia1.jpg" alt="Banner" class="img-fluid">
-                            </a>
-
-                           
-                        </div><!-- End .banner -->
-                    </div><!-- End .col-sm-6 -->
-
-                    <div class="col-sm-6 col-lg-4 order-lg-last">
-                        <div class="banner banner-display banner-link-anim">
-                            <a href="#">
-                                <img src="/assets/models/misbysonia2.jpg" class="img-fluid" alt="Banner">
-                            </a>
-
-                         
-                        </div><!-- End .banner -->
-                    </div><!-- End .col-sm-6 -->
-
-                    <div class="col-lg-4">
-                        <div class="row">
-                            <div class="col-sm-6 col-lg-12">
-                                <div class="banner banner-display banner-link-anim">
-                                    <a href="#">
-                                        <img src="/assets/models/banner-6.jpg" alt="Banner">
-                                    </a>
-
-                                </div><!-- End .banner -->
-                            </div><!-- End .col-sm-6 -->
-
-                            <div class="col-sm-6 col-lg-12 mt-5">
-                                <div class="banner banner-display banner-link-anim">
-                                    <a href="#">
-                                        <img src="/assets/models/banner-7.jpg" alt="Banner">
-                                    </a>
-
-                                 
-                                </div><!-- End .banner -->
-                            </div><!-- End .col-sm-6 -->
-                        </div><!-- End .row -->
-                    </div><!-- End .col-lg-6 -->
-                </div><!-- End .row -->
-
+             
               <!-- here swiping cards  -->
               
               
@@ -440,7 +403,7 @@
             <!-- /Featured Categories-->
 
             <!-- Homepage Intro-->
-            <div class="position-relative row my-lg-7 pt-5 pt-lg-0 g-8">
+            <div class="position-relative row my-lg-7 pt-3 pt-lg-0 g-8 ">
                 <div class="bg-text bottom-0 start-0 end-0" data-aos="fade-up">
                     <h2 class="bg-text-title opacity-10"><span class="text-outline-dark">SA</span>collective</h2>
                 </div>
@@ -451,96 +414,55 @@
                 </div>
                 <div class="col-12 col-md-6 position-relative z-index-20 pe-0" data-aos="fade-left">
                     <picture class="w-50 d-block position-relative z-index-10 border border-white border-4 shadow-lg">
-                        <img class="img-fluid" src="/assets/banners/banner-5.jpg" alt="HTML Bootstrap Template by Pixel Rocket">
+                        <img class="img-fluid"src="/assets/models/misobysonia1.jpg" alt="model">
                     </picture>
                     <picture class="w-60 d-block me-8 mt-n10 shadow-lg border border-white border-4 position-relative z-index-20 ms-auto">
-                        <img class="img-fluid" src="/assets/banners/banner-6.jpg" alt="HTML Bootstrap Template by Pixel Rocket">
+                        <img class="img-fluid"  src="/assets/models/misbysonia2.jpg" alt="model">
                     </picture>
                     <picture class="w-50 d-block me-8 mt-n7 shadow-lg border border-white border-4 position-absolute top-0 end-0 z-index-0 ">
-                        <img class="img-fluid" src="/assets/banners/banner-7.jpg" alt="HTML Bootstrap Template by Pixel Rocket">
+                        <img class="img-fluid" src="/assets/models/banner-6.jpg" alt="model">
                     </picture>
                 </div>
             </div>
             <!-- / Homepage Intro-->
-
-
-            <div class="col-12 " data-aos="fade-up">
-                <h3 class="fs-4 fw-bolder mt-7 mb-4">You May Also Like</h3>
-                <div class="swiper-container" data-swiper data-options='{
-                    "spaceBetween": 10,
-                    "autoplay": {
-                        "delay": 5000,
-                        "disableOnInteraction": false
-                    },
-                    "navigation": {
-                        "nextEl": ".swiper-next",
-                        "prevEl": ".swiper-prev"
-                    },
-                    "breakpoints": {
-                        "576": {
-                            "slidesPerView": 1
-                        },
-                        "768": {
-                            "slidesPerView": 2
-                        },
-                        "992": {
-                            "slidesPerView": 3
-                        },
-                        "1200": {
-                            "slidesPerView": 4
-                        }
-                    }
-                }'>
-                    <div class="swiper-wrapper">
-                        <% if(locals.product) %>
-                        <% product.map(function(rproducts){ %>
-                        <div class="swiper-slide">
-                            <!-- Card Product-->
-                            <div class="card border border-transparent position-relative overflow-hidden h-100 transparent">
-                                <div class="card-img position-relative">
-                                    <!-- This div was missing in your original code -->
-                              
-                                    <span class="position-absolute top-0 end-0 p-2 z-index-20 text-muted"><i class="ri-heart-line"></i></span>
-                                    <picture class="position-relative overflow-hidden d-block bg-light">
-                                        <img class="w-100 img-fluid position-relative z-index-10 hoverimg" title="" src="/assets/images/productImage/sharped/<%= rproducts.images[0] %>" alt="<%= rproducts.name %>">
-                                    </picture>
-                                    <div class="position-absolute start-0 bottom-0 end-0 z-index-20 p-2">
-                                        <button class="btn btn-quick-add"><i class="ri-add-line me-2"></i> Quick Add</button>
-                                    </div>
-                                </div>
-                                <div class="card-body px-0">
-                                    <a class="text-decoration-none link-cover cardtitle" href="/productView?id=<%=rproducts._id%>"><%= rproducts.name %></a>
-                                    <small class="text-muted d-block smallcardtitle"><%= rproducts.category %></small>
-                                    <small class="text-muted d-block smallcardtitle">1 colours, <%= rproducts.sizes.length %> sizes</small>
-                                    <p class="mt-2 mb-0 small"><s class="text-danger">₹<%= rproducts.previous_price %></s> <span class="text">₹<%= rproducts.price %></span></p>
-                                </div>
-                            </div>
-                            <!--/ Card Product-->
-                        </div>
-                        <% }); %>
-                    </div>
+            <div  style=" display: flex;gap: 10px; overflow-x: auto; white-space: nowrap; margin-top: 8rem; margin-bottom: 6rem;">
+                <% if(locals.product) %>
+                <% product.map(function(rproducts){ %>
+                <div class="swiper-slide" style="width: calc(100% / 3); max-width: calc(100vw / 3);"> <!-- Adjust width to 33.33% of the container -->
             
-                    <!-- Add Arrows -->
-                    <div class="swiper-prev top-50 start-0 z-index-30 cursor-pointer transition-all bg-white px-3 py-4 position-absolute z-index-30 top-50 start-0 mt-n8 d-flex justify-content-center align-items-center opacity-50-hover">
-                        <i class="ri-arrow-left-s-line ri-lg"></i>
+                    <!-- Card Product-->
+                    <div class="card border border-transparent position-relative overflow-hidden h-100 transparent">
+                        <div class="card-img position-relative">
+                            <!-- This div was missing in your original code -->
+                            <span class="position-absolute top-0 end-0 p-2 z-index-20 text-muted"><i class="ri-heart-line"></i></span>
+                            <picture class="position-relative overflow-hidden d-block bg-light">
+                                <img class="w-100 img-fluid position-relative z-index-10 hoverimg" title="" src="/assets/images/productImage/sharped/<%= rproducts.images[0] %>" alt="<%= rproducts.name %>">
+                            </picture>
+                        </div>
+                        <div class="card-body px-0">
+                            <a class="text-decoration-none link-cover cardtitle" href="/productView?id=<%=rproducts._id%>"><%= rproducts.name %></a>
+                            <small class="text-muted d-block smallcardtitle"><%= rproducts.category %></small>
+                            <small class="text-muted d-block smallcardtitle">1 colours, <%= rproducts.sizes.length %> sizes</small>
+                            <p class="mt-2 mb-0 small"><s class="text-danger">₹<%= rproducts.previous_price %></s> <span class="text">₹<%= rproducts.price %></span></p>
+                        </div>
                     </div>
-                    <div class="swiper-next top-50 end-0 z-index-30 cursor-pointer transition-all bg-white px-3 py-4 position-absolute z-index-30 top-50 end-0 mt-n8 d-flex justify-content-center align-items-center opacity-50-hover">
-                        <i class="ri-arrow-right-s-line ri-lg"></i>
-                    </div>
+                    <!--/ Card Product-->
+            
                 </div>
-                <!-- / Swiper Latest-->
+                <% }); %>
             </div>
+            
             
        
 
           
           
-         <div style="position: relative; margin-top: 6rem;" >
+         <!-- <div style="position: relative; margin-top: 6rem;" >
             <img  class="img-fluid" src="/assets/banners/converse-never-miss-a-beat-email-sign-up.jpg" alt="converse banner">
         
             <p class="conversepartner" >We officiialyy announced co parnter of converse</p>
         </div>
-            
+             -->
           
 
         <div id="modalForChat" class="modal">

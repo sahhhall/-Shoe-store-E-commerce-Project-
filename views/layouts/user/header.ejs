@@ -105,7 +105,6 @@
                                 <ul class="dropdown-menu">
                                    
                                     <li><a class="dropdown-item" href="/profile">Profile</a></li>
-                                    <li><a class="dropdown-item" href="#">Orders</a></li>
                                     <!-- <li><a class="dropdown-item"  href="/signout" >Logout</a></li> -->
                                 </ul>
                             </li>
@@ -180,9 +179,9 @@
                                                     <div>
                                                         <h6 class="justify-content-between d-flex align-items-start mb-2">
                                                             <%= value.productId.name %>
-                                                            <i class="ri-close-line ms-3" onclick="deleteCartItem('<%= value.productId._id %>')"></i>
+                                                            <!-- <i class="ri-close-line ms-3" onclick="deleteCartItem('<%= value.productId._id %>')"></i> -->
                                                         </h6>
-                                                        <span class="d-block text-muted fw-bolder text-uppercase fs-9">Size: <%= value.size %> / Qty: <%= value.quantity %></span>
+                                                        <span class="d-block text-muted fw-bolder text-uppercase fs-9">Size: <%= value.sizes %> / Qty: <%= value.quantity %></span>
                                                     </div>
                                                     <p class="fw-bolder text-end text-muted m-0">₹<%= value.totalPrice %></p>
                                                 </div>
@@ -198,7 +197,7 @@
                                             <div class="d-flex flex-column flex-md-row justify-content-md-between align-items-md-start mb-4 mb-md-2">
                                                 <div>
                                                     <p class="m-0 fw-bold fs-5">Grand Total</p>
-                                                    <span class="text-muted small">Inc ₹45.89 sales tax</span>
+                                                    <!-- <span class="text-muted small">Inc ₹45.89 sales tax</span> -->
                                                 </div>
                                                 <p class="m-0 fs-5 fw-bold">₹<%= subTotal %></p>
                                             </div>
