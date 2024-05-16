@@ -742,7 +742,9 @@ const downloadInvoice = async (req, res) => {
     const html = fs.readFileSync(filepathName).toString();
     const ejsData = ejs.render(html, data);
 
-    const browser = await puppeteer.launch({ headless: "new" });
+    const browser = await puppeteer.launch({
+      executablePath: '/usr/bin/chromium-browser'
+    })
     const page = await browser.newPage();
     await page.setContent(ejsData, { waitUntil: "networkidle0" });
     const pdfBytes = await page.pdf({ format: "letter" });
