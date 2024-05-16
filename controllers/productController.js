@@ -85,7 +85,6 @@ const listUnlistProduct = async (req, res) => {
 const addProduct = async (req, res) => {
   try {
     let sizes = [];
-    console.log("am here in product add")
     for (i = 0; i < req.body.sizes.length; i++) {
       sizes[i] = req.body.sizes[i];
     }
@@ -123,7 +122,6 @@ const addProduct = async (req, res) => {
     });
 
     await product.save();
-    console.log("am here in product add step 2")
     res.redirect("/admin/products");
   } catch (error) {
     console.error(error);
