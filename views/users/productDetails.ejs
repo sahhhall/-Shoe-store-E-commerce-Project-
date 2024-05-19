@@ -456,10 +456,6 @@
                     >
                     <% } %>
                   </div>
-                  <span
-                    class="position-absolute top-0 end-0 p-2 z-index-20 text-muted"
-                    ><i class="ri-heart-line"></i
-                  ></span>
                   <picture
                     class="position-relative overflow-hidden d-block bg-light"
                   >
@@ -470,13 +466,6 @@
                       alt="<%= rproducts.name %>"
                     />
                   </picture>
-                  <div
-                    class="position-absolute start-0 bottom-0 end-0 z-index-20 p-2"
-                  >
-                    <button class="btn btn-quick-add">
-                      <i class="ri-add-line me-2"></i> Quick Add
-                    </button>
-                  </div>
                 </div>
                 <div class="card-body px-0">
                   <a
@@ -484,6 +473,18 @@
                     href="/productView?id=<%=rproducts._id%>"
                     ><%= rproducts.name %></a
                   >
+                  <div class="rating position-relative d-table">
+                    <div class="position-absolute stars" style="width: 80%">
+                        <% for (let i = 0; i < rproducts.averageRating; i++) { %>
+                            <i  style="color: #FFD700;" class="ri-star-fill text-yellow mr-1"></i>
+                        <% } %>
+                    </div>
+                    <div class="stars">
+                        <% for (let i = 0; i < 5; i++) { %>
+                            <i class="ri-star-fill mr-1 text-muted opacity-25"></i>
+                        <% } %>
+                    </div>
+                </div>
                   <small class="text-muted d-block smallcardtitle"
                     ><%= rproducts.category %></small
                   >

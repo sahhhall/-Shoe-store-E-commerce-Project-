@@ -434,13 +434,25 @@
                     <div class="card border border-transparent position-relative overflow-hidden h-100 transparent">
                         <div class="card-img position-relative">
                             <!-- This div was missing in your original code -->
-                            <span class="position-absolute top-0 end-0 p-2 z-index-20 text-muted"><i class="ri-heart-line"></i></span>
+                          
                             <picture class="position-relative overflow-hidden d-block bg-light">
                                 <img class="w-100 img-fluid position-relative z-index-10 hoverimg" title="" src="/assets/images/productImage/sharped/<%= rproducts.images[0] %>" alt="<%= rproducts.name %>">
                             </picture>
                         </div>
                         <div class="card-body px-0">
                             <a class="text-decoration-none link-cover cardtitle" href="/productView?id=<%=rproducts._id%>"><%= rproducts.name %></a>
+                            <div class="rating position-relative d-table">
+                                <div class="position-absolute stars" style="width: 80%">
+                                    <% for (let i = 0; i < rproducts.averageRating; i++) { %>
+                                        <i  style="color: #FFD700;" class="ri-star-fill text-yellow mr-1"></i>
+                                    <% } %>
+                                </div>
+                                <div class="stars">
+                                    <% for (let i = 0; i < 5; i++) { %>
+                                        <i class="ri-star-fill mr-1 text-muted opacity-25"></i>
+                                    <% } %>
+                                </div>
+                            </div>
                             <small class="text-muted d-block smallcardtitle"><%= rproducts.category %></small>
                             <small class="text-muted d-block smallcardtitle">1 colours, <%= rproducts.sizes.length %> sizes</small>
                             <p class="mt-2 mb-0 small"><s class="text-danger">₹<%= rproducts.previous_price %></s> <span class="text">₹<%= rproducts.price %></span></p>

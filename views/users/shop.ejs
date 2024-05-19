@@ -115,6 +115,18 @@
                         </div>
                         <div class="card-body px-0">
                             <a class="text-decoration-none link-cover cardtitleshop"  href="/productView?id=<%=products._id%>" ><%= products.name %></a>
+                            <div class="rating position-relative d-table">
+                                <div class="position-absolute stars" style="width: 80%">
+                                    <% for (let i = 0; i < products.averageRating; i++) { %>
+                                        <i  style="color: #FFD700;" class="ri-star-fill text-yellow mr-1"></i>
+                                    <% } %>
+                                </div>
+                                <div class="stars">
+                                    <% for (let i = 0; i < 5; i++) { %>
+                                        <i class="ri-star-fill mr-1 text-muted opacity-25"></i>
+                                    <% } %>
+                                </div>
+                            </div>
                             <small class="text-muted d-block smallcardtitle"><%= products.category %></small>
                             <small class="text-muted d-block smallcardtitle">1 colours, <%= products.sizes.length %> Sizes</small>
                             <% if (parseInt(products.previous_price) === parseInt(products.price)) { %>
