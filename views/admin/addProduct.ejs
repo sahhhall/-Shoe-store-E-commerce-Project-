@@ -188,8 +188,8 @@ if (sizes.length < 2) {
     sizeErr.style.display = "none";
 }
 
-if (!validImages || validImages.length < 4) {
-    imagesErr.innerText = "Please select at least 3 image";
+if (!validImages ) {
+    imagesErr.innerText = "Please select at least 1 image";
     imagesErr.style.display = "block";
     return false;
 } else {
